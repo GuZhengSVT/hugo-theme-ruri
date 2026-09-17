@@ -1,0 +1,29 @@
+{{ define "main" }}
+{{ $archive := eq .Section "archives" }}
+{{ $pages := .Pages }}
+{{ if $archive }}
+  {{ $pages = where .Site.RegularPages "Type" "in" .Site.MainSections }}
+  {{ $heatmapTitle := i18n "ruri_heatmap_title" }}
+  <section class="archive-heatmap" aria-labelledby="archive-heatmap-title"><h2 id="archive-heatmap-title">{{ $heatmapTitle }}</h2>{{ $source := .Site.GetPage (.Site.Params.ruri.heatmapExclude | default "/archives") }}{{ partial "heatmap.html" (dict "Page" ($source | default .) "levelStandard" "500,1000,3000,5000,10000") }}</section>
+  <div class="archive-taxonomies">{{ partial "taxonomies.html" . }}</div>
+{{ end }}
+<div class="section-heading article-list-heading"><div><p class="eyebrow">COLLECTION / {{ len $pages }}</p><h1>{{ .Title }}</h1></div></div>
+{{ .Content }}
+
+{{ if $archive }}
+<div class="archive-tree">
+  {{ range $pages.ByDate.Reverse.GroupByDate "2006" }}
+  <section class="archive-year" data-year="{{ .Key }}"><h2>{{ .Key }}</h2>
+    {{ range .Pages.GroupByDate "01" }}
+    <section class="archive-month"><h3>{{ .Key }}</h3><ul>
+      {{ range .Pages }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ end }}
+    </ul></section>
+    {{ end }}
+  </section>
+  {{ end }}
+</div>
+{{ else }}
+  {{ $p := .Paginate $pages.ByDate.Reverse (.Site.Params.paginate.archive | default 20) }}{{ range $p.Pages }}{{ partial "card.html" . }}{{ end }}
+{{ partial "pagination.html" . }}
+{{ end }}
+{{ end }}

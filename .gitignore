@@ -1,0 +1,10 @@
+.DS_Store
+._*
+/public/
+/resources/
+.hugo_build.lock
+/node_modules/
+/exampleSite/public/
+/exampleSite/resources/
+/exampleSite/.hugo_build.lock
+__pycache__/

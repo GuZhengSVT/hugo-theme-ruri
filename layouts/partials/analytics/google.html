@@ -1,0 +1,30 @@
+<!-- Google Analytics: delayed loading (requestIdleCallback / window.load) -->
+<script data-pjax>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+
+  gtag('js', new Date());
+
+  gtag('config', '{{ .Site.Params.google_analytics }}');
+
+  (function () {
+    var loadGtag = function () {
+      var script = document.createElement('script');
+      script.src = 'https://www.googletagmanager.com/gtag/js?id={{ .Site.Params.google_analytics }}';
+      script.async = true;
+      document.head.appendChild(script);
+    };
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(loadGtag, { timeout: 2000 });
+    } else if (window.addEventListener) {
+      window.addEventListener('load', loadGtag, { once: true });
+    } else {
+      loadGtag();
+    }
+  })();
+</script>
+<!-- End Google Analytics -->

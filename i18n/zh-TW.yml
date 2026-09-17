@@ -1,0 +1,153 @@
+categories: 分類
+search: 搜尋
+tags: 標籤
+tagcloud: 標籤雲
+tweets: 推文
+prev: 上一頁
+next: 下一頁
+comment: 留言
+reading: 閲讀量
+archive_a: 彙整
+archive_b: 彙整 {{ . -}}
+page: 第 {{ . }} 頁
+recent_posts: 最新文章
+newer: 前一篇
+older: 後一篇
+share: 分享
+powered_by: 基於
+rss_feed: RSS 訂閱
+category: Category
+tag: Tag
+toc: 文章目錄
+more: 查看更多
+
+home: 首頁
+about: 關於
+friend: 友鏈
+archives: 歸檔
+
+sidebar:
+  post: 文章
+  category: 分類
+  tag: 標籤
+
+not_found:
+  title: 4 0 4 (ﾟ⊿ﾟ)ﾂ
+  subtitle: 満 身 創 痍
+
+post:
+  count:
+    one: "{{- . }} 字"
+    other: "{{- . }} 字"
+  time:
+    one: "{{- . }} 分鐘"
+    other: "{{- . }} 分鐘"
+
+busuanzi:
+  pv: 總訪問量
+  uv: 總訪客量
+
+sticky: 置頂
+
+service_worker:
+  title: 發現新版本
+  content: 網站好像有新內容，是否更新？
+  confirm: 更新
+  cancel: 取消
+
+sponsor: 贊助
+
+home_categories:
+  count:
+    one: "{{- . }} 篇文章"
+    other: "{{- . }} 篇文章"
+
+article_copyright:
+  author: 本文作者：
+  permalink: 本文連結：
+  title: 本文標題：
+  date: 本文發佈時間：
+  updated: 本文更新時間：
+  license: 本文版權：
+  license_content: 本部落格所有文章除特別聲明外，均採用 {{ . }} 授權協議。轉載請註明出處！
+
+multi_language:
+  not_found: 本文章沒有找到對應的語言版本
+
+rss:
+  author: 作者：{{ .name }}（{{ .email }}）
+  date: 本文{{ .pubDate }}首發於{{ .content }}，最後修改於{{ .lastmod }}
+
+algolia:
+  input_placeholder: "搜尋....."
+  hits_empty: "未發現與 「${query}」相關內容"
+  hits_stats: "找到${hits}條結果（用時 ${time} ms）"
+
+heat_map_card:
+  no_articles: 沒有文章
+  words: 字
+  total_articles: 共 $1 篇文章，$2 字
+# ruri interface
+ruri_heatmap_title: "文章更新熱力圖"
+ruri_comments_jump: "直達評論區"
+ruri_player: "音樂播放器"
+ruri_play_music: "播放音樂"
+ruri_pause_music: "暫停音樂"
+ruri_cover: "歌曲封面"
+ruri_progress: "播放進度"
+ruri_prev_track: "上一首"
+ruri_next_track: "下一首"
+ruri_play: "播放"
+ruri_pause: "暫停"
+ruri_order: "切換播放順序"
+ruri_lyrics: "顯示或隱藏歌詞"
+ruri_volume_settings: "音量設定"
+ruri_volume: "音量"
+ruri_list_toggle: "打開或關閉歌單"
+ruri_mute: "靜音"
+ruri_unmute: "取消靜音"
+ruri_playlist: "歌單"
+ruri_playlist_title: "播放列表"
+ruri_list_close: "關閉歌單"
+ruri_choose_track: "選擇歌曲"
+ruri_current_lyrics: "目前歌詞"
+ruri_latest: "最新文章"
+ruri_random: "隨機文章"
+ruri_popular: "熱門文章"
+ruri_recommendations: "文章推薦"
+ruri_copied: "已複製"
+ruri_sequence: "順序"
+ruri_single: "單曲"
+ruri_shuffle: "隨機"
+ruri_order_hint: "播放，點擊切換"
+ruri_play_error: "播放失敗，請重試或切換歌曲"
+ruri_audio_error: "音訊暫不可用，請切換歌曲"
+ruri_tracks: " 首"
+ruri_comments_loading: "評論載入中…"
+ruri_comments_error: "評論載入失敗，點擊重試"
+ruri_views_loading: "讀取真實閱讀量…"
+ruri_views_sort: "按 Waline 閱讀量排序"
+ruri_views_empty: "暫無閱讀量資料"
+ruri_views_error: "閱讀量暫不可用，重新點擊可重試"
+ruri_theme: "切換明暗主題"
+ruri_language: "切換語言"
+ruri_top: "返回最上"
+ruri_words: "字"
+ruri_minutes: "分鐘閱讀"
+
+ruri_searching: "搜尋中…"
+ruri_results: "筆結果"
+ruri_retry: "暫時無法載入，請重試。"
+ruri_copy_link: "複製連結"
+ruri_close: "關閉"
+ruri_skip: "跳至正文"
+
+ruri_heat_details: "文章更新詳情"
+ruri_no_writing: "當日無更新"
+ruri_less: "少"
+ruri_more: "多"
+ruri_level: "等級"
+ruri_posts_unit: "篇文章"
+ruri_mon: "一"
+ruri_wed: "三"
+ruri_fri: "五"

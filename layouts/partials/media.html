@@ -1,0 +1,17 @@
+{{- $src := .src | default "" -}}
+{{- $result := "" -}}
+{{- with $src -}}
+  {{- $result = . | relURL -}}
+  {{- if and (not (hasPrefix . "http")) (not (hasPrefix . "//")) -}}
+    {{- $path := printf "static/%s" (strings.TrimPrefix "/" .) -}}
+    {{- if and (fileExists $path) (not (os.Stat $path).IsDir) -}}
+      {{- $image := resources.Get . -}}
+      {{- if not $image -}}{{- $image = resources.FromString (printf "ruri-media/%s" (strings.TrimPrefix "/" .)) (os.ReadFile $path) -}}{{- end -}}
+      {{- if and (eq $image.ResourceType "image") (in (slice "jpeg" "png" "webp" "tiff" "bmp") $image.MediaType.SubType) -}}
+        {{- $image = $image.Resize (printf "%dx webp q82" ($.width | default 1000)) -}}
+        {{- $result = $image.RelPermalink -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $result -}}

@@ -1,0 +1,1 @@
+{{ define "main" }}<div class="section-heading"><div><p class="eyebrow">EXPLORE</p><h1>{{ .Title }}</h1></div></div><div class="term-grid">{{ range .Data.Terms.ByCount }}<a href="{{ .Page.RelPermalink }}"><h2>{{ .Page.Title }}</h2><span>{{ .Count }}</span></a>{{ end }}</div>{{ end }}

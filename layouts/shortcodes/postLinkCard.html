@@ -1,0 +1,1 @@
+{{ with .Site.GetPage (.Get "path") }}<a class="link-card" href="{{ .RelPermalink }}">{{ with $.Get "cover" }}<img src="{{ if eq . "auto" }}{{ site.Params.banner | relURL }}{{ else }}{{ . | relURL }}{{ end }}" alt="" loading="lazy" width="120" height="80">{{ end }}<span><strong>{{ .Title }}</strong><br>{{ .Description }}</span></a>{{ end }}

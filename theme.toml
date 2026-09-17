@@ -1,0 +1,12 @@
+name = "ruri"
+license = "MIT"
+licenselink = "https://github.com/GuZhengSVT/hugo-theme-ruri/blob/main/LICENSE"
+description = "A minimal, flat personal journal with multilingual support and a persistent music player."
+homepage = "https://github.com/GuZhengSVT/hugo-theme-ruri"
+demosite = "https://www.guzhengsvt.cn/"
+min_version = "0.162.1"
+tags = ["blog", "minimal", "responsive", "multilingual", "dark"]
+features = ["search", "rss", "heatmap", "music", "toc"]
+[author]
+name = "GuZhengSVT"
+homepage = "https://www.guzhengsvt.cn/"

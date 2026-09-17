@@ -1,0 +1,1 @@
+{{- $cover := .Params.cover -}}{{- if eq $cover false -}}{{- $cover = "" -}}{{- else -}}{{- if not $cover -}}{{- $cover = .Site.Params.cover | default .Site.Params.banner -}}{{- end -}}{{- if eq $cover true -}}{{- $cover = .Site.Params.banner -}}{{- end -}}{{- end -}}{{- return $cover -}}

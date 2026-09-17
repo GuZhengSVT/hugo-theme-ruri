@@ -1,0 +1,11 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
+const source=fs.readFileSync(path.join(__dirname,'../assets/ruri.js'),'utf8');
+const start=source.indexOf('function parseMusicLrc('),end=source.indexOf('async function loadLyrics(',start);
+const ctx=vm.createContext({});vm.runInContext(source.slice(start,end),ctx);
+const parse=text=>JSON.parse(JSON.stringify(ctx.parseMusicLrc(text)));
+assert.deepEqual(parse('[offset:500]\n[00:01.00]Hello'),[{time:1.5,text:'Hello'}]);
+const lines=ctx.combineMusicLyrics(ctx.parseMusicLrc('[00:01]Hello\n[00:01]你好\n[00:03]World'));
+assert.equal(lines.length,2);assert.equal(lines[0].translation,'你好');
+const translated=ctx.combineMusicLyrics(ctx.parseMusicLrc('[00:01]Hello'),ctx.parseMusicLrc('[00:01.1]你好'));
+assert.equal(translated[0].translation,'你好');assert.equal(parse('no timed lyric').length,0);
+console.log('PASS timed lyrics, offsets, same-time translation, separate translation');

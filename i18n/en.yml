@@ -1,0 +1,153 @@
+categories: Categories
+search: Search
+tags: Tags
+tagcloud: Tag Cloud
+tweets: Tweets
+prev: Prev
+next: Next
+comment: Comments
+reading: Readings
+archive_a: Archives
+archive_b: "Archives: {{ . -}}"
+page: "Page {{ . -}}"
+recent_posts: Recent Posts
+newer: Prev
+older: Next
+share: Share
+powered_by: Powered by
+rss_feed: RSS Feed
+category: Category
+tag: Tag
+toc: Contents
+more: More
+
+home: Home
+about: About
+friend: Friend
+archives: Archives
+
+sidebar:
+  post: Posts
+  category: Categories
+  tag: Tags
+
+not_found:
+  title: 4 0 4 (ﾟ⊿ﾟ)ﾂ
+  subtitle: NOT FOUND
+
+post:
+  count:
+    one: "{{- . }} word"
+    other: "{{- . }} words"
+  time:
+    one: "{{- . }} min"
+    other: "{{- . }} mins"
+
+busuanzi:
+  pv: Number of visits
+  uv: Number of visitors
+
+sticky: Sticky
+
+service_worker:
+  title: New version found
+  content: The website seems to have new content, do you want to update?
+  confirm: Update
+  cancel: Cancel
+
+sponsor: Sponsor
+
+home_categories:
+  count: 
+    one: "{{- . }} post"
+    other: "{{- . }} posts"
+
+article_copyright:
+  author: "Author: "
+  permalink: "Permalink: "
+  title: "Title: "
+  date: "Published: "
+  updated: "Updated: "
+  license: "License: "
+  license_content: "All articles on this blog are licensed under the {{ . }} license agreement unless otherwise stated. Please indicate the source when reprinting!"
+
+multi_language:
+  not_found: This article does not have a corresponding language version
+
+rss:
+  author: "Author: {{ .name }}({{ .email }})"
+  date: Published on {{ .pubDate }} at {{ .content }}, last modified on {{ .lastmod }}
+
+algolia:
+  input_placeholder: "Search....."
+  hits_empty: "No results found for 「${query}」"
+  hits_stats: "Found ${hits} results (in ${time} ms)"
+
+heat_map_card:
+  no_articles: No articles
+  words: word(s)
+  total_articles: "$1 article(s), $2 word(s)"
+# ruri interface
+ruri_heatmap_title: "Article Update Heat Map"
+ruri_comments_jump: "Jump to comments"
+ruri_player: "Music player"
+ruri_play_music: "Play music"
+ruri_pause_music: "Pause music"
+ruri_cover: "Album artwork"
+ruri_progress: "Playback position"
+ruri_prev_track: "Previous track"
+ruri_next_track: "Next track"
+ruri_play: "Play"
+ruri_pause: "Pause"
+ruri_order: "Change playback order"
+ruri_lyrics: "Toggle lyrics"
+ruri_volume_settings: "Volume settings"
+ruri_volume: "Volume"
+ruri_list_toggle: "Toggle playlist"
+ruri_mute: "Mute"
+ruri_unmute: "Unmute"
+ruri_playlist: "Playlist"
+ruri_playlist_title: "Playlist"
+ruri_list_close: "Close playlist"
+ruri_choose_track: "Choose a track"
+ruri_current_lyrics: "Current lyrics"
+ruri_latest: "Latest"
+ruri_random: "Random"
+ruri_popular: "Popular"
+ruri_recommendations: "Recommended posts"
+ruri_copied: "Copied"
+ruri_sequence: "Sequential"
+ruri_single: "Repeat one"
+ruri_shuffle: "Shuffle"
+ruri_order_hint: " — click to change"
+ruri_play_error: "Playback failed. Retry or choose another track."
+ruri_audio_error: "Audio unavailable. Choose another track."
+ruri_tracks: " tracks"
+ruri_comments_loading: "Loading comments…"
+ruri_comments_error: "Comments unavailable. Click to retry."
+ruri_views_loading: "Loading view counts…"
+ruri_views_sort: "Sorted by Waline views"
+ruri_views_empty: "No view counts yet"
+ruri_views_error: "View counts unavailable. Click to retry."
+ruri_theme: "Toggle color theme"
+ruri_language: "Change language"
+ruri_top: "Back to top"
+ruri_words: "words"
+ruri_minutes: "min read"
+
+ruri_searching: "Searching…"
+ruri_results: "results"
+ruri_retry: "Unable to load. Please retry."
+ruri_copy_link: "Copy link"
+ruri_close: "Close"
+ruri_skip: "Skip to content"
+
+ruri_heat_details: "Writing details"
+ruri_no_writing: "No writing"
+ruri_less: "Less"
+ruri_more: "More"
+ruri_level: "Level"
+ruri_posts_unit: "posts"
+ruri_mon: "Mon"
+ruri_wed: "Wed"
+ruri_fri: "Fri"

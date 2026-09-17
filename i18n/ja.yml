@@ -1,0 +1,153 @@
+categories: カテゴリー
+search: 検索
+tags: タグ
+tagcloud: タグクラウド
+tweets: ツイート
+prev: 戻る
+next: 次へ
+comment: コメント
+reading: 閲覧数
+archive_a: アーカイブ
+archive_b: "アーカイブ: {{ . -}}"
+page: ページ {{ . -}}
+recent_posts: 最近の投稿
+newer: 前の記事
+older: 次の記事
+share: 共有
+powered_by: Powered by
+rss_feed: RSS フィード
+category: カテゴリー
+tag: タグ
+toc: 見出し
+more: もっと見る
+
+home: ホーム
+about: プロフィール
+friend: フレンド
+archives: アーカイブ
+
+not_found:
+  title: 4 0 4 (ﾟ⊿ﾟ)ﾂ
+  subtitle: 満 身 創 痍
+
+sidebar:
+  post: 投稿
+  category: カテゴリー
+  tag: タグ
+
+post:
+  count:
+    one: "{{ . -}} 文字"
+    other: "{{ . -}} 文字"
+  time:
+    one: "{{ . -}} 分"
+    other: "{{ . -}} 分"
+
+busuanzi:
+  pv: 総閲覧数
+  uv: 総閲覧者数
+
+sticky: 固定
+
+service_worker:
+  title: 新しいバージョンが見つかりました
+  content: ウェブサイトに新しいコンテンツがあるようです。更新しますか？
+  confirm: 更新
+  cancel: キャンセル
+
+sponsor: スポンサー
+
+home_categories:
+  count:
+    one: "{{ . -}} 件の記事"
+    other: "{{ . -}} 件の記事"
+
+article_copyright:
+  author: "著者: "
+  permalink: "パーマリンク: "
+  title: "タイトル: "
+  date: "公開日: "
+  updated: "更新日: "
+  license: "ライセンス: "
+  license_content: 本ブログのすべての文書は、特に指定されていない限り、{{ . -}} ライセンスに従っています。引用の際は出典を明記してください！
+
+multi_language:
+  not_found: 本文書は対応する言語バージョンが見つかりません
+
+rss:
+  author: "著者: {{ .name }}({{ .email }})"
+  date: この記事は{{ .pubDate }}に{{ .content }}で公開され、最終更新日は{{ .lastmod }}です
+  
+algolia:
+  input_placeholder: "検索....."
+  hits_empty: "「${query}」に関連するコンテンツは見つかりませんでした"
+  hits_stats: "${hits} 件の結果が見つかりました（${time} ミリ秒）"
+
+heat_map_card:
+  no_articles: 記事がありません
+  words: 文字
+  total_articles: "$1 記事, $2 文字"
+# ruri interface
+ruri_heatmap_title: "記事更新ヒートマップ"
+ruri_comments_jump: "コメントへ"
+ruri_player: "音楽プレーヤー"
+ruri_play_music: "音楽を再生"
+ruri_pause_music: "音楽を一時停止"
+ruri_cover: "アルバムアート"
+ruri_progress: "再生位置"
+ruri_prev_track: "前の曲"
+ruri_next_track: "次の曲"
+ruri_play: "再生"
+ruri_pause: "一時停止"
+ruri_order: "再生順を変更"
+ruri_lyrics: "歌詞の表示切替"
+ruri_volume_settings: "音量設定"
+ruri_volume: "音量"
+ruri_list_toggle: "プレイリストの表示切替"
+ruri_mute: "ミュート"
+ruri_unmute: "ミュート解除"
+ruri_playlist: "プレイリスト"
+ruri_playlist_title: "プレイリスト"
+ruri_list_close: "プレイリストを閉じる"
+ruri_choose_track: "曲を選択"
+ruri_current_lyrics: "現在の歌詞"
+ruri_latest: "最新の記事"
+ruri_random: "ランダム"
+ruri_popular: "人気の記事"
+ruri_recommendations: "おすすめ記事"
+ruri_copied: "コピーしました"
+ruri_sequence: "順番"
+ruri_single: "1曲リピート"
+ruri_shuffle: "シャッフル"
+ruri_order_hint: " — クリックして変更"
+ruri_play_error: "再生できません。再試行または別の曲を選択してください。"
+ruri_audio_error: "音声を利用できません。別の曲を選択してください。"
+ruri_tracks: " 曲"
+ruri_comments_loading: "コメントを読み込み中…"
+ruri_comments_error: "コメントを読み込めません。クリックして再試行。"
+ruri_views_loading: "閲覧数を読み込み中…"
+ruri_views_sort: "Walineの閲覧数順"
+ruri_views_empty: "閲覧数データがありません"
+ruri_views_error: "閲覧数を取得できません。クリックして再試行。"
+ruri_theme: "テーマを切り替え"
+ruri_language: "言語を切り替え"
+ruri_top: "トップへ"
+ruri_words: "文字"
+ruri_minutes: "分で読めます"
+
+ruri_searching: "検索中…"
+ruri_results: "件の結果"
+ruri_retry: "読み込めません。再試行してください。"
+ruri_copy_link: "リンクをコピー"
+ruri_close: "閉じる"
+ruri_skip: "本文へ移動"
+
+ruri_heat_details: "記事更新の詳細"
+ruri_no_writing: "更新なし"
+ruri_less: "少ない"
+ruri_more: "多い"
+ruri_level: "レベル"
+ruri_posts_unit: "記事"
+ruri_mon: "月"
+ruri_wed: "水"
+ruri_fri: "金"
