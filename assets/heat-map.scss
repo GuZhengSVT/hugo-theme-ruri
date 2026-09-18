@@ -4,19 +4,19 @@
   justify-content: center;
   margin: 12px 0;
 
-  --heat-level-0: color-mix(in srgb, var(--red-0) 10%, white);
-  --heat-level-1: color-mix(in srgb, var(--red-0) 40%, white);
-  --heat-level-2: color-mix(in srgb, var(--red-0) 80%, white);
-  --heat-level-3: var(--red-0);
-  --heat-level-4: color-mix(in srgb, var(--red-0) 80%, black);
+  --heat-level-0: color-mix(in srgb, var(--accent) 10%, white);
+  --heat-level-1: color-mix(in srgb, var(--accent) 40%, white);
+  --heat-level-2: color-mix(in srgb, var(--accent) 80%, white);
+  --heat-level-3: var(--accent);
+  --heat-level-4: color-mix(in srgb, var(--accent) 80%, black);
 }
 
 [data-theme="dark"] .outer-box {
   --heat-level-0: #161b22;
-  --heat-level-1: color-mix(in srgb, var(--red-0) 30%, transparent);
-  --heat-level-2: color-mix(in srgb, var(--red-0) 50%, transparent);
-  --heat-level-3: color-mix(in srgb, var(--red-0) 70%, transparent);
-  --heat-level-4: var(--red-0);
+  --heat-level-1: color-mix(in srgb, var(--accent) 30%, transparent);
+  --heat-level-2: color-mix(in srgb, var(--accent) 50%, transparent);
+  --heat-level-3: color-mix(in srgb, var(--accent) 70%, transparent);
+  --heat-level-4: var(--accent);
 }
 
 .calendar-container {
@@ -28,7 +28,7 @@
   width: fit-content;
   font-size: 12px;
   padding: 12px;
-  border: solid 1px var(--color-border);
+  border: solid 1px var(--line);
   border-radius: 8px;
 }
 
@@ -72,12 +72,11 @@
   width: 10px;
   height: 10px;
   border-radius: 2px;
-  outline: 1px solid color-mix(in srgb, var(--red-2) 10%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--accent) 10%, transparent);
   outline-offset: -1px;
 }
 .tile[data-level="0"] {
   background: var(--heat-level-0);
-  // outline: none;
 }
 .tile[data-level="1"] {
   background: var(--heat-level-1);
@@ -93,7 +92,7 @@
 }
 
 i.tile:hover {
-  outline: 1px solid var(--red-2);
+  outline: 1px solid var(--accent);
 }
 
 $line-height: 1.8em;
@@ -102,13 +101,14 @@ $line-height: 1.8em;
   position: fixed;
   z-index: 1000;
   padding: 8px;
-  background-color: var(--color-background);
+  background-color: var(--paper);
   border-radius: 8px;
-  border: solid 1px var(--color-border);
-  box-shadow: var(--shadow-meta);
+  border: solid 1px var(--line);
   font-size: 12px;
-  color: var(--color-default);
+  color: var(--ink);
   max-width: 250px;
+  max-height: 75vh;
+  overflow: auto;
   display: none; /* Initially hidden */
 
   ul {
@@ -123,13 +123,13 @@ $line-height: 1.8em;
     &:hover {
       &::marker {
         transition: color 0.2s;
-        color: var(--red-1);
+        color: var(--accent);
       }
     }
   }
 
   a {
-    color: var(--color-link);
+    color: var(--accent);
     text-decoration: none;
     word-break: break-word;
 
@@ -146,15 +146,15 @@ $line-height: 1.8em;
     .tooltip-header-content {
       font-weight: bold;
       font-size: 16px;
-      color: var(--color-default);
+      color: var(--ink);
     }
 
     .tooltip-close {
       padding: 0 0 0 8px;
-      color: var(--color-link);
+      color: var(--accent);
       font-weight: bold;
       font-size: 12px;
-      cursor: var(--cursor-pointer);
+      cursor: pointer;
     }
   }
 
@@ -206,7 +206,7 @@ $line-height: 1.8em;
 .year-option {
   padding: 4px 20px;
   border-radius: 8px;
-  cursor: var(--cursor-pointer) !important;
+  cursor: pointer !important;
 }
 
 .year-option:hover {

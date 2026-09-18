@@ -6,7 +6,8 @@
 baseURL = "https://example.org/"
 # 站点标题。 / Site title.
 title = "Ruri Journal"
-# 安装到 themes/ruri，无需 Reimu。 / Install into themes/ruri; Reimu is not required.
+# Submodule 安装到 themes/ruri；Module 用户删除此项并添加 module.imports。
+# Submodule: install into themes/ruri. Module: remove this setting and add module.imports.
 theme = "ruri"
 # 默认语言。 / Default language.
 defaultContentLanguage = "en"
@@ -64,8 +65,8 @@ endLevel = 6
 ordered = false
 
 [outputs]
-# 页面、RSS、搜索索引，保留 JSON。 / Pages, RSS and search index; keep JSON.
-home = ["HTML", "RSS", "JSON"]
+# 页面与 RSS；搜索索引由 Pagefind 生成。 / HTML and RSS; Pagefind builds the search index.
+home = ["HTML", "RSS"]
 [markup.highlight]
 # 保持 false，让 CSS 适配深浅色代码块。 / Keep false for theme-aware syntax highlighting.
 noClasses = false

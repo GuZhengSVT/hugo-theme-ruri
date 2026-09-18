@@ -1,124 +1,186 @@
-# ruri
+<div align="center">
 
-**[简体中文](README.md) · [English](README.en.md)**
+# hugo-theme-ruri
 
-[![Hugo](https://img.shields.io/badge/Hugo_Extended-%E2%89%A5_0.162.1-ff4088?logo=hugo)](https://gohugo.io/)
-![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-f7df1e?logo=javascript&logoColor=black)
-![CSS](https://img.shields.io/badge/Style-CSS_%2B_SCSS-1572b6)
-![Templates](https://img.shields.io/badge/Templates-Go-00add8?logo=go&logoColor=white)
-[![MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+**极简、平面、轻量的 Hugo 个人博客主题**
+
+[![Hugo Extended](https://img.shields.io/badge/Hugo_Extended-%E2%89%A5_0.162.1-ff4088?logo=hugo)](https://gohugo.io/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 ![Status](https://img.shields.io/badge/Status-Release_Candidate-orange)
 
-**极简、平面、轻量的 Hugo 个人博客主题。**
+[作者博客](https://www.guzhengsvt.cn/) · [通用示例](exampleSite) · [变更记录](CHANGELOG.md) · [反馈问题](https://github.com/GuZhengSVT/hugo-theme-ruri/issues)
 
-[作者博客 / 实际使用站点](https://www.guzhengsvt.cn/) · [通用示例](exampleSite) · [反馈问题](https://github.com/GuZhengSVT/hugo-theme-ruri/issues) · [Reimu 原主题](https://github.com/D-Sketon/hugo-theme-reimu)
+简体中文 | [English](README.en.md)
 
-喜欢 ruri？欢迎 Star，也欢迎前往作者博客交流。作者博客展示的是个人配置，内容与外部服务不包含在本仓库中。
+</div>
 
-> 当前为公开候选版，尚未宣布稳定版。构建和部分浏览器交互已验证；完整视觉、跨浏览器和真实音源验收仍有待完成，详见 [QA_REPORT.md](QA_REPORT.md)。
+Ruri 从 [hugo-theme-reimu](https://github.com/D-Sketon/hugo-theme-reimu) 改造而来，保留博客常用能力，重新设计页面布局、浮动播放器与站内导航。作者博客使用个人配置；文章、图片、歌单和服务不包含在主题仓库中。
 
-## 特性与技术栈
+> 当前为公开候选版。构建与部分交互已验证，完整视觉、跨浏览器和真实音源验收情况见 [QA_REPORT.md](QA_REPORT.md)。
 
-- Hugo Go Templates + 原生 JavaScript + CSS / 少量 SCSS，无前端框架、无 npm 构建要求。
-- 响应式平面布局、深浅色模式、文章封面、分类和标签。
-- 年份时间树归档、Reimu 风格写作热力图、搜索与 RSS。
-- 可折叠文章目录、友链短代码、可选 Waline 评论、KaTeX 与 Mermaid。
-- 浮动音乐播放器：封面控制、歌单、进度和音量、播放顺序、原文/译文歌词。
-- 站内局部导航保留播放器实例；刷新、新标签页不共享播放状态。
-- 简体中文、繁体中文、英文、日文界面和四语言示例。基础阅读不依赖 JavaScript。
+## 特性
+
+| 分类 | 功能 |
+| --- | --- |
+| 页面 | 响应式布局、深浅色模式、封面、分类与标签、归档时间树、写作热力图 |
+| 阅读 | 可折叠目录、代码语言栏／复制／折叠、PhotoSwipe 图片灯箱、KaTeX、Mermaid |
+| 搜索与订阅 | 多语言 Pagefind 搜索、RSS |
+| 评论与统计 | Waline 评论、阅读数／评论数、真实阅读数据热门文章、页脚总字数／阅读时长 |
+| 社交 | 分类友链、微信分享二维码、个人二维码弹窗、打赏 |
+| 音乐 | 原生浮动播放器、直接歌单／Meting、歌词与译文、进度／音量／播放顺序 |
+| 导航与语言 | 站内局部导航保留播放器；简繁中文、英文、日文界面与四语言示例 |
+
+主题使用 Hugo 模板、原生 JavaScript、CSS 与少量 SCSS。基础阅读不依赖 JavaScript；搜索、灯箱和播放器等交互需要 JavaScript。刷新或新开标签页不共享正在播放的音频实例。
 
 ## 环境要求
 
-使用 **Hugo Extended 0.162.1 或更高版本**，目前验证版本为 0.162.1。Extended 用于编译热力图 SCSS。终端运行 `hugo version` 检查。自动测试另需 Python 3 和 Node.js；普通使用不需要 Node.js。
+- **Hugo Extended ≥ 0.162.1**：编译热力图 SCSS；通过 `hugo version` 检查。
+- **Git**：安装与更新主题。
+- **Go ≥ 1.22**：仅 Hugo Module 安装需要，同时遵循所用 Hugo 版本的 Go 要求。
+- **Node.js / npm**：使用本文的 Pagefind 索引命令需要；Hugo 本身构建主题不需要 npm。
+- 开发测试另需 Python 3.11+。当前验证的 Hugo 版本为 0.162.1。
 
 ## 安装
 
-```sh
+两种方式任选其一。以下命令从新站点开始；已有站点跳过创建步骤，并合并配置，避免重复 TOML 表。
+
+### 方式一：Hugo Module
+
+~~~sh
+hugo new site my-blog
+cd my-blog
+git init
+hugo mod init example.org/my-blog
+~~~
+
+将 `example.org/my-blog` 替换为你自己的站点模块名。在站点 `hugo.toml` 中添加：
+
+~~~toml
+[module]
+  [[module.imports]]
+    path = "github.com/GuZhengSVT/hugo-theme-ruri"
+~~~
+
+~~~sh
+hugo mod get github.com/GuZhengSVT/hugo-theme-ruri@main
+hugo server --disableFastRender
+~~~
+
+此方式无需 `themes/ruri` 目录，也无需 `theme = "ruri"`。将站点的 `go.mod` 和生成的 `go.sum` 提交到自己的仓库；CI 中同样需要安装 Go。主题版本由站点模块文件锁定。
+
+### 方式二：Git submodule
+
+~~~sh
 hugo new site my-blog
 cd my-blog
 git init
 git submodule add https://github.com/GuZhengSVT/hugo-theme-ruri.git themes/ruri
-```
+~~~
 
-也可下载本仓库并解压到站点的 `themes/ruri`。安装目录名称应为 `ruri`，与配置一致。
+在站点 `hugo.toml` 顶层添加（放在任何 `[表]` 之前）：
 
-### 方式一：运行完整示例
+~~~toml
+theme = "ruri"
+~~~
 
-仅在新建的空站点执行：
-
-
-```sh
-cp -R themes/ruri/exampleSite/. .
+~~~sh
 hugo server --disableFastRender
-```
+~~~
 
-完整配置推荐使用下方两个带中英文注释的文件：将 exampleSite/config/_default/ 中的 hugo.toml 和 params.yaml 复制到个人博客的 config/_default/。主题开发仓库仅维护通用示例，不保存个人配置；不要将个人歌单、统计 ID 或评论服务提交到主题仓库。已有根目录配置请先合并，避免重复。下方单文件片段仅为最小用法。
+提交站点时一并提交 `.gitmodules` 和主题子模块指针。其他机器或 CI 克隆已有站点时使用：
 
-### 方式二：配置自己的站点
+~~~sh
+git clone --recurse-submodules <你的站点仓库地址>
+# 如果已经克隆：
+git submodule update --init --recursive
+~~~
 
-将下列配置写入站点根目录的 `hugo.toml`；已有配置请合并，不要重复声明 TOML 表。
+## 快速开始
 
-```toml
+### 最小配置与第一篇文章
+
+保留所选安装方式的配置，将下面设置合并到站点 `hugo.toml`。顶层键放在所有 TOML 表之前：
+
+~~~toml
 baseURL = "https://example.org/"
 title = "My Journal"
-theme = "ruri"
+defaultContentLanguage = "zh-cn"
+hasCJKLanguage = true
+
 [outputs]
-home = ["HTML", "RSS", "JSON"]
+home = ["HTML", "RSS"]
 [markup.highlight]
 noClasses = false
 [params]
-mainSections = ["posts"]
 author = "Your Name"
-description = "A personal journal"
-```
+mainSections = ["posts"]
+description = "Notes, ideas, and everyday life."
+~~~
 
-创建文章并预览：
-
-```sh
+~~~sh
 hugo new content posts/hello.md
 hugo server -D --disableFastRender
-```
+~~~
 
-预览后设置文章 `draft: false`，再执行 `hugo --minify`，产物在 `public/`。部署时把 baseURL 改为真实地址（含部署子路径）。
+编辑生成的文章；正式发布前设置 `draft: false`，并把 `baseURL` 改为正式网址，包含部署子路径和结尾 `/`。
 
-## 使用与个性化
+### 完整配置与四语言示例
 
-### 首页、导航与图片
+[exampleSite/config/_default/hugo.toml](exampleSite/config/_default/hugo.toml) 提供 Hugo 配置，[params.yaml](exampleSite/config/_default/params.yaml) 提供带中英文注释的主题参数全集。主题参数可放入站点 `config/_default/params.yaml`，**不加 `params:` 外层**；请将已有 `[params]` 设置迁移或合并，避免重复维护。
 
-```toml
-[params.ruri]
-brandMark = "r."
-tagline = "Per aspera ad astra."
-homeEyebrow = "NOTE, TECH & POEM"
-homeHeading = ["A quiet place", "for your words."]
-homeSource = "Optional attribution"
-caption = "Image caption"
-captionTranslation = "Optional translation"
-footerText = "Made with care."
-favicon = "favicon.svg"
+Submodule 用户可在新建空站点中执行以下命令运行完整示例；先移除或合并 `hugo new site` 生成的根配置，避免同一设置存在两处：
 
-[[params.menu]]
-name = "home"
-url = "/"
-[[params.menu]]
-name = "archives"
-url = "/archives/"
-[[params.menu]]
-name = "about"
-url = "/about/"
-```
+~~~sh
+cp -R themes/ruri/exampleSite/. .
+hugo server --disableFastRender
+~~~
 
-在已有 `[params]` 表内添加 `banner = "images/banner.webp"`（对应 static/images/banner.webp）及 `avatar = "avatar.webp"`（对应 static/avatar/avatar.webp）。不配置时不显示相应图片。文章 front matter 的 `cover` 可设置图片路径或 URL，详情页按原比例显示，设为 false 则关闭。
+Module 用户可单独克隆本仓库获取 `exampleSite`，复制其中的 `content`、`data` 和 `config` 到空站点；删除示例配置中的 `theme = "ruri"`，保留自己的 `[module]` 导入与站点模块文件。四语言内容需要配套的 `[languages]` 配置。已有博客请按需合并，不要整目录覆盖自己的内容。
 
-### 归档与独立页面
+## 使用
 
-创建 `content/archives/_index.md` 并设置 title 即可启用归档。归档含热力图、分类和可折叠标签；年份渐进显示使用已生成的 HTML，不是逐年请求服务器，无 JS 时显示所有年份。
+<details>
+<summary>首页、导航与图片</summary>
 
-关于、友链、碎碎念可通过 front matter 控制布局，不依赖目录命名。例如 `content/about/index.md`：
+以下 YAML 示例均写入 `config/_default/params.yaml`：
 
-```yaml
+~~~yaml
+banner: images/banner.webp
+avatar: avatar.webp
+ruri:
+  brandMark: "r."
+  tagline: Per aspera ad astra.
+  homeEyebrow: NOTE, TECH & POEM
+  homeHeading: [A quiet place, for your words.]
+  footerText: Made with care.
+menu:
+  - name: home
+    url: /
+  - name: archives
+    url: /archives/
+  - name: friend
+    url: /friend/
+  - name: moments
+    url: /moments/
+~~~
+
+`banner` 对应 `static/images/banner.webp`；`avatar` 对应 `static/avatar/avatar.webp`。不配置时不显示对应图片。文章 `cover` 可指定图片路径／URL，`false` 关闭。添加导航后需要创建对应页面。
+
+</details>
+
+<details>
+<summary>归档、关于、友链与说说</summary>
+
+- 归档：创建 `content/archives/_index.md`，front matter 设置 `title: 归档`。自动显示时间树、热力图及分类标签。
+- 关于：创建 `content/about/index.md`，写入个人介绍。
+- 友链：创建 `content/friend/index.md`，使用下面的短代码。
+- 说说：创建 `content/moments/index.md`，设置 `comments: true` 并启用 Waline。说说内容由 Waline 评论区承载。**通用演示不配置 Waline 服务，应显示说明文字；接入自己的服务后才能使用。**
+
+独立页面可使用这些布局字段：
+
+~~~yaml
 ---
-title: About
+title: 关于
 compact: true
 sidebar: false
 contentWidth: narrow
@@ -128,70 +190,184 @@ toc: false
 sponsor: false
 copyright: false
 ---
-Your biography goes here.
-```
+这里写页面正文。
+~~~
 
-compact 缩小标题空白；sidebar:false 隐藏侧栏；contentWidth:narrow 收窄内容；其余字段分别控制封面、评论、目录、打赏和版权区。普通文章无需设置这些字段。
+友链分类仍分别读取 `data/friends1.yml` 至 `data/friends4.yml`；共享渲染模板不会合并数据或改变分类。每份数据使用数组：
 
-### 音乐与评论（可选）
+~~~yaml
+- name: Example
+  url: https://example.org/
+  desc: A friend's blog
+  image: images/friend.webp
+~~~
 
-```toml
-[params.player]
-enable = true
-audio = [{name="Song", artist="Artist", url="https://example.org/song.mp3", cover="https://example.org/cover.jpg", lrc="https://example.org/song.lrc"}]
+在页面中按需要排列分类标题和短代码：
 
-[params.waline]
-enable = true
-serverURL = "https://your-waline.example.org"
-```
+~~~text
+## 博客
+{{< friendsLink1 >}}
+## 工具
+{{< friendsLink2 >}}
+~~~
 
-上述 URL 是占位符，需要替换。无音乐配置不请求歌单；不自动播放。设置 params.player.enable=false 可关闭。
+另外两组使用 `friendsLink3`、`friendsLink4`；本地图片放在 `static/images/`。
 
-Meting 模式：配置 params.player.meting.meting_api 为包含 :server、:type、:id 占位符的接口 URL，并设置 params.player.meting.options 的 server、type、id。音频使用 HTTPS；歌词支持 LRC、相同时间戳译文及 tlyric。跨域/CORS、音源版权和服务可用性由站点维护者负责。
+</details>
 
-Waline 默认在启用评论的页面加载，并适配深浅色。热门文章需要真实 Waline 阅读数据，不会伪造排行榜。第三方 CDN、音频或评论服务可能需要额外网络/CSP 配置。文章开启 math:true / mermaid:true 后分别加载 KaTeX / Mermaid。
+<details>
+<summary>代码、图片、公式与图表</summary>
 
-### 多语言、升级与迁移
+带语言标记的 Markdown 代码块自动显示语言栏和复制／折叠按钮；保持 `markup.highlight.noClasses = false` 以适配深浅色。正文图片支持本地 PhotoSwipe 灯箱。
 
-四语言完整配置见 [hugo.toml](exampleSite/config/_default/hugo.toml) + [params.yaml](exampleSite/config/_default/params.yaml)，内容采用 hello.en.md / hello.zh-cn.md 等命名。主题界面翻译位于 i18n/，可在自己的站点覆盖。
+KaTeX 需要在主题参数中设置 `math.katex.enable: true`、文章 front matter 设置 `math: true`，并启用 Hugo Goldmark 的公式透传。完整透传配置见示例 `hugo.toml`。Mermaid 代码块会自动加载图表脚本，也可设置文章 `mermaid: true`。KaTeX 和 Mermaid 使用 CDN 资源。
 
-子模块更新：
+</details>
 
-```sh
+<details>
+<summary>Waline、文章统计与页脚统计</summary>
+
+~~~yaml
+waline:
+  enable: true
+  serverURL: https://your-waline.example.org
+  pageview: true
+footer:
+  powered: true
+  count: true
+~~~
+
+替换占位地址为自己的 Waline 服务。文章 `comments: false` 可关闭评论区。阅读数、评论数和热门文章需要真实服务数据；页脚字数与阅读时长由 Hugo 根据当前语言文章计算，不依赖 Waline。其他 Waline 选项见参数全集。
+
+</details>
+
+<details>
+<summary>文章版权优先级</summary>
+
+站点参数提供默认值：
+
+~~~yaml
+article_copyright:
+  enable: true
+  content:
+    author: true
+    title: true
+    link: true
+    date: true
+    updated: true
+    license: true
+    license_type: by-nc-sa
+~~~
+
+文章 front matter 的 `author`、`license`／`license_type` 以及 `article_copyright` 配置优先；缺失字段回退到站点参数。例如：
+
+~~~yaml
+author: Another Author
+license: by-sa
+article_copyright:
+  content:
+    updated: false
+~~~
+
+`copyright: false` 或 `article_copyright.enable: false` 关闭整块版权信息；`article_copyright.content` 中的字段可用 `false` 单独关闭。
+
+</details>
+
+<details>
+<summary>微信分享、个人二维码与打赏</summary>
+
+~~~yaml
+share: [weixin, twitter]
+social:
+  - name: weixin
+    url: images/wechat-qr.webp
+  - name: qq
+    url: images/qq-qr.webp
+sponsor:
+  enable: true
+  qr:
+    - name: Donate
+      src: images/donate.webp
+~~~
+
+微信分享生成当前文章地址的二维码；个人二维码读取你放在 `static/images/` 中的图片，通过侧栏链接弹窗显示。文章 `sponsor: false` 可隐藏打赏。
+
+</details>
+
+<details>
+<summary>音乐播放器</summary>
+
+~~~yaml
+player:
+  enable: true
+  audio:
+    - name: Example track
+      artist: Example artist
+      url: https://example.org/audio/song.mp3
+      cover: https://example.org/images/cover.webp
+      lrc: https://example.org/audio/song.lrc
+      tlyric: https://example.org/audio/song-translated.lrc
+~~~
+
+所有 URL 均为占位符。直接歌单优先于 Meting；不配置有效歌单时不请求音源，不自动播放。歌词支持 LRC 与译文。Meting 的 `player.meting.meting_api` 和 `player.meting.options` 用法见参数全集；接口需支持对应的服务与资源类型。
+
+站内局部导航保留播放实例；音源可用性及跨域权限由音频服务决定。播放顺序、音量和歌词显示通过播放器按钮及本地存储管理。
+
+</details>
+
+## 构建、搜索与部署
+
+~~~sh
+hugo --minify
+npx -y pagefind@1.4.0 --site public --glob '**/*.html'
+~~~
+
+按此顺序执行，然后部署整个 `public/`，包括 `public/pagefind/`。Pagefind 基于构建后的 HTML 索引，不使用旧的 `index.json`。`hugo server` 不自动生成索引；检验搜索时可预览完整产物：
+
+~~~sh
+python3 -m http.server 8080 --directory public
+~~~
+
+打开 `http://localhost:8080/`。如正式站点部署在子路径，应使用匹配的本地路径或为本地预览单独指定 `baseURL` 后重新构建及索引。
+
+## 更新与迁移
+
+Hugo Module：
+
+~~~sh
+hugo mod get github.com/GuZhengSVT/hugo-theme-ruri@main
+hugo mod tidy
+~~~
+
+将变更后的站点模块文件提交到自己的仓库。
+
+Git submodule：
+
+~~~sh
 git submodule update --remote themes/ruri
-```
+git add themes/ruri
+git commit -m "chore: update ruri theme"
+~~~
 
-请先备份并阅读变更记录。Reimu 用户应逐项迁移并测试；本主题借鉴 Reimu，但不是全配置、全插件兼容的替代品。修改主题资源后完整刷新浏览器，避免局部导航沿用旧资源。
+更新前阅读 [CHANGELOG.md](CHANGELOG.md)。个人配置、内容与覆盖模板应保存在站点仓库。Reimu 用户请逐项迁移：Ruri 不支持 Reimu 的所有配置和插件，已删除的旧字段见 [参数文件末尾](exampleSite/config/_default/params.yaml)。主题资源变动后完整刷新浏览器。
 
 ## 开发与测试
 
-从主题仓库根目录执行：
+在主题仓库根目录运行：
 
-```sh
+~~~sh
 python3 tests/smoke.py
+python3 tests/module-build.py
+python3 tests/features-build.py
 node --check assets/ruri.js
+node --check assets/features.js
 node tests/lyrics.cjs
-```
+~~~
 
-构建测试覆盖最小站点、四语言示例、子目录部署、站内链接与搜索输出。歌词测试覆盖时间偏移和译文组合。它们不保证第三方服务可用，也不替代完整视觉验收。更多见 [验收报告](QA_REPORT.md)、[发布清单](RELEASE_CHECKLIST.md) 和 [变更记录](CHANGELOG.md)。
+覆盖最小站点、四语言示例、子路径、Module 导入、站内链接、版权优先级与歌词处理；不替代第三方服务或完整视觉验收。参见 [QA_REPORT.md](QA_REPORT.md) 与 [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)。
 
-## 致谢与 Reimu 借鉴说明
+## 致谢与许可
 
-特别感谢 **[D-Sketon / hugo-theme-reimu](https://github.com/D-Sketon/hugo-theme-reimu)**。ruri 并非完全从零实现：
+感谢 [D-Sketon / hugo-theme-reimu](https://github.com/D-Sketon/hugo-theme-reimu)。写作热力图、部分翻译、渲染 hooks、短代码、RSS 和分享等实现继承或参考 Reimu；布局、播放器与导航为 Ruri 改造。Ruri 是独立主题，不代表 Reimu 官方。
 
-- 写作热力图的逻辑及 SCSS 基于 Reimu，调整了布局适配、配色、归档集成与部分交互。
-- 部分多语言翻译、Markdown 渲染 hooks、短代码、RSS、分享 helper 与统计集成继承或参考 Reimu 及原站实现。
-- ruri 的极简页面布局、卡片、浮动播放器、局部导航等围绕本主题需求重新实现或改造。
-
-完整保留 [Reimu MIT 许可与原作者署名](LICENSE.reimu)。本项目是独立主题，不代表 Reimu 官方，也不暗示原作者为其背书。
-
-## 开源协议与内容边界
-
-主题代码使用 **[MIT License](LICENSE)**，允许使用、修改和再分发，须保留相应版权和许可声明；软件按原样提供，不作担保。继承部分同时保留 LICENSE.reimu。
-
-仓库仅包含主题和通用示例，不包含作者个人文章、壁纸、头像、真实歌单或友链数据。第三方图片、音乐、文章与服务不因使用本主题而获得 MIT 授权，请自行取得使用权。
-
-### 阅读增强与搜索构建
-
-支持代码语言栏/复制/折叠、本地 PhotoSwipe、微信分享和个人二维码弹窗，以及站内切换后初始化。构建后执行 npx -y pagefind@1.4.0 --site public --glob '**/*.html' 生成搜索索引，搜索不再读取 JSON。
-文章 author、license/license_type 和 article_copyright 优先于站点默认版权，显式 false 可关闭字段或整个版权区。
+代码采用 [MIT License](LICENSE)，继承代码保留 [Reimu 原作者许可](LICENSE.reimu)，第三方资源保留各自许可。个人文章、图片、音乐、友链数据和第三方服务不包含在主题授权范围内。

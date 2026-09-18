@@ -1,121 +1,173 @@
-# ruri
+<div align="center">
 
-**[简体中文](README.md) · [English](README.en.md)**
+# hugo-theme-ruri
 
-[![Hugo](https://img.shields.io/badge/Hugo_Extended-%E2%89%A5_0.162.1-ff4088?logo=hugo)](https://gohugo.io/)
-![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-f7df1e?logo=javascript&logoColor=black)
-![CSS](https://img.shields.io/badge/Style-CSS_%2B_SCSS-1572b6)
-![Templates](https://img.shields.io/badge/Templates-Go-00add8?logo=go&logoColor=white)
+**A minimal, flat and lightweight Hugo blog theme.**
+
+[![Hugo Extended](https://img.shields.io/badge/Hugo_Extended-%E2%89%A5_0.162.1-ff4088?logo=hugo)](https://gohugo.io/)
 [![MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-![Status](https://img.shields.io/badge/Status-Release_Candidate-orange)
 
-**A minimal, flat, lightweight Hugo theme for personal journals.**
+[Author's blog](https://www.guzhengsvt.cn/) · [Example site](exampleSite) · [Changelog](CHANGELOG.md) · [Issues](https://github.com/GuZhengSVT/hugo-theme-ruri/issues)
 
-[Author's blog / live usage](https://www.guzhengsvt.cn/) · [Example site](exampleSite) · [Issues](https://github.com/GuZhengSVT/hugo-theme-ruri/issues) · [Original Reimu theme](https://github.com/D-Sketon/hugo-theme-reimu)
+[简体中文](README.md) | English
 
-If you enjoy ruri, consider starring the project or visiting the author's blog. The live blog uses personal settings; its content and services are not included here.
+</div>
 
-> Public release candidate, not a declared stable release. Builds and selected browser interactions have been checked. Full visual, cross-browser and real-provider media acceptance remain open; see [QA_REPORT.md](QA_REPORT.md).
+Adapted from [hugo-theme-reimu](https://github.com/D-Sketon/hugo-theme-reimu), Ruri redesigns the layout, floating player and local navigation. The author's content and external services are not included.
 
-## Features and stack
+> Public release candidate. See [QA_REPORT.md](QA_REPORT.md) for verification scope and outstanding visual/browser checks.
 
-- Hugo Go Templates, vanilla JavaScript, CSS and a small SCSS component. No frontend framework or npm build step.
-- Responsive flat layouts, light/dark themes, post covers, categories and tags.
-- Yearly archive timeline, Reimu-derived writing heatmap, search and RSS.
-- Collapsible TOC, friend-link shortcodes, optional Waline, KaTeX and Mermaid.
-- Floating music player with artwork controls, playlist, seek/volume, playback modes and bilingual lyrics.
-- Same-site partial navigation retains the audio instance; refreshes/new tabs do not share playback.
-- Simplified Chinese, Traditional Chinese, English and Japanese interface/example content. Basic reading works without JavaScript.
+## Features
+
+| Area | Features |
+| --- | --- |
+| Pages | Responsive layout, light/dark mode, covers, taxonomies, archive timeline, writing heatmap |
+| Reading | Collapsible TOC, code language/copy/collapse tools, PhotoSwipe, KaTeX, Mermaid |
+| Search | Multilingual Pagefind search, RSS |
+| Comments and stats | Waline comments/views/counts, popular posts using real data, footer word/reading totals |
+| Social | Categorized friend links, WeChat share QR, personal QR dialogs, donations |
+| Music | Native player, direct playlist/Meting, lyrics/translations, progress/volume/order controls |
+| Navigation | Local navigation preserving the player; English, Simplified/Traditional Chinese and Japanese UI |
+
+Hugo templates, vanilla JavaScript, CSS and a little SCSS. Basic reading works without JavaScript; interactive features require it. Refreshing or opening a new tab does not share the playing audio instance.
 
 ## Requirements
 
-**Hugo Extended 0.162.1+**, tested with 0.162.1. Extended compiles the heatmap SCSS. Check with `hugo version`. Python 3 and Node.js are only needed for automated tests, not normal builds.
+- **Hugo Extended >= 0.162.1** (tested version: 0.162.1); Extended compiles SCSS.
+- **Git** for installation and updates.
+- **Go >= 1.22** for Module installation; also follow your Hugo release's Go requirements.
+- **Node.js/npm** for the Pagefind command below. Hugo itself needs no npm build.
+- Python 3.11+ for repository tests.
 
 ## Installation
 
-```sh
+Choose one method. Existing sites should skip site creation and merge configuration without duplicate TOML tables.
+
+### Hugo Module
+
+~~~sh
+hugo new site my-blog
+cd my-blog
+git init
+hugo mod init example.org/my-blog
+~~~
+
+Replace the site module path with your own. Add to `hugo.toml`:
+
+~~~toml
+[module]
+  [[module.imports]]
+    path = "github.com/GuZhengSVT/hugo-theme-ruri"
+~~~
+
+~~~sh
+hugo mod get github.com/GuZhengSVT/hugo-theme-ruri@main
+hugo server --disableFastRender
+~~~
+
+No `themes/ruri` directory or `theme = "ruri"` setting is needed. Commit the site's `go.mod` and generated `go.sum`. CI also needs Go. Module files pin the imported version.
+
+### Git submodule
+
+~~~sh
 hugo new site my-blog
 cd my-blog
 git init
 git submodule add https://github.com/GuZhengSVT/hugo-theme-ruri.git themes/ruri
-```
+~~~
 
-Alternatively, download this repository into your site's `themes/ruri` directory. Keep the folder name consistent with theme = "ruri".
+Add this at the top level of `hugo.toml`, before all TOML tables:
 
-### Option A: start from the complete example
+~~~toml
+theme = "ruri"
+~~~
 
-Run only in a new, empty site:
-
-```sh
-cp -R themes/ruri/exampleSite/. .
+~~~sh
 hugo server --disableFastRender
-```
+~~~
 
-For complete configuration, copy both bilingual-commented files from exampleSite/config/_default/ (hugo.toml and params.yaml) into your personal blog config/_default/. Keep personal playlists, analytics IDs and comment endpoints outside the theme repository. Merge existing root configuration to avoid duplicates. The single-file snippet below is only a minimal alternative.
+Commit `.gitmodules` and the submodule pointer. On another machine or CI:
 
-### Option B: configure your own site
+~~~sh
+git clone --recurse-submodules <your-site-repository>
+# For an existing clone:
+git submodule update --init --recursive
+~~~
 
-Put the following in your site's `hugo.toml`. Merge with existing settings; do not duplicate TOML tables.
+## Quick start
 
-```toml
+Merge into `hugo.toml` while retaining your chosen installation settings. Place top-level keys before tables:
+
+~~~toml
 baseURL = "https://example.org/"
 title = "My Journal"
-theme = "ruri"
+defaultContentLanguage = "en"
+
 [outputs]
-home = ["HTML", "RSS", "JSON"]
+home = ["HTML", "RSS"]
 [markup.highlight]
 noClasses = false
 [params]
-mainSections = ["posts"]
 author = "Your Name"
-description = "A personal journal"
-```
+mainSections = ["posts"]
+description = "Notes, ideas, and everyday life."
+~~~
 
-Create a post and preview drafts:
-
-```sh
+~~~sh
 hugo new content posts/hello.md
 hugo server -D --disableFastRender
-```
+~~~
 
-Set `draft: false` when ready, then run `hugo --minify`. Deploy the generated `public/` directory. Set baseURL to your real URL, including any deployment subpath.
+Before publishing, set `draft: false` and your real `baseURL`, including any deployment subpath and trailing slash.
 
-## Usage and customization
+### Complete example
 
-### Homepage, navigation and images
+[Example Hugo settings](exampleSite/config/_default/hugo.toml) and [theme parameters](exampleSite/config/_default/params.yaml) have bilingual comments. Put theme parameters in `config/_default/params.yaml` with **no outer `params:` key**; merge existing `[params]` settings.
 
-```toml
-[params.ruri]
-brandMark = "r."
-tagline = "Per aspera ad astra."
-homeEyebrow = "NOTE, TECH & POEM"
-homeHeading = ["A quiet place", "for your words."]
-homeSource = "Optional attribution"
-caption = "Image caption"
-captionTranslation = "Optional translation"
-footerText = "Made with care."
-favicon = "favicon.svg"
+For an empty submodule site, merge/remove the generated root config first, then:
 
-[[params.menu]]
-name = "home"
-url = "/"
-[[params.menu]]
-name = "archives"
-url = "/archives/"
-[[params.menu]]
-name = "about"
-url = "/about/"
-```
+~~~sh
+cp -R themes/ruri/exampleSite/. .
+hugo server --disableFastRender
+~~~
 
-Inside your existing [params] table, optionally set banner = "images/banner.webp" for static/images/banner.webp and avatar = "avatar.webp" for static/avatar/avatar.webp. Unconfigured images are omitted. Post front matter accepts cover as an image path/URL or false; detail-page covers retain their original aspect ratio.
+Module users can clone the theme separately to obtain `exampleSite`. Copy its `content`, `data` and `config` directories, remove `theme = "ruri"` from the example config, and retain the site's module import and module files. The four-language content requires the example language configuration. Do not overwrite an existing site's content.
 
-### Archives and standalone pages
+## Usage
 
-Create content/archives/_index.md with a title. The archive includes the heatmap, categories and collapsible tags. Older years progressively reveal already-rendered HTML; they are not fetched separately. All years are visible without JavaScript.
+<details>
+<summary>Homepage, menu and images</summary>
 
-Standalone layouts are configured explicitly, not by about/friend/moments folder names. For example, content/about/index.md:
+Add to `config/_default/params.yaml`:
 
-```yaml
+~~~yaml
+banner: images/banner.webp
+avatar: avatar.webp
+ruri:
+  brandMark: "r."
+  tagline: Per aspera ad astra.
+  homeHeading: [A quiet place, for your words.]
+menu:
+  - name: home
+    url: /
+  - name: archives
+    url: /archives/
+  - name: friend
+    url: /friend/
+  - name: moments
+    url: /moments/
+~~~
+
+Place the banner at `static/images/banner.webp` and avatar at `static/avatar/avatar.webp`. Missing settings hide the images. Article `cover` accepts a path/URL or `false` to hide it. Create a page for each internal menu link.
+
+</details>
+
+<details>
+<summary>Archives, about, friends and moments</summary>
+
+Create `content/archives/_index.md` with a title for the archive timeline and heatmap. Create `content/about/index.md` for a biography and `content/friend/index.md` for friend links. Independent pages support:
+
+~~~yaml
 ---
 title: About
 compact: true
@@ -127,70 +179,182 @@ toc: false
 sponsor: false
 copyright: false
 ---
-Your biography goes here.
-```
+Your biography.
+~~~
 
-compact reduces heading spacing; sidebar:false removes the sidebar; contentWidth:narrow narrows content. Other flags disable the cover, comments, TOC, sponsorship and copyright section. Normal posts need not specify them.
+Moments at `content/moments/index.md` use the **Waline comment area**: set `comments: true` and configure your own Waline service. The generic demo does not configure Waline and should display an explanation.
 
-### Optional music and comments
+Friend categories read separate `data/friends1.yml` through `data/friends4.yml` files; sharing the renderer does not merge categories. Each file contains an array:
 
-```toml
-[params.player]
-enable = true
-audio = [{name="Song", artist="Artist", url="https://example.org/song.mp3", cover="https://example.org/cover.jpg", lrc="https://example.org/song.lrc"}]
+~~~yaml
+- name: Example
+  url: https://example.org/
+  desc: A friend's blog
+  image: images/friend.webp
+~~~
 
-[params.waline]
-enable = true
-serverURL = "https://your-waline.example.org"
-```
+Place local images under `static/images/`. Add category headings and shortcodes:
 
-Replace placeholder URLs. No playlist is requested without music configuration; playback never starts automatically. Set params.player.enable=false to disable it.
+~~~text
+## Blogs
+{{< friendsLink1 >}}
+## Tools
+{{< friendsLink2 >}}
+~~~
 
-For Meting, set params.player.meting.meting_api to an endpoint with :server/:type/:id placeholders, and configure server/type/id under params.player.meting.options. Use HTTPS audio. LRC, same-timestamp translated lines and tlyric are supported. Site owners are responsible for CORS, provider availability and media rights.
+The other groups use `friendsLink3` and `friendsLink4`.
 
-Waline loads on comment-enabled pages and follows the color theme. Popular posts use actual Waline counts, not fabricated rankings. CDN/media/comment integrations may need CSP and network configuration. Set math:true or mermaid:true on a post to load KaTeX or Mermaid.
+</details>
 
-### Languages, updates and migration
+<details>
+<summary>Code, images, math and diagrams</summary>
 
-See [hugo.toml](exampleSite/config/_default/hugo.toml) + [params.yaml](exampleSite/config/_default/params.yaml) for four-language settings, and hello.en.md / hello.zh-cn.md sample content. Theme translations live in i18n/ and can be overridden by your site.
+Fenced code blocks display language/copy/collapse controls. Keep `markup.highlight.noClasses = false` for theme-aware highlighting. Content images use a local PhotoSwipe lightbox.
 
-Update a submodule installation:
+KaTeX requires `math.katex.enable: true` in theme parameters, `math: true` in page front matter and Goldmark passthrough (see example Hugo config). Mermaid fences automatically load the diagram script; `mermaid: true` is also supported. KaTeX and Mermaid use CDN assets.
 
-```sh
+</details>
+
+<details>
+<summary>Waline and statistics</summary>
+
+~~~yaml
+waline:
+  enable: true
+  serverURL: https://your-waline.example.org
+  pageview: true
+footer:
+  powered: true
+  count: true
+~~~
+
+Replace the placeholder endpoint. Page `comments: false` disables comments. Views, comment counts and popular posts require real service data. Footer word/reading totals are computed by Hugo for the current language and do not require Waline.
+
+</details>
+
+<details>
+<summary>Copyright precedence</summary>
+
+Set site defaults in parameters:
+
+~~~yaml
+article_copyright:
+  enable: true
+  content:
+    author: true
+    title: true
+    link: true
+    date: true
+    updated: true
+    license: true
+    license_type: by-nc-sa
+~~~
+
+Page `author`, `license`/`license_type` and `article_copyright` override site defaults; missing fields inherit. Example front matter:
+
+~~~yaml
+author: Another Author
+license: by-sa
+article_copyright:
+  content:
+    updated: false
+~~~
+
+`copyright: false` or `article_copyright.enable: false` disables the entire notice; individual `article_copyright.content` fields accept `false`.
+
+</details>
+
+<details>
+<summary>QR codes and donations</summary>
+
+~~~yaml
+share: [weixin, twitter]
+social:
+  - name: weixin
+    url: images/wechat-qr.webp
+  - name: qq
+    url: images/qq-qr.webp
+sponsor:
+  enable: true
+  qr:
+    - name: Donate
+      src: images/donate.webp
+~~~
+
+WeChat sharing generates a QR for the current article. Personal QR dialogs display your images from `static/images/` through sidebar links. Page `sponsor: false` hides donations.
+
+</details>
+
+<details>
+<summary>Music player</summary>
+
+~~~yaml
+player:
+  enable: true
+  audio:
+    - name: Example track
+      artist: Example artist
+      url: https://example.org/audio/song.mp3
+      cover: https://example.org/images/cover.webp
+      lrc: https://example.org/audio/song.lrc
+      tlyric: https://example.org/audio/song-translated.lrc
+~~~
+
+Replace all placeholder URLs. Direct tracks take priority over Meting. No configured playlist means no audio request; the player never autoplays. It supports LRC and translated lyrics. See the parameter reference for `player.meting.meting_api` and `player.meting.options`.
+
+Local navigation preserves playback. Audio availability and CORS depend on the service. Playback order, volume and lyric display are controlled by buttons and local storage.
+
+</details>
+
+## Build, search and deploy
+
+~~~sh
+hugo --minify
+npx -y pagefind@1.4.0 --site public --glob '**/*.html'
+~~~
+
+Deploy all of `public/` including `public/pagefind/`. Pagefind indexes generated HTML, replacing the old `index.json`. `hugo server` does not generate the index. To preview the complete build:
+
+~~~sh
+python3 -m http.server 8080 --directory public
+~~~
+
+Open `http://localhost:8080/`. Subpath deployments need a matching preview path or a separate local `baseURL` followed by a rebuild and reindex.
+
+## Updates and migration
+
+Hugo Module:
+
+~~~sh
+hugo mod get github.com/GuZhengSVT/hugo-theme-ruri@main
+hugo mod tidy
+~~~
+
+Commit changed site module files. Git submodule:
+
+~~~sh
 git submodule update --remote themes/ruri
-```
+git add themes/ruri
+git commit -m "chore: update ruri theme"
+~~~
 
-Back up first and read the changelog. Reimu users should migrate and test settings individually: ruri is not a drop-in replacement for every Reimu option/plugin. Fully reload the browser after asset changes because partial navigation retains existing assets.
+Read [CHANGELOG.md](CHANGELOG.md) first. Keep personal configuration, content and overrides in your site repository. Ruri does not support every Reimu plugin or setting; removed legacy fields are listed at the end of the [parameter reference](exampleSite/config/_default/params.yaml). Fully refresh after theme asset changes.
 
 ## Development and tests
 
-Run in the theme repository root:
-
-```sh
+~~~sh
 python3 tests/smoke.py
+python3 tests/module-build.py
+python3 tests/features-build.py
 node --check assets/ruri.js
+node --check assets/features.js
 node tests/lyrics.cjs
-```
+~~~
 
-Smoke tests cover minimal/multilingual/subpath sites, local links and search output. Lyric tests cover timing offsets and translation grouping. Tests neither guarantee remote service availability nor replace visual acceptance. See [QA report](QA_REPORT.md), [release checklist](RELEASE_CHECKLIST.md) and [changelog](CHANGELOG.md).
+Tests cover minimal/example/subpath builds, Module imports, links, copyright precedence and lyrics. They do not replace visual QA or third-party service checks. See [QA_REPORT.md](QA_REPORT.md) and [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md).
 
-## Credits and Reimu attribution
+## Credits and license
 
-Special thanks to **[D-Sketon / hugo-theme-reimu](https://github.com/D-Sketon/hugo-theme-reimu)**. ruri is not entirely written from scratch:
+Thanks to [D-Sketon / hugo-theme-reimu](https://github.com/D-Sketon/hugo-theme-reimu). Heatmap, some translations, render hooks, shortcodes, RSS and sharing implementations inherit or adapt Reimu work. Ruri redesigns the layout, player and navigation. It is an independent theme, not an official Reimu project.
 
-- Heatmap logic and SCSS derive from Reimu, adapted for theme colors, layout, archive integration and interactions.
-- Some translations, Markdown render hooks, shortcodes, RSS, sharing helpers and analytics integrations inherit from or reference Reimu and the original site.
-- The minimal layouts, cards, floating player and partial navigation were implemented or reworked around ruri's design.
-
-The [upstream MIT license and attribution](LICENSE.reimu) are retained. This is an independent project, not an official Reimu release or an endorsement by its author.
-
-## License and content boundaries
-
-Theme code is licensed under the **[MIT License](LICENSE)**. Use, modification and redistribution are permitted subject to retaining the applicable copyright/license notices; software is provided as-is without warranty. Inherited portions also retain LICENSE.reimu.
-
-Only the theme and generic examples are included, not the author's articles, wallpaper, avatar, real playlist or friend data. Third-party images, music, content and services are not relicensed under MIT by this project. Obtain the necessary rights separately.
-
-### Reading tools and Pagefind
-
-Code language/copy/collapse, local PhotoSwipe and QR dialogs support client-side navigation. After Hugo builds, run npx -y pagefind@1.4.0 --site public --glob '**/*.html'. Search no longer reads index.json.
-Page author, license/license_type and article_copyright override site defaults; explicit false disables fields or the notice.
+Code uses the [MIT License](LICENSE); inherited code retains [Reimu's license](LICENSE.reimu) and bundled resources retain their respective licenses. Personal articles, images, music, friend data and services are outside the theme's license scope.

@@ -15,7 +15,6 @@
   {{- $articlesData = $articlesData | append (dict
     "title" .Title
     "date" ( .Date | time.Format $dateFormat )
-    "lastmod" ( .Lastmod | time.Format $dateFormat )
     "wordcount" ($cleanContent | $.Page.RenderString | string | countwords)
     "url" .RelPermalink
     )
@@ -239,7 +238,6 @@ function createCalendar(element, contributionData) {
         tile.className = "tile";
         tile.dataset.level = c.level;
         tile.title = getTooltip(c, date);
-        tile.dataset.level = c.level;
         tile.dataset.date = c.date; // 添加日期数据
         tile.tabIndex = 0; tile.setAttribute('role','button'); tile.setAttribute('aria-label',tile.title); tile.addEventListener('click', tileClickHandler); tile.addEventListener('keydown', e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tile.click()}});
         

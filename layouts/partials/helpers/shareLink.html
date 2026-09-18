@@ -18,7 +18,6 @@
   "linkedin" (printf "https://www.linkedin.com/shareArticle?url=%s&title=%s&summary=%s&mini=true&ro=true" $url $title $desc)
   "reddit" (printf "https://www.reddit.com/submit?url=%s&title=%s" $url $title)
   "qq" (printf "https://connect.qq.com/widget/shareqq/index.html?url=%s&title=%s&desc=%s&source=%s" $url $title $desc $source)
-  "weixin" ("javascript:;" | safeURL)  
 -}}
 
 {{- return $shareMap -}}

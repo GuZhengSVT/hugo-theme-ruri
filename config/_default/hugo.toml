@@ -1,6 +1,6 @@
 [params]
 mainSections = ["posts", "post"]
 [outputs]
-home = ["HTML", "RSS", "JSON"]
+home = ["HTML", "RSS"]
 [markup.highlight]
 noClasses = false

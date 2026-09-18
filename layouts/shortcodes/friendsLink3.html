@@ -1,1 +1,1 @@
-<div class="friend-grid">{{ range index hugo.Data "friends3" }}<a href="{{ .url }}" target="_blank" rel="noopener noreferrer"><img src="{{ .image | relURL }}" alt="" width="48" height="48" loading="lazy"><div><strong>{{ .name }}</strong><p>{{ .desc }}</p></div></a>{{ end }}</div>
+{{ partial "friends.html" (index hugo.Data "friends3") }}

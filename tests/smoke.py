@@ -1,6 +1,6 @@
 """Portable build checks. Requires Python 3 and Hugo Extended 0.162.1+."""
 from pathlib import Path
-import tempfile, shutil, subprocess, json, tomllib
+import tempfile, shutil, subprocess, tomllib
 from html.parser import HTMLParser
 from urllib.parse import urlsplit, unquote
 THEME = Path(__file__).resolve().parents[1]
@@ -40,13 +40,13 @@ with tempfile.TemporaryDirectory(prefix='ruri-smoke-') as d:
         if kind=='subpath':
             config=site/'config/_default/hugo.toml';config.write_text(config.read_text().replace('https://example.org/','https://example.org/blog/'))
         with (site/('hugo.toml' if kind=='minimal' else 'config/_default/hugo.toml')).open('a') as f:
-            if kind=='minimal':f.write(chr(10)+'[outputs]'+chr(10)+'home=["HTML","RSS","JSON"]'+chr(10))
+            if kind=='minimal':f.write(chr(10)+'[outputs]'+chr(10)+'home=["HTML","RSS"]'+chr(10))
         out=build(site,'/blog/' if kind=='subpath' else '')
         if kind=='minimal':
-            assert len(json.loads((out/'index.json').read_text()))==1
+            assert not (out/'index.json').exists()
         else:
             for lang in ['en','zh-cn','zh-tw','ja']:
                 assert (out/lang/'archives/index.html').exists()
                 assert 'id="heatmap"' in (out/lang/'archives/index.html').read_text()
-                assert len(json.loads((out/lang/'index.json').read_text()))==2
+                assert not (out/lang/'index.json').exists()
         print('PASS',kind)
