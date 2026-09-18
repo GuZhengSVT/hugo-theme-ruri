@@ -1,34 +1,34 @@
-# 中文：主题参数全集；直接使用键名，不加 params: 外层。示例不包含个人账户或服务。
-# English: Complete theme parameter reference; no wrapping params: key. No personal accounts/services included.
-# 中文：注释中示例资源需自行创建；第三方功能默认关闭。
-# English: Create any resources shown in commented examples yourself; integrations are disabled by default.
+# 主题参数全集；直接使用键名，不加 params: 外层。示例不包含个人账户或服务。
+# Complete theme parameter reference; no wrapping params: key. No personal accounts/services included.
+# 注释中示例资源需自行创建；第三方功能默认关闭。
+# Create any resources shown in commented examples yourself; integrations are disabled by default.
 
-# 中文：作者名、RSS 邮箱、侧栏描述及 SEO 后备描述。
-# English: Author name, RSS email, sidebar description and SEO fallback.
+# 作者名、RSS 邮箱、侧栏描述及 SEO 后备描述。
+# Author name, RSS email, sidebar description and SEO fallback.
 author: Your Name
 email: ""
 description: Notes, ideas, and everyday life.
-# 中文：文章一级目录，影响首页、推荐、文章头图与过期提示。
-# English: Main content sections used by homepage, recommendations, post covers and stale notices.
+# 文章一级目录，影响首页、推荐、文章头图与过期提示。
+# Main content sections used by homepage, recommendations, post covers and stale notices.
 mainSections: [posts]
-# 中文：首页大图与默认封面：相对 static 的路径或 HTTPS URL；空 cover 回退 banner。
-# English: Hero and fallback cover: static-relative paths or HTTPS URLs; empty cover falls back to banner.
+# 首页大图与默认封面：相对 static 的路径或 HTTPS URL；空 cover 回退 banner。
+# Hero and fallback cover: static-relative paths or HTTPS URLs; empty cover falls back to banner.
 banner: ""
 cover: ""
-# 中文：头像文件名，相对 static/avatar/；点击跳转 /about/。
-# English: Avatar filename relative to static/avatar/; links to /about/.
+# 头像文件名，相对 static/avatar/；点击跳转 /about/。
+# Avatar filename relative to static/avatar/; links to /about/.
 avatar: ""
-# 中文：热力图日期数据格式，保持 ISO 格式，不是全站显示格式。
-# English: Heatmap data date format; keep ISO, not a global display format.
+# 热力图日期数据格式，保持 ISO 格式，不是全站显示格式。
+# Heatmap data date format; keep ISO, not a global display format.
 dateFormat: "2006-01-02"
-# 中文：文章详情显示最后修改日期。
-# English: Show last-modified date on article pages.
+# 文章详情显示最后修改日期。
+# Show last-modified date on article pages.
 show_update_time: true
 
-# 中文：顶部菜单数组。name 为翻译键或原文，url 为站内路径（自动加语言）或 HTTPS 外链。
-# English: Header menu array. name is a translation key or literal label; url is an internal path (localized) or HTTPS URL.
-# 中文：添加 friend/moments 等菜单前先创建相应页面。
-# English: Create corresponding pages before adding friend/moments or other menu entries.
+# 顶部菜单数组。name 为翻译键或原文，url 为站内路径（自动加语言）或 HTTPS 外链。
+# Header menu array. name is a translation key or literal label; url is an internal path (localized) or HTTPS URL.
+# 添加 friend/moments 等菜单前先创建相应页面。
+# Create corresponding pages before adding friend/moments or other menu entries.
 menu:
   - name: home
     url: /
@@ -36,8 +36,8 @@ menu:
     url: /archives/
   - name: about
     url: /about/
-# 中文：联系方式 name/url；twitter 显示 X，其他名称首字母大写。
-# English: Contacts with name/url; twitter renders as X, other names are capitalized.
+# 联系方式 name/url；twitter 显示 X，其他名称首字母大写。
+# Contacts with name/url; twitter renders as X, other names are capitalized.
 social: []
 # social:
 #   - name: github
@@ -46,162 +46,162 @@ social: []
 #     url: mailto:you@example.org
 
 ruri:
-  # 中文：品牌缩写（空值回退 r.）和品牌下方斜体标语。
-  # English: Brand mark (empty falls back to r.) and italic tagline underneath.
+  # 品牌缩写（空值回退 r.）和品牌下方斜体标语。
+  # Brand mark (empty falls back to r.) and italic tagline underneath.
   brandMark: "r."
   tagline: Per aspera ad astra.
-  # 中文：首页上方小字与主标题逐行文本（不支持 HTML）。
-  # English: Homepage eyebrow and heading lines (plain text, not HTML).
+  # 首页上方小字与主标题逐行文本（不支持 HTML）。
+  # Homepage eyebrow and heading lines (plain text, not HTML).
   homeEyebrow: NOTE, TECH & POEM
   homeHeading: [A quiet place, for your words.]
-  # 中文：主标题下方细线处的出处文字。
-  # English: Attribution on the rule below the main heading.
+  # 主标题下方细线处的出处文字。
+  # Attribution on the rule below the main heading.
   homeSource: ""
-  # 中文：大图左下角原文和译文；无 banner 时不显示。
-  # English: Original and translated captions at lower left of hero; requires banner.
+  # 大图左下角原文和译文；无 banner 时不显示。
+  # Original and translated captions at lower left of hero; requires banner.
   caption: ""
   captionTranslation: ""
-  # 中文：页脚小字及 favicon 静态路径；空 favicon 不输出链接。
-  # English: Footer text and static favicon path; empty favicon omits its link.
+  # 页脚小字及 favicon 静态路径；空 favicon 不输出链接。
+  # Footer text and static favicon path; empty favicon omits its link.
   footerText: Made with care.
   favicon: ""
-  # 中文：热力图排除的页面路径；其余 RegularPages 均计入，不限 mainSections。
-  # English: Page excluded from heatmap; other RegularPages count, not only mainSections.
-  # 中文：默认 /archives；迁移旧统计可用 /about。
-  # English: Default /archives; use /about to retain an older counting scope if needed.
+  # 热力图排除的页面路径；其余 RegularPages 均计入，不限 mainSections。
+  # Page excluded from heatmap; other RegularPages count, not only mainSections.
+  # 默认 /archives；迁移旧统计可用 /about。
+  # Default /archives; use /about to retain an older counting scope if needed.
   heatmapExclude: /archives
 footer:
-  # 中文：版权起始年份/日期字符串，空值仅显示当前年份。
-  # English: Copyright start year/date string; empty shows current year only.
+  # 版权起始年份/日期字符串，空值仅显示当前年份。
+  # Copyright start year/date string; empty shows current year only.
   since: ""
 search_visits:
-  # 中文：读取 static/search-visits.json，不自动采集；无文件不显示。
-  # English: Read static/search-visits.json; does not collect data, hidden if file is absent.
+  # 读取 static/search-visits.json，不自动采集；无文件不显示。
+  # Read static/search-visits.json; does not collect data, hidden if file is absent.
   # JSON: {"totals":{"weekly":0,"yearly":0,"total":0},"updatedAt":"2026-01-01"}
   enable: false
 rss:
-  # 中文：条目数；正整数，-1 不限，0 会回退 10。
-  # English: Item count; positive integer, -1 unlimited, 0 falls back to 10.
+  # 条目数；正整数，-1 不限，0 会回退 10。
+  # Item count; positive integer, -1 unlimited, 0 falls back to 10.
   limit: 10
-  # 中文：全文而非摘要；附带版权声明。
-  # English: Full content instead of summaries; append copyright notice.
+  # 全文而非摘要；附带版权声明。
+  # Full content instead of summaries; append copyright notice.
   showFullContent: false
   showCopyright: false
 paginate:
-  # 中文：首页每页条数；普通列表/分类/标签每页条数，均为正整数。
-  # English: Homepage page size; regular list/category/tag page size, both positive integers.
+  # 首页每页条数；普通列表/分类/标签每页条数，均为正整数。
+  # Homepage page size; regular list/category/tag page size, both positive integers.
   post: 10
   archive: 20
-  # 中文：archives 时间树不分页，按年渐进展示。
-  # English: The archives timeline ignores pagination and reveals entries by year.
+  # archives 时间树不分页，按年渐进展示。
+  # The archives timeline ignores pagination and reveals entries by year.
 
-# 中文：GA measurement ID 与 Clarity 项目 ID，空值关闭，仅生产环境加载。
-# English: GA measurement ID and Clarity project ID; empty disables, production only.
-# 中文：启用前处理隐私与同意要求。 / English: Handle privacy/consent requirements before enabling.
+# GA measurement ID 与 Clarity 项目 ID，空值关闭，仅生产环境加载。
+# GA measurement ID and Clarity project ID; empty disables, production only.
+# 启用前处理隐私与同意要求。 / Handle privacy/consent requirements before enabling.
 google_analytics: ""
 clarity: ""
 math:
   katex:
-    # 中文：全局公式开关，文章还需 math: true；从 jsDelivr 加载。
-    # English: Global math gate; pages also need math: true; loads from jsDelivr.
+    # 全局公式开关，文章还需 math: true；从 jsDelivr 加载。
+    # Global math gate; pages also need math: true; loads from jsDelivr.
     enable: false
 comment:
-  # 中文：评论区标题，使用小写语言代码；未配置则使用主题翻译。
-  # English: Comment headings keyed by lowercase language code; missing entries use theme translations.
+  # 评论区标题，使用小写语言代码；未配置则使用主题翻译。
+  # Comment headings keyed by lowercase language code; missing entries use theme translations.
   title:
     en: Comments
     zh-cn: 评论
     zh-tw: 評論
     ja: コメント
 waline:
-  # 中文：自动加载评论并适配深浅色；文章 comments: false 可关闭。
-  # English: Auto-load theme-aware comments; page comments: false disables them.
+  # 自动加载评论并适配深浅色；文章 comments: false 可关闭。
+  # Auto-load theme-aware comments; page comments: false disables them.
   enable: false
-  # 中文：你的 Waline 服务 URL；热门文章需要真实阅读统计。
-  # English: Your Waline server URL; popular posts require real view statistics.
+  # 你的 Waline 服务 URL；热门文章需要真实阅读统计。
+  # Your Waline server URL; popular posts require real view statistics.
   serverURL: ""
-  # 中文：以下配置透传 @waline/client v3，可添加官方支持的可序列化选项。
-  # English: Following options pass through to @waline/client v3; other serializable client options are allowed.
-  # 中文：el/path/lang/dark 由主题管理；不能在 YAML 中定义回调函数。
-  # English: Theme manages el/path/lang/dark; YAML cannot define callback functions.
-  # 中文：客户端文案覆盖 / English: Client translation overrides.
+  # 以下配置透传 @waline/client v3，可添加官方支持的可序列化选项。
+  # Following options pass through to @waline/client v3; other serializable client options are allowed.
+  # el/path/lang/dark 由主题管理；不能在 YAML 中定义回调函数。
+  # Theme manages el/path/lang/dark; YAML cannot define callback functions.
+  # 客户端文案覆盖 / Client translation overrides.
   locale: {}
-  # 中文：表情包 URL 列表；空数组关闭表情 / English: Emoji pack URLs; empty disables emoji.
+  # 表情包 URL 列表；空数组关闭表情 / Emoji pack URLs; empty disables emoji.
   emoji: []
-  # 中文：显示的身份字段与必填字段 / English: Visible identity fields and required fields.
+  # 显示的身份字段与必填字段 / Visible identity fields and required fields.
   meta: [nick, mail, link]
   requiredMeta: [nick, mail]
-  # 中文：评论字数上限，0 不限，也可用 [最小, 最大]。
-  # English: Comment length limit; 0 unlimited, or [minimum, maximum].
+  # 评论字数上限，0 不限，也可用 [最小, 最大]。
+  # Comment length limit; 0 unlimited, or [minimum, maximum].
   wordLimit: 0
-  # 中文：每页评论数量 / English: Comments per page.
+  # 每页评论数量 / Comments per page.
   pageSize: 10
-  # 中文：阅读计数，涉及第三方请求 / English: View counts, involving third-party requests.
+  # 阅读计数，涉及第三方请求 / View counts, involving third-party requests.
   pageview: false
 article_copyright:
-  # 中文：文章版权块；目前正文固定显示 CC BY-NC-SA 4.0。
-  # English: Article attribution block; currently displays fixed CC BY-NC-SA 4.0.
+  # 文章版权块；目前正文固定显示 CC BY-NC-SA 4.0。
+  # Article attribution block; currently displays fixed CC BY-NC-SA 4.0.
   enable: false
   content:
-    # 中文：仅影响 RSS 许可证文本，不改变正文块；空值使用 hugo.toml copyright。
-    # English: RSS license text only, not article block; empty uses hugo.toml copyright.
+    # 仅影响 RSS 许可证文本，不改变正文块；空值使用 hugo.toml copyright。
+    # RSS license text only, not article block; empty uses hugo.toml copyright.
     license_type: ""
 outdate:
-  # 中文：旧文章提示，仅 mainSections 内文章。
-  # English: Stale-post notice for mainSections only.
+  # 旧文章提示，仅 mainSections 内文章。
+  # Stale-post notice for mainSections only.
   enable: false
-  # 中文：距 lastmod 超过多少天显示 / English: Days since lastmod before showing notice.
+  # 距 lastmod 超过多少天显示 / Days since lastmod before showing notice.
   daysAgo: 180
-  # 中文：本地化提示，{time} 替换为更新日期。
-  # English: Localized messages; {time} is replaced by the last-modified date.
+  # 本地化提示，{time} 替换为更新日期。
+  # Localized messages; {time} is replaced by the last-modified date.
   message:
     en: "Last updated: {time}. This article may be outdated."
     zh-cn: "最后更新于 {time}，内容可能已过时。"
     zh-tw: "最後更新於 {time}，內容可能已過時。"
     ja: "最終更新：{time}。情報が古い可能性があります。"
 sponsor:
-  # 中文：打赏开关；单篇 sponsor: false 可关闭。
-  # English: Donation gate; page sponsor: false disables it.
+  # 打赏开关；单篇 sponsor: false 可关闭。
+  # Donation gate; page sponsor: false disables it.
   enable: false
-  # 中文：本地化提示 / English: Localized donation prompt.
+  # 本地化提示 / Localized donation prompt.
   tip:
     en: Support this blog
     zh-cn: 支持这个博客
     zh-tw: 支持這個部落格
     ja: このブログを支援する
-  # 中文：二维码数组，每项 name 为名称，src 为 static 路径或 URL。
-  # English: QR array; each entry has name (label) and src (static path or URL).
+  # 二维码数组，每项 name 为名称，src 为 static 路径或 URL。
+  # QR array; each entry has name (label) and src (static path or URL).
   qr: []
   # qr:
   #   - name: Donate
   #     src: images/donate.webp
-# 中文：分享平台数组；空数组关闭；仅支持下列名称，weixin 为复制链接。
-# English: Share platforms; empty disables; only names below supported, weixin copies the URL.
+# 分享平台数组；空数组关闭；仅支持下列名称，weixin 为复制链接。
+# Share platforms; empty disables; only names below supported, weixin copies the URL.
 # facebook, twitter, linkedin, reddit, weibo, qq, weixin, bluesky
 share: []
 home_categories:
-  # 中文：首页分类大图；分类必须存在且名称匹配。
-  # English: Featured homepage categories; taxonomy must exist and title must match.
+  # 首页分类大图；分类必须存在且名称匹配。
+  # Featured homepage categories; taxonomy must exist and title must match.
   enable: false
-  # 中文：每项 categories 为分类名，cover 为图片 URL（子路径部署需带前缀）。
-  # English: Each entry has categories (taxonomy title) and cover (image URL; include deployment subpath).
+  # 每项 categories 为分类名，cover 为图片 URL（子路径部署需带前缀）。
+  # Each entry has categories (taxonomy title) and cover (image URL; include deployment subpath).
   content: []
   # content:
   #   - categories: Poetry
   #     cover: /images/poetry.webp
 player:
-  # 中文：原生播放器，自动加载歌单但绝不自动播放；默认关闭。
-  # English: Native player, auto-loads playlist but never autoplays; disabled by default.
+  # 原生播放器，自动加载歌单但绝不自动播放；默认关闭。
+  # Native player, auto-loads playlist but never autoplays; disabled by default.
   enable: false
   aplayer:
     options:
-      # 中文：直接歌曲列表优先于 Meting；兼容字段名，不加载 APlayer 库。
-      # English: Direct tracks take priority over Meting; legacy key name, no APlayer library loaded.
+      # 直接歌曲列表优先于 Meting；兼容字段名，不加载 APlayer 库。
+      # Direct tracks take priority over Meting; legacy key name, no APlayer library loaded.
       audio: []
-      # 中文：url 必须 HTTP(S)；name 标题；artist 字符串或数组。
-      # English: url must be HTTP(S); name is title; artist is string or array.
-      # 中文：pic/cover 为封面；lrc/lyric 为原文 LRC；tlyric/translation/translatedLyric 为译文。
-      # English: pic/cover artwork; lrc/lyric original LRC; tlyric/translation/translatedLyric translated LRC.
+      # url 必须 HTTP(S)；name 标题；artist 字符串或数组。
+      # url must be HTTP(S); name is title; artist is string or array.
+      # pic/cover 为封面；lrc/lyric 为原文 LRC；tlyric/translation/translatedLyric 为译文。
+      # pic/cover artwork; lrc/lyric original LRC; tlyric/translation/translatedLyric translated LRC.
       # audio:
       #   - name: Example track
       #     artist: Example artist
@@ -210,25 +210,25 @@ player:
       #     lrc: https://example.org/audio/song.lrc
       #     tlyric: https://example.org/audio/song-translated.lrc
   meting:
-    # 中文：歌单 API 模板，支持 :server/:type/:id/:r 占位符；留空不请求。
-    # English: Playlist API template with :server/:type/:id/:r placeholders; empty makes no request.
+    # 歌单 API 模板，支持 :server/:type/:id/:r 占位符；留空不请求。
+    # Playlist API template with :server/:type/:id/:r placeholders; empty makes no request.
     meting_api: ""
     options:
-      # 中文：服务商、类型、ID（字符串）；取值由你的 API 决定。
-      # English: Provider, resource type, ID (string); valid values depend on your API.
+      # 服务商、类型、ID（字符串）；取值由你的 API 决定。
+      # Provider, resource type, ID (string); valid values depend on your API.
       server: netease
       type: playlist
       id: ""
-  # 中文：播放顺序、音量和歌词由按钮及本地存储管理，不是站点参数。
-  # English: Playback order, volume and lyrics are managed by controls/local storage, not site parameters.
+  # 播放顺序、音量和歌词由按钮及本地存储管理，不是站点参数。
+  # Playback order, volume and lyrics are managed by controls/local storage, not site parameters.
 
-# 中文：不支持的 Reimu 遗留项不要复制：footer.powered/count/busuanzi/icon、search_visits 文案、
+# 不支持的 Reimu 遗留项不要复制：footer.powered/count/busuanzi/icon、search_visits 文案、
 # math.mathjax、comment.default、sponsor.icon、menu.icon、article_copyright.content 正文开关、
 # player.position/disable_on_mobile、aplayer.enable、meting.enable/auto、
 # autoplay/fixed/loop/order/preload/volume/mutex/listFolded/lrcType。
-# English: Do not copy unsupported Reimu fields: footer.powered/count/busuanzi/icon, search_visits labels,
+# Do not copy unsupported Reimu fields: footer.powered/count/busuanzi/icon, search_visits labels,
 # math.mathjax, comment.default, sponsor.icon, menu.icon, article_copyright.content article toggles,
 # player.position/disable_on_mobile, aplayer.enable, meting.enable/auto,
 # autoplay/fixed/loop/order/preload/volume/mutex/listFolded/lrcType.
-# 中文：友链数据和短代码在 content/data 中维护；本文件不穷举 Hugo/Waline 上游选项。
-# English: Friend data and shortcodes live in content/data; this file does not enumerate all upstream Hugo/Waline options.
+# 友链数据和短代码在 content/data 中维护；本文件不穷举 Hugo/Waline 上游选项。
+# Friend data and shortcodes live in content/data; this file does not enumerate all upstream Hugo/Waline options.
