@@ -1,0 +1,16 @@
+{{- $cfg := .Site.Params.article_copyright | default dict -}}
+{{- with .Params.article_copyright }}{{ if reflect.IsMap . }}{{ $cfg = merge $cfg . }}{{ end }}{{ end -}}
+{{- $enabled := $cfg.enable -}}{{ if eq .Params.copyright false }}{{ $enabled = false }}{{ end -}}
+{{- if $enabled -}}
+{{- $fields := $cfg.content | default dict -}}
+{{- $author := .Params.author | default $cfg.author | default .Site.Params.author -}}
+{{- $license := .Params.license | default .Params.license_type | default $fields.license_type | default "by-nc-sa" -}}
+{{- $format := .Site.Params.dateFormat | default "2006-01-02" -}}
+<div class="notice article-copyright" data-pagefind-ignore>
+{{ if $fields.author }}<p><strong>{{ i18n "article_copyright.author" }}</strong> {{ if reflect.IsSlice $author }}{{ delimit $author " / " }}{{ else }}{{ $author }}{{ end }}</p>{{ end }}
+{{ if $fields.title }}<p><strong>{{ i18n "article_copyright.title" }}</strong> {{ .Title }}</p>{{ end }}
+{{ if $fields.link }}<p><strong>{{ i18n "article_copyright.permalink" }}</strong> <a href="{{ .Permalink }}">{{ .Permalink }}</a></p>{{ end }}
+{{ if $fields.date }}<p><strong>{{ i18n "article_copyright.date" }}</strong> {{ .Date.Format $format }}</p>{{ end }}
+{{ if $fields.updated }}<p><strong>{{ i18n "article_copyright.updated" }}</strong> {{ .Lastmod.Format $format }}</p>{{ end }}
+{{ if $fields.license }}<p><strong>{{ i18n "article_copyright.license" }}</strong> {{ if in (slice "by" "by-sa" "by-nd" "by-nc" "by-nc-sa" "by-nc-nd") $license }}<a href="https://creativecommons.org/licenses/{{ $license }}/4.0/" rel="license">CC {{ upper $license }} 4.0</a>{{ else }}{{ $license }}{{ end }}</p>{{ end }}
+</div>{{ end }}

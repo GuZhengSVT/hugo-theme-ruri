@@ -18,8 +18,8 @@ cover: ""
 # 头像文件名，相对 static/avatar/；点击跳转 /about/。
 # Avatar filename relative to static/avatar/; links to /about/.
 avatar: ""
-# 热力图日期数据格式，保持 ISO 格式，不是全站显示格式。
-# Heatmap data date format; keep ISO, not a global display format.
+# 热力图与文章版权日期格式，建议保持 ISO 格式。
+# Heatmap and copyright date format; ISO is recommended.
 dateFormat: "2006-01-02"
 # 文章详情显示最后修改日期。
 # Show last-modified date on article pages.
@@ -74,6 +74,14 @@ footer:
   # 版权起始年份/日期字符串，空值仅显示当前年份。
   # Copyright start year/date string; empty shows current year only.
   since: ""
+  # 技术署名与当前语言文章总字数/阅读分钟数。
+  # Theme credits and current-language total words/reading minutes.
+  powered: true
+  count: true
+# 构建后运行 Pagefind；空占位文案使用主题翻译。
+# Run Pagefind after Hugo; empty placeholder uses theme translations.
+pagefind_search:
+  placeholder: ""
 search_visits:
   # 读取 static/search-visits.json，不自动采集；无文件不显示。
   # Read static/search-visits.json; does not collect data, hidden if file is absent.
@@ -139,13 +147,19 @@ waline:
   # 阅读计数，涉及第三方请求 / View counts, involving third-party requests.
   pageview: false
 article_copyright:
-  # 文章版权块；目前正文固定显示 CC BY-NC-SA 4.0。
-  # Article attribution block; currently displays fixed CC BY-NC-SA 4.0.
+  # 文章元数据优先，缺失字段继承这里；显式 false 可关闭。
+  # Page metadata overrides these defaults; explicit false disables fields.
   enable: false
   content:
-    # 仅影响 RSS 许可证文本，不改变正文块；空值使用 hugo.toml copyright。
-    # RSS license text only, not article block; empty uses hugo.toml copyright.
-    license_type: ""
+    author: true
+    title: true
+    link: false
+    date: true
+    updated: true
+    license: true
+    # 文章 license/license_type 可覆盖；支持自定义文本。
+    # Page license/license_type overrides this; custom text is supported.
+    license_type: by-nc-sa
 outdate:
   # 旧文章提示，仅 mainSections 内文章。
   # Stale-post notice for mainSections only.
@@ -175,8 +189,8 @@ sponsor:
   # qr:
   #   - name: Donate
   #     src: images/donate.webp
-# 分享平台数组；空数组关闭；仅支持下列名称，weixin 为复制链接。
-# Share platforms; empty disables; only names below supported, weixin copies the URL.
+# 分享平台数组；空数组关闭；仅支持下列名称，weixin 为本地分享二维码。
+# Share platforms; empty disables; only names below supported, weixin generates a local sharing QR code.
 # facebook, twitter, linkedin, reddit, weibo, qq, weixin, bluesky
 share: []
 home_categories:
@@ -193,22 +207,20 @@ player:
   # 原生播放器，自动加载歌单但绝不自动播放；默认关闭。
   # Native player, auto-loads playlist but never autoplays; disabled by default.
   enable: false
-  aplayer:
-    options:
-      # 直接歌曲列表优先于 Meting；兼容字段名，不加载 APlayer 库。
-      # Direct tracks take priority over Meting; legacy key name, no APlayer library loaded.
-      audio: []
-      # url 必须 HTTP(S)；name 标题；artist 字符串或数组。
-      # url must be HTTP(S); name is title; artist is string or array.
-      # pic/cover 为封面；lrc/lyric 为原文 LRC；tlyric/translation/translatedLyric 为译文。
-      # pic/cover artwork; lrc/lyric original LRC; tlyric/translation/translatedLyric translated LRC.
-      # audio:
-      #   - name: Example track
-      #     artist: Example artist
-      #     url: https://example.org/audio/song.mp3
-      #     pic: https://example.org/images/artwork.webp
-      #     lrc: https://example.org/audio/song.lrc
-      #     tlyric: https://example.org/audio/song-translated.lrc
+  # 直接歌曲列表优先于 Meting；不加载 APlayer 库。
+  # Direct tracks take priority over Meting; no APlayer library loaded.
+  audio: []
+  # url 必须 HTTP(S)；name 标题；artist 字符串或数组。
+  # url must be HTTP(S); name is title; artist is string or array.
+  # pic/cover 为封面；lrc/lyric 为原文 LRC；tlyric/translation/translatedLyric 为译文。
+  # pic/cover artwork; lrc/lyric original LRC; tlyric/translation/translatedLyric translated LRC.
+  # audio:
+  #   - name: Example track
+  #     artist: Example artist
+  #     url: https://example.org/audio/song.mp3
+  #     pic: https://example.org/images/artwork.webp
+  #     lrc: https://example.org/audio/song.lrc
+  #     tlyric: https://example.org/audio/song-translated.lrc
   meting:
     # 歌单 API 模板，支持 :server/:type/:id/:r 占位符；留空不请求。
     # Playlist API template with :server/:type/:id/:r placeholders; empty makes no request.
@@ -222,12 +234,12 @@ player:
   # 播放顺序、音量和歌词由按钮及本地存储管理，不是站点参数。
   # Playback order, volume and lyrics are managed by controls/local storage, not site parameters.
 
-# 不支持的 Reimu 遗留项不要复制：footer.powered/count/busuanzi/icon、search_visits 文案、
-# math.mathjax、comment.default、sponsor.icon、menu.icon、article_copyright.content 正文开关、
+# 不支持的 Reimu 遗留项不要复制：footer.busuanzi/icon、search_visits 文案、
+# math.mathjax、comment.default、sponsor.icon、menu.icon、
 # player.position/disable_on_mobile、aplayer.enable、meting.enable/auto、
 # autoplay/fixed/loop/order/preload/volume/mutex/listFolded/lrcType。
-# Do not copy unsupported Reimu fields: footer.powered/count/busuanzi/icon, search_visits labels,
-# math.mathjax, comment.default, sponsor.icon, menu.icon, article_copyright.content article toggles,
+# Do not copy unsupported Reimu fields: footer.busuanzi/icon, search_visits labels,
+# math.mathjax, comment.default, sponsor.icon, menu.icon,
 # player.position/disable_on_mobile, aplayer.enable, meting.enable/auto,
 # autoplay/fixed/loop/order/preload/volume/mutex/listFolded/lrcType.
 # 友链数据和短代码在 content/data 中维护；本文件不穷举 Hugo/Waline 上游选项。

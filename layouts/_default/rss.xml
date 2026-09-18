@@ -53,7 +53,7 @@
     {{- $articleFooter := printf "<hr><p>%s</p>" $articleFooterI18n -}}
 
     {{- if $showCopyright }}
-      {{ $articleFooter = printf "%s<p>%s</p>" $articleFooter $copyright }}
+      {{ $articleFooter = printf "%s%s" $articleFooter (partial "copyright.html" .) }}
     {{- end }}
     {{ $articleFooter = printf "%s]]>" $articleFooter }}
 

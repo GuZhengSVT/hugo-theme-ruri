@@ -1035,3 +1035,12 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 
 #music-lyrics .lyric-translation[hidden]{display:none}
 
+
+/* Accessible reading tools and locally generated QR dialogs. */
+.code-box{margin:24px 0;border-radius:8px;overflow:hidden;background:#282a36;color:#f8f8f2}
+.code-toolbar{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #ffffff30;font:12px ui-monospace,monospace}
+.code-toolbar span{margin-right:auto}.code-toolbar button{color:inherit;border:1px solid #ffffff50;border-radius:4px;padding:4px 8px;background:transparent}
+.code-toolbar button:focus-visible{outline:2px solid #8be9fd}.code-body[hidden]{display:none}.prose .code-box .highlight{margin:0;border-radius:0}.code-body{overflow:auto}
+.prose .lightbox-link{display:block;cursor:zoom-in}.lightbox-link:has(>.article-cover){display:block}
+.media-dialog{width:min(400px,calc(100% - 32px));text-align:center;overflow:auto}.media-dialog header{display:flex;align-items:center;justify-content:space-between;gap:12px}.media-dialog header button{font-size:24px}.media-dialog img,.media-dialog canvas{display:block;max-width:100%;height:auto;margin:18px auto}.media-dialog a{display:block;overflow-wrap:anywhere;font-size:12px}.article-copyright p{margin:6px 0}
+#search-results mark{background:#ffe598;color:#222}#search-results>button{margin-top:14px;padding:8px 16px}.site-totals{display:block}

@@ -1,0 +1,4 @@
+{{ if and .Site.Params.waline.enable (ne .Params.comments false) }}
+<a href="#comments">{{ i18n "comment" }} <span class="waline-comment-count" data-path="{{ .RelPermalink }}">—</span></a>
+{{ if .Site.Params.waline.pageview }}<span>{{ i18n "reading" }} <span class="waline-pageview-count" data-path="{{ .RelPermalink }}">—</span></span>{{ end }}
+{{ end }}

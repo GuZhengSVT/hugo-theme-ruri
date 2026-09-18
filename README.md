@@ -138,7 +138,6 @@ compact 缩小标题空白；sidebar:false 隐藏侧栏；contentWidth:narrow �
 ```toml
 [params.player]
 enable = true
-[params.player.aplayer.options]
 audio = [{name="Song", artist="Artist", url="https://example.org/song.mp3", cover="https://example.org/cover.jpg", lrc="https://example.org/song.lrc"}]
 
 [params.waline]
@@ -191,3 +190,8 @@ node tests/lyrics.cjs
 主题代码使用 **[MIT License](LICENSE)**，允许使用、修改和再分发，须保留相应版权和许可声明；软件按原样提供，不作担保。继承部分同时保留 LICENSE.reimu。
 
 仓库仅包含主题和通用示例，不包含作者个人文章、壁纸、头像、真实歌单或友链数据。第三方图片、音乐、文章与服务不因使用本主题而获得 MIT 授权，请自行取得使用权。
+
+### 阅读增强与搜索构建
+
+支持代码语言栏/复制/折叠、本地 PhotoSwipe、微信分享和个人二维码弹窗，以及站内切换后初始化。构建后执行 npx -y pagefind@1.4.0 --site public --glob '**/*.html' 生成搜索索引，搜索不再读取 JSON。
+文章 author、license/license_type 和 article_copyright 优先于站点默认版权，显式 false 可关闭字段或整个版权区。

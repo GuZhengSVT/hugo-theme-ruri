@@ -137,7 +137,6 @@ compact reduces heading spacing; sidebar:false removes the sidebar; contentWidth
 ```toml
 [params.player]
 enable = true
-[params.player.aplayer.options]
 audio = [{name="Song", artist="Artist", url="https://example.org/song.mp3", cover="https://example.org/cover.jpg", lrc="https://example.org/song.lrc"}]
 
 [params.waline]
@@ -190,3 +189,8 @@ The [upstream MIT license and attribution](LICENSE.reimu) are retained. This is 
 Theme code is licensed under the **[MIT License](LICENSE)**. Use, modification and redistribution are permitted subject to retaining the applicable copyright/license notices; software is provided as-is without warranty. Inherited portions also retain LICENSE.reimu.
 
 Only the theme and generic examples are included, not the author's articles, wallpaper, avatar, real playlist or friend data. Third-party images, music, content and services are not relicensed under MIT by this project. Obtain the necessary rights separately.
+
+### Reading tools and Pagefind
+
+Code language/copy/collapse, local PhotoSwipe and QR dialogs support client-side navigation. After Hugo builds, run npx -y pagefind@1.4.0 --site public --glob '**/*.html'. Search no longer reads index.json.
+Page author, license/license_type and article_copyright override site defaults; explicit false disables fields or the notice.
