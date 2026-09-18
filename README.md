@@ -52,6 +52,8 @@ cp -R themes/ruri/exampleSite/. .
 hugo server --disableFastRender
 ```
 
+完整配置推荐使用下方两个带中英文注释的文件：将 exampleSite/config/_default/ 中的 hugo.toml 和 params.yaml 复制到个人博客的 config/_default/。主题开发仓库仅维护通用示例，不保存个人配置；不要将个人歌单、统计 ID 或评论服务提交到主题仓库。已有根目录配置请先合并，避免重复。下方单文件片段仅为最小用法。
+
 ### 方式二：配置自己的站点
 
 将下列配置写入站点根目录的 `hugo.toml`；已有配置请合并，不要重复声明 TOML 表。
@@ -152,7 +154,7 @@ Waline 默认在启用评论的页面加载，并适配深浅色。热门文章�
 
 ### 多语言、升级与迁移
 
-四语言完整配置见 [exampleSite/hugo.toml](exampleSite/hugo.toml)，内容采用 hello.en.md / hello.zh-cn.md 等命名。主题界面翻译位于 i18n/，可在自己的站点覆盖。
+四语言完整配置见 [hugo.toml](exampleSite/config/_default/hugo.toml) + [params.yaml](exampleSite/config/_default/params.yaml)，内容采用 hello.en.md / hello.zh-cn.md 等命名。主题界面翻译位于 i18n/，可在自己的站点覆盖。
 
 子模块更新：
 

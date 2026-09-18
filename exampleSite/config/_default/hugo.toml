@@ -1,0 +1,106 @@
+# 中文：复制本文件及 params.yaml 到博客 config/_default/；合并/删除旧配置，避免重复。
+# English: Copy both files to your blog config/_default/; merge/remove old duplicate settings.
+# 中文：主题源码不保存个人设置。 / English: Keep personal settings outside the theme.
+
+# 正式网址，包含子路径及末尾 /。 / Public URL including deployment subpath and trailing slash.
+baseURL = "https://example.org/"
+# 站点标题。 / Site title.
+title = "Ruri Journal"
+# 安装到 themes/ruri，无需 Reimu。 / Install into themes/ruri; Reimu is not required.
+theme = "ruri"
+# 默认语言。 / Default language.
+defaultContentLanguage = "en"
+# 使用语言子目录；改变会影响 URL。 / Language subdirectories; changes affect URLs.
+defaultContentLanguageInSubdir = true
+# 中文：RSS 版权后备文本；RSS license_type 优先。
+# English: RSS copyright fallback; RSS license_type takes precedence.
+copyright = ""
+# 中文：无时区日期的默认时区；expiryDate 建议明确带 +08:00 等偏移。
+# English: Default time zone for offset-free dates; use explicit offsets in expiryDate.
+timeZone = "Asia/Shanghai"
+# 中文：不发布草稿、未来或过期文章；到期隐藏需要重新构建部署。
+# English: Exclude drafts/future/expired posts; expiry requires rebuilding and redeploying.
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+# 中文：自动摘要长度；卡片额外截断至 110 字符。
+# English: Auto-summary length; cards additionally truncate to 110 characters.
+summaryLength = 70
+
+[languages.en]
+# 语言显示名。 / Language display label.
+label = "English"
+# 语言排序。 / Language ordering.
+weight = 1
+# 中文：中日文启用 CJK 字数与摘要。 / English: CJK word counts and summaries.
+hasCJKLanguage = false
+[languages.zh-cn]
+# 语言显示名。 / Language display label.
+label = "简体中文"
+# 语言排序。 / Language ordering.
+weight = 2
+# 中文：中日文启用 CJK 字数与摘要。 / English: CJK word counts and summaries.
+hasCJKLanguage = true
+[languages.zh-tw]
+# 语言显示名。 / Language display label.
+label = "繁體中文"
+# 语言排序。 / Language ordering.
+weight = 3
+# 中文：中日文启用 CJK 字数与摘要。 / English: CJK word counts and summaries.
+hasCJKLanguage = true
+[languages.ja]
+# 语言显示名。 / Language display label.
+label = "日本語"
+# 语言排序。 / Language ordering.
+weight = 4
+# 中文：中日文启用 CJK 字数与摘要。 / English: CJK word counts and summaries.
+hasCJKLanguage = true
+[markup.tableOfContents]
+# 最小标题级别（1–6）。 / First heading level (1–6).
+startLevel = 2
+# 最大标题级别（1–6）。 / Last heading level (1–6).
+endLevel = 6
+# 中文：是否生成有序目录。 / English: Generate an ordered TOC.
+ordered = false
+
+[outputs]
+# 页面、RSS、搜索索引，保留 JSON。 / Pages, RSS and search index; keep JSON.
+home = ["HTML", "RSS", "JSON"]
+[markup.highlight]
+# 保持 false，让 CSS 适配深浅色代码块。 / Keep false for theme-aware syntax highlighting.
+noClasses = false
+# 中文：猜测未标记代码语言。 / English: Guess language for unlabelled code.
+guessSyntax = true
+
+# 中文：保留分类/标签名称，主题直接读取这两个 taxonomy。
+# English: Keep these taxonomy names; the theme reads both directly.
+[taxonomies]
+category = "categories"
+tag = "tags"
+# 中文：原始 HTML 默认禁用；仅可信内容需要时开启。
+# English: Raw HTML disabled by default; enable only for trusted content.
+[markup.goldmark.renderer]
+unsafe = false
+# 中文：保留公式分隔符，还需全局 math.katex.enable 与文章 math: true。
+# English: Preserve math delimiters; also enable global math.katex.enable and page math: true.
+[markup.goldmark.extensions.passthrough]
+enable = true
+[markup.goldmark.extensions.passthrough.delimiters]
+block = [['\[', '\]'], ['$$', '$$']]
+inline = [['\(', '\)'], ['$', '$']]
+
+# 中文：文章级配置写在 Markdown front matter，不是本文件：
+# English: Page options belong in Markdown front matter, NOT this file:
+# title/description: 标题与卡片/SEO 简介 / title and card/SEO description.
+# date/lastmod/expiryDate: 发布/更新/到期时间 ISO 8601 / publication/update/expiry timestamps.
+# draft: true 隐藏草稿 / hide drafts. weight: 排序权重 / sorting weight.
+# categories/tags: 分类/标签数组 / taxonomy arrays.
+# cover: 图片路径/URL，false 关闭，true 使用 banner / path/URL, false hides, true uses banner.
+# comments/toc/copyright/sponsor: false 关闭对应模块 / false disables the respective module.
+# sidebar: false 使用无侧栏宽版 / false uses a wide layout without sidebar.
+# contentWidth: narrow 缩窄内容 / narrow constrains content width.
+# compact: true 缩小标题间距 / true reduces heading spacing.
+# math: true 开启 KaTeX（需全局允许） / enables KaTeX (requires global gate).
+# mermaid: true 开启图表，mermaid 代码块也会自动加载 / enables diagrams; fenced mermaid also auto-loads.
+# 中文：归档用 content/archives/_index.<语言>.md；关于用 content/about/index.<语言>.md。
+# English: Archives: content/archives/_index.<lang>.md; about: content/about/index.<lang>.md.

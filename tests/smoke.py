@@ -1,9 +1,11 @@
 """Portable build checks. Requires Python 3 and Hugo Extended 0.162.1+."""
 from pathlib import Path
-import tempfile, shutil, subprocess, json
+import tempfile, shutil, subprocess, json, tomllib
 from html.parser import HTMLParser
 from urllib.parse import urlsplit, unquote
 THEME = Path(__file__).resolve().parents[1]
+config = tomllib.loads((THEME/'exampleSite/config/_default/hugo.toml').read_text())
+assert config['markup']['goldmark']['extensions']['passthrough']['delimiters']['block'][0] == [chr(92)+'[', chr(92)+']']
 class Links(HTMLParser):
     def __init__(self): super().__init__(); self.urls=[]
     def handle_starttag(self, tag, attrs):
@@ -36,8 +38,8 @@ with tempfile.TemporaryDirectory(prefix='ruri-smoke-') as d:
         else:shutil.copytree(THEME/'exampleSite',site)
         (site/'themes').mkdir();(site/'themes/ruri').symlink_to(THEME)
         if kind=='subpath':
-            config=site/'hugo.toml';config.write_text(config.read_text().replace('https://example.org/','https://example.org/blog/'))
-        with (site/'hugo.toml').open('a') as f:
+            config=site/'config/_default/hugo.toml';config.write_text(config.read_text().replace('https://example.org/','https://example.org/blog/'))
+        with (site/('hugo.toml' if kind=='minimal' else 'config/_default/hugo.toml')).open('a') as f:
             if kind=='minimal':f.write(chr(10)+'[outputs]'+chr(10)+'home=["HTML","RSS","JSON"]'+chr(10))
         out=build(site,'/blog/' if kind=='subpath' else '')
         if kind=='minimal':

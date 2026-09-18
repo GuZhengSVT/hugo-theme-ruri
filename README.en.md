@@ -51,6 +51,8 @@ cp -R themes/ruri/exampleSite/. .
 hugo server --disableFastRender
 ```
 
+For complete configuration, copy both bilingual-commented files from exampleSite/config/_default/ (hugo.toml and params.yaml) into your personal blog config/_default/. Keep personal playlists, analytics IDs and comment endpoints outside the theme repository. Merge existing root configuration to avoid duplicates. The single-file snippet below is only a minimal alternative.
+
 ### Option B: configure your own site
 
 Put the following in your site's `hugo.toml`. Merge with existing settings; do not duplicate TOML tables.
@@ -151,7 +153,7 @@ Waline loads on comment-enabled pages and follows the color theme. Popular posts
 
 ### Languages, updates and migration
 
-See [exampleSite/hugo.toml](exampleSite/hugo.toml) for four-language settings, and hello.en.md / hello.zh-cn.md sample content. Theme translations live in i18n/ and can be overridden by your site.
+See [hugo.toml](exampleSite/config/_default/hugo.toml) + [params.yaml](exampleSite/config/_default/params.yaml) for four-language settings, and hello.en.md / hello.zh-cn.md sample content. Theme translations live in i18n/ and can be overridden by your site.
 
 Update a submodule installation:
 
