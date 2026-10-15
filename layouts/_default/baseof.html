@@ -26,4 +26,141 @@
 {{ $totalWords := 0 }}{{ $totalMinutes := 0 }}{{ range where .Site.RegularPages "Type" "in" .Site.MainSections }}{{ $totalWords = add $totalWords .WordCount }}{{ $totalMinutes = add $totalMinutes .ReadingTime }}{{ end }}
 <footer class="shell site-footer"><div>© {{ with .Site.Params.footer.since }}{{ . }}–{{ end }}{{ now.Year }} {{ .Site.Params.author }}<br><small>{{ if .Site.Params.footer.powered }}Hugo / ruri · {{ end }}{{ .Site.Params.ruri.footerText }}{{ if .Site.Params.footer.count }}<span class="site-totals"> · {{ $totalWords }} {{ i18n "ruri_words" }} · {{ $totalMinutes }} {{ i18n "ruri_minutes" }}</span>{{ end }}</small></div><div>{{ if .Site.Params.search_visits.enable }}{{ if fileExists "static/search-visits.json" }}{{ with os.ReadFile "static/search-visits.json" | transform.Unmarshal }}<small class="visits">{{ i18n "search_visits.weekly" }} {{ .totals.weekly }} · {{ i18n "search_visits.yearly" }} {{ .totals.yearly }} · {{ i18n "search_visits.total" }} {{ .totals.total }}<br>{{ i18n "search_visits.updated" }} {{ .updatedAt }}</small>{{ end }}{{ end }}{{ end }}</div></footer>
 <dialog id="search-dialog" data-index="{{ "pagefind/pagefind.js" | relURL }}"><form method="dialog"><strong>{{ i18n "search" }}</strong><button aria-label="{{ i18n "ruri_close" }}">×</button></form><label for="search-input">{{ .Site.Params.pagefind_search.placeholder | default (i18n "search") }}</label><input id="search-input" type="search" autocomplete="off"><p id="search-status" aria-live="polite"></p><div id="search-results"></div></dialog>
-</div>{{ partial "player.html" . }}<a class="back-top" href="#top" aria-label="{{ i18n "ruri_top" }}" title="{{ i18n "ruri_top" }}">↑</a></body></html>
+{{/* The contents launcher is rendered inside #page-shell on purpose: in-page
+     navigation replaces only that shell, so a button outside it would never
+     exist for a reader arriving from another page. Pages without a reading
+     sidebar (sidebar:false) and pages with the contents switched off render
+     nothing, so the launcher always matches the sidebar it depends on. */}}{{ if and (not $wide) .IsPage (ne .Params.toc false) (findRE "<a href=" .TableOfContents) }}{{ with .TableOfContents }}<button id="toc-toggle" type="button" aria-controls="ruri-toc" aria-expanded="false" aria-label="{{ i18n "toc" }}" title="{{ i18n "toc" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>{{ end }}{{ end }}</div>{{ partial "player.html" . }}{{/* Only an article detail page offers the contents launcher; standalone pages
+     keep the sidebar listing they have always had. */}}<a class="back-top" href="#top" aria-label="{{ i18n "ruri_top" }}" title="{{ i18n "ruri_top" }}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></a><template id="ruri-toc-template"><div class="toc-head"><span class="toc-head-title">{{ i18n "toc" }}</span><button type="button" class="toc-close" aria-label="{{ i18n "ruri_close" }}">×</button></div></template><script>/* Mobile-only reading aids: a slim tappable player rail and a contents drawer.
+   Both are decided before first paint so the player never flashes its desktop
+   shape on a narrow viewport, and they stay completely inert above 760px. */
+(()=>{
+const narrow=matchMedia('(max-width:760px)');
+document.documentElement.classList.toggle('mobile-ui',narrow.matches);
+function syncRail(){
+  const player=document.getElementById('floating-player');if(!player)return;
+  /* The rail is a narrow-viewport layout, not a touch-device one: a wide touch
+     screen keeps the desktop player and its plain tap-to-play cover. Read the
+     query live so a rotation or resize lands on the right shape. */
+  const rail=narrow.matches;
+  player.classList.toggle('rail',rail);
+  if(!rail){player.classList.remove('expanded');document.body.classList.remove('player-expanded')}
+}
+/* The contents button is rendered with the page, inside #page-shell, so in-page
+   navigation brings a fresh one along with the contents it belongs to. The guard
+   below only has to cover the case the server cannot: a page whose sidebar was
+   emptied at runtime, which must not leave a launcher opening an empty drawer. */
+function hasContents(){
+  const source=document.querySelector('.reading-sidebar .toc');
+  return !!(source&&source.textContent.trim());
+}
+function buildTocToggle(){
+  const button=document.getElementById('toc-toggle');
+  return button&&hasContents()?button:null;
+}
+function buildTocDrawer(){
+  const existing=document.getElementById('ruri-toc');if(existing)return existing;
+  const aside=document.querySelector('.reading-sidebar');if(!aside)return null;
+  /* Move the whole live contents block, never a nested copy: multi-level contents
+     would lose their articles if only an inner <details> travelled. */
+  const toc=aside.querySelector('.toc');if(!toc||!toc.textContent.trim())return null;
+  const template=document.getElementById('ruri-toc-template');if(!template)return null;
+  const drawer=document.createElement('aside');
+  drawer.id='ruri-toc';drawer.className='toc-drawer';
+  drawer.setAttribute('aria-label',aside.getAttribute('aria-label')||document.title);drawer.hidden=true;
+  /* Deep contents collapse into dead summaries on touch; keep them open so the
+     drawer is scannable in one look. */
+  toc.querySelectorAll('details').forEach(item=>{item.open=true});
+  /* The comments shortcut belongs with the contents list, not floating alone. */
+  const jump=aside.querySelector('.comments-jump');
+  drawer.append(template.content.cloneNode(true));
+  drawer.append(toc);if(jump)drawer.append(jump);
+  document.body.append(drawer);
+  return drawer;
+}
+/* Drop the drawer and its listeners without touching page content. The launcher
+   is part of the page itself now, so navigation replaces it along with the shell. */
+function dropTocDrawer(){
+  uiAbort?.abort();uiAbort=null;
+  document.getElementById('ruri-toc')?.remove();
+  document.body.classList.remove('toc-open');
+  document.documentElement.classList.remove('toc-drawer-active');
+  drawerApi=null;
+}
+/* Leaving the narrow viewport (rotation, window resize) hands the contents back
+   to the sidebar it came from; the page itself is still the same one. */
+function teardownToc(){
+  const drawer=document.getElementById('ruri-toc');
+  const aside=document.querySelector('.reading-sidebar');
+  if(drawer){
+    const toc=drawer.querySelector('.toc');
+    if(toc&&aside){
+      /* Restore the desktop default: only the top level stays expanded. */
+      toc.querySelectorAll('details').forEach(item=>{item.open=false});
+      aside.append(toc);
+    }
+    const jump=drawer.querySelector('.comments-jump');
+    if(jump&&aside)aside.append(jump);
+  }
+  dropTocDrawer();
+  document.body.classList.remove('player-expanded');
+}
+let drawerApi=null,uiAbort=null,activeShell=null;
+function initMobileUi(){
+  syncRail();
+  const shell=document.getElementById('page-shell');
+  /* initPage() bootstraps before DOMContentLoaded, so this can arrive twice for
+     the same shell. The contents have already moved into the drawer by then and
+     would look absent, so a repeat call must be a no-op while the viewport is
+     still narrow. Widening must fall through instead, or the drawer would keep the
+     contents to itself on a wide screen and the sidebar would sit empty. */
+  if(narrow.matches&&shell&&shell===activeShell&&document.getElementById('ruri-toc'))return;
+  activeShell=shell;
+  if(!narrow.matches){teardownToc();return}
+  /* Only a page that shipped a launcher may have its contents moved into the
+     drawer: a page with the contents switched off has no way to open one, and
+     would lose its list to a box nobody can reach. */
+  const button=buildTocToggle();
+  if(!button){dropTocDrawer();return}
+  const drawer=buildTocDrawer();
+  if(!drawer)return;
+  document.documentElement.classList.add('toc-drawer-active');
+  const setOpen=open=>{
+    if(open===drawer.classList.contains('is-open'))return;
+    if(open&&drawer.hidden){drawer.hidden=false;void drawer.offsetWidth}
+    drawer.classList.toggle('is-open',open);
+    document.body.classList.toggle('toc-open',open);
+    button.setAttribute('aria-expanded',String(open));
+    if(open){drawer.hidden=false;drawer.querySelector('.toc-close')?.focus()}
+    else drawer.addEventListener('transitionend',()=>{if(!drawer.classList.contains('is-open'))drawer.hidden=true},{once:true});
+  };
+  if(!uiAbort){
+    uiAbort=new AbortController();const signal=uiAbort.signal;
+    button.addEventListener('click',()=>drawerApi.open(),{signal});
+    drawer.querySelector('.toc-close')?.addEventListener('click',()=>{drawerApi.close();button.focus()},{signal});
+    drawer.addEventListener('click',event=>{if(event.target.closest('a'))drawerApi.close()},{signal});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&drawer.classList.contains('is-open'))drawerApi.close()},{signal});
+    document.addEventListener('click',event=>{
+      if(!drawer.classList.contains('is-open'))return;
+      if(!drawer.contains(event.target)&&!button.contains(event.target))drawerApi.close();
+    },{signal});
+  }
+  drawerApi={open:()=>setOpen(true),close:()=>setOpen(false)};
+}
+/* In-page navigation swaps #page-shell but leaves this furniture in place, so
+   the shell script asks for a re-evaluation after every swap. That request also
+   arrives once on the first load, where the shell has not changed at all: only
+   a genuinely new shell may discard the drawer, otherwise the freshly built
+   contents would be thrown away along with it. */
+function refresh(){
+  if(document.getElementById('page-shell')===activeShell)return;
+  dropTocDrawer();
+  document.body.classList.remove('player-expanded');
+  syncRail();
+  initMobileUi();
+}
+window.RuriMobileUi={refresh};
+document.addEventListener('DOMContentLoaded',initMobileUi);
+addEventListener('pageshow',()=>{syncRail();if(!narrow.matches)teardownToc()});
+narrow.addEventListener('change',event=>{document.documentElement.classList.toggle('mobile-ui',event.matches);drawerApi?.close();syncRail();initMobileUi()});
+})();</script></body></html>

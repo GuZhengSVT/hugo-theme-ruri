@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fold the mobile music player into a vertical title rail; the first touch expands controls without starting playback.
+- Add a mobile article contents drawer that follows in-page navigation and viewport changes, hidden on pages without headings.
+- Remove the empty mobile article sidebar space and align floating controls and lyrics.
 - Add Hugo Module metadata and a full-example Module build regression check.
 - Rewrite Chinese and English installation/configuration guides with Module and Git submodule workflows.
 - Remove legacy JSON search output, unused translations/styles/helpers, and share friend-card rendering without merging categories.

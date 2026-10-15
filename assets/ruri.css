@@ -392,7 +392,11 @@ dialog input{width:100%;border:1px solid var(--line);background:var(--bg);color:
 .archive-taxonomies h3 span{font-size:10px;color:var(--muted);margin-left:12px}
 .archive-taxonomies .tags a{background:var(--paper)}
 .archive-taxonomies section+section{margin-top:18px}
-.back-top{position:fixed;right:24px;bottom:26px;display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);background:var(--paper);color:var(--accent);z-index:50;font-size:24px}
+.back-top{position:fixed;right:24px;bottom:26px;display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);background:var(--paper);color:var(--accent);z-index:50}
+
+/* The arrow is a drawn icon rather than a "↑" glyph: a font glyph carries its
+   own baseline metrics and never sits dead centre in the square. */
+.back-top svg{display:block;width:18px;height:18px}
 .site-footer{padding-bottom:175px}
 #floating-player{position:fixed;left:20px;bottom:20px;width:500px;max-width:calc(100vw - 92px);background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:14px;z-index:60;box-shadow:0 4px 24px #0001}
 #floating-player[hidden]{display:none}
@@ -418,7 +422,12 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 .post-image{height:145px}
 .sidebar{display:block}
 .sidebar-inner{display:block}
-.reading-sidebar{grid-row:1}
+/* A reading sidebar has no place in the narrow layout. Its contents list is the
+   drawer's job, and this rule is pure CSS on purpose: the sidebar used to claim the
+   first grid row, so every one of these pages painted a blank band above the article
+   before the script moved the list away (and left one behind whenever there was
+   nothing to move). Section pages use the ordinary sidebar of the rule above. */
+.reading-sidebar{display:none}
 .reading-sidebar .sidebar-inner{position:static;max-height:none;overflow:visible}
 .reading-sidebar .toc{max-height:260px;overflow:auto}
 .reading-sidebar .music{padding:12px 0;margin-bottom:12px}
@@ -925,15 +934,24 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 
 #music-feedback:empty{display:none}
 
-#music-lyrics{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:55;max-width:min(620px,calc(100vw - 280px));pointer-events:none;text-align:center;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 18px;font-size:15px;line-height:1.7;box-shadow:0 2px 12px #0001;overflow-wrap:anywhere}
+#music-lyrics{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:55;max-width:min(620px,calc(100vw - 280px));pointer-events:none;text-align:center;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 18px;font-size:15px;line-height:1.7;box-shadow:0 2px 12px #0001;overflow-wrap:anywhere;transition:bottom .28s ease}
 
-@media(max-width:760px){#music-lyrics{bottom:116px;max-width:calc(100vw - 32px);width:max-content;font-size:13px}
+/* Resting lyrics sit on the floor; once the player unfolds they step above its
+   104px artwork so the two never cover each other. Applies at every width. */
+body.player-expanded #music-lyrics{bottom:118px}
+
+@media(max-width:760px){/* Keep clear of the folded rail in the bottom-left corner. */
+/* Centred, so the width cap must clear both the rail on the left and the two
+   square controls on the right. */
+#music-lyrics{max-width:min(620px,calc(100vw - 112px));width:max-content;font-size:13px}
 #floating-player .player-body,#floating-player.expanded .player-body{padding:10px 8px}
 #floating-player .music-controls button{padding:3px 4px}
 }
 
-@media(prefers-reduced-motion:reduce){#music-title.is-scrolling{animation:none}
+@media(prefers-reduced-motion:reduce){#music-title.is-scrolling,#player-rail-title.is-scrolling{animation:none}
 .music-title-window{overflow-x:auto}
+#floating-player.rail #player-rail-title{overflow-y:auto}
+#music-lyrics{transition:none}
 }
 
 
@@ -1012,3 +1030,190 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 .prose .lightbox-link{display:block;cursor:zoom-in}.lightbox-link:has(>.article-cover){display:block}
 .media-dialog{width:min(400px,calc(100% - 32px));text-align:center;overflow:auto}.media-dialog header{display:flex;align-items:center;justify-content:space-between;gap:12px}.media-dialog header button{font-size:24px}.media-dialog img,.media-dialog canvas{display:block;max-width:100%;height:auto;margin:18px auto}.media-dialog a{display:block;overflow-wrap:anywhere;font-size:12px}.article-copyright p{margin:6px 0}
 #search-results mark{background:#ffe598;color:#222}#search-results>button{margin-top:14px;padding:8px 16px}.site-totals{display:block}
+
+
+/* ==========================================================================
+   Mobile reading ergonomics.
+   Two additions that only exist below 760px: the floating player folds into a
+   slim vertical rail, and the article table of contents moves into a sliding
+   drawer behind a floating button. The desktop layout keeps its original
+   markup and styling, so every rule here stays inside the narrow-viewport
+   media query and the extra nodes stay hidden everywhere else.
+   ========================================================================== */
+
+/* Desktop baseline: the mobile-only furniture stays inert outside the query. The
+   rail title is included because it is an added node, not a restyled one: without
+   a hide rule out here it would render inside the desktop artwork box. */
+#toc-toggle,.toc-drawer,#player-rail-window{display:none}
+
+@media(max-width:760px){
+
+/* --- Floating player: a slim rail that expands on tap. --- */
+#floating-player.rail{
+  --rail-width:20px;
+  --rail-height:88px;
+  width:var(--rail-width);
+  min-width:var(--rail-width);
+  height:var(--rail-height);
+  max-width:var(--rail-width);
+  padding:0;
+  gap:0;
+  border:1px solid var(--line);
+  border-radius:0;
+  /* The playlist and volume popovers hang outside the player, so this box must
+     not clip. Each inner box clips its own content instead. */
+  overflow:visible;
+  cursor:pointer;
+  box-shadow:0 3px 14px #0002;
+  transition:width .28s ease,box-shadow .28s ease
+}
+
+#floating-player.rail.expanded{
+  width:calc(100vw - 20px);
+  max-width:none;
+  height:var(--cover-size);
+  cursor:default;
+  box-shadow:0 6px 26px #0003
+}
+
+#floating-player.rail .player-artwork{flex:0 0 var(--rail-width);width:var(--rail-width);height:100%;overflow:hidden}
+
+#floating-player.rail.expanded .player-artwork{flex:0 0 var(--cover-size);width:var(--cover-size);height:var(--cover-size);overflow:visible}
+
+/* The folded rail is type only: artwork would dominate a strip this thin. */
+#floating-player.rail:not(.expanded) #music-cover{display:none}
+
+#floating-player.rail.expanded #music-cover{display:block;flex:0 0 var(--cover-size);width:var(--cover-size);height:var(--cover-size);min-height:0}
+
+#floating-player.rail #player-toggle{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;width:100%;height:100%;padding:0;margin:0;border:0;line-height:1.25}
+
+#floating-player.rail.expanded #player-toggle{display:block;flex:0 0 var(--cover-size);width:var(--cover-size);height:var(--cover-size)}
+
+/* The window clips; the text inside only ever moves. Putting the clip and the
+   transform on one element would drag the clip along with the text and slice the
+   marquee in half. */
+#floating-player.rail #player-rail-window{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 1 auto;
+  min-height:0;
+  overflow:hidden
+}
+
+/* A name that already fits is simply centred and still. */
+#floating-player.rail #player-rail-title{
+  display:block;
+  flex:none;
+  width:100%;
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  text-align:center;
+  font-size:11px;
+  line-height:1.15;
+  color:var(--muted);
+  white-space:nowrap
+}
+
+/* Only an over-long name leaves the centre, because a centred item that already
+   overflows is clipped on both sides and can never be scrolled into view. */
+#floating-player.rail #player-rail-window.has-overflow{align-items:flex-start}
+
+#floating-player.rail #player-rail-title.is-scrolling{animation:rail-title-pan var(--rail-duration,12s) ease-in-out infinite alternate}
+
+@keyframes rail-title-pan{0%,15%{transform:translateY(0)}
+85%,100%{transform:translateY(var(--rail-shift))}
+}
+
+#floating-player.rail.expanded #player-rail-window{display:none}
+
+#floating-player.rail:not(.expanded) #cover-state{display:none}
+
+#floating-player.rail:not(.expanded):hover{background:var(--tint)}
+
+/* The artwork state badge keeps its own column once the rail is open. */
+#floating-player.rail #cover-state{right:4px;bottom:4px;width:22px;height:22px;font-size:11px}
+
+#floating-player.rail.expanded #cover-state{right:6px;bottom:6px;width:26px;height:26px;font-size:12px}
+
+/* --- Contents: floating launcher plus a right-side sliding drawer. --- */
+
+/* Deliberately identical to .back-top: same square footprint, same border and
+   surface, so the two stack as one column of controls. */
+#toc-toggle{
+  position:fixed;
+  right:10px;
+  bottom:64px;
+  z-index:66;
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  padding:0;
+  border:1px solid var(--line);
+  background:var(--paper);
+  color:var(--accent)
+}
+
+#toc-toggle svg{display:block;width:18px;height:18px}
+
+.back-top{right:10px;bottom:20px;width:36px;height:36px}
+
+#toc-toggle[aria-expanded=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* The expanded player spans the whole width, so the launcher steps aside. */
+body.player-expanded #toc-toggle{display:none}
+
+.toc-drawer{
+  position:fixed;
+  top:0;
+  right:0;
+  bottom:0;
+  left:auto;
+  z-index:70;
+  display:block;
+  width:min(84vw,340px);
+  padding:18px 20px 40px;
+  border-left:1px solid var(--line);
+  background:var(--paper);
+  box-shadow:-10px 0 30px #0002;
+  transform:translateX(105%);
+  transition:transform .26s ease;
+  overflow-y:auto;
+  overscroll-behavior:contain
+}
+
+.toc-drawer.is-open{transform:none}
+
+.toc-drawer .toc{
+  min-width:0;
+  max-width:100%;
+  width:100%;
+  max-height:none;
+  overflow:visible;
+  margin:0!important;
+  padding:0;
+  border:0;
+  font-size:13px
+}
+
+/* The article's own summary is kept for desktop; the drawer header replaces it. */
+.toc-drawer .toc>summary{display:none}
+
+.toc-head{display:flex;align-items:center;gap:10px;padding:0 0 12px;margin-bottom:12px;border-bottom:1px solid var(--line)}
+
+.toc-head-title{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--ink)}
+
+.toc-close{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;padding:0;border:0;border-radius:6px;font-size:20px;line-height:1;color:var(--muted)}
+
+.toc-close:hover,.toc-close:focus-visible{background:var(--tint);color:var(--accent)}
+
+body.toc-open{overflow:hidden}
+
+body.toc-open:before{content:"";position:fixed;inset:0;z-index:68;background:#0e1b2266}
+
+body.toc-open #toc-toggle{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){#floating-player.rail,.toc-drawer{transition:none}
+}

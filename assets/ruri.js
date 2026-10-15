@@ -3,6 +3,9 @@ const $=s=>document.querySelector(s);const tr=key=>{try{return JSON.parse(docume
 function syncDark(){const mode=document.documentElement.dataset.theme;document.documentElement.classList.toggle('waline-dark',mode==='dark'||(mode!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches))}
 syncDark();matchMedia('(prefers-color-scheme:dark)').addEventListener('change',syncDark);
 let archiveObserver=null,tocObserver=null;
+/* The folded rail only exists below this width, so every measurement of it is
+   skipped on the desktop layout instead of forcing a layout read for nothing. */
+const narrow=matchMedia('(max-width:760px)');
 function initArchive(){
   archiveObserver?.disconnect();archiveObserver=null;
   const tree=$('.archive-tree');if(!tree)return;
@@ -40,7 +43,7 @@ function localizePlayer(){
  document.querySelectorAll('[data-ruri-label]').forEach(el=>{const label=tr(el.dataset.ruriLabel);el.setAttribute('aria-label',label);if(el.hasAttribute('title'))el.title=label});
  updateOrder();syncVolume();syncPlayback();if(songs.length)$('#music-count').textContent=songs.length+tr('tracks');
 }
-function initPage(){tocObserver?.disconnect();localizePlayer();
+function initPage(){tocObserver?.disconnect();window.RuriMobileUi?.refresh();localizePlayer();
 initArchive();window.RuriFeatures.init();
 $('#theme-toggle')?.addEventListener('click',()=>{const dark=document.documentElement.dataset.theme==='dark'||(document.documentElement.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);const mode=dark?'light':'dark';document.documentElement.dataset.theme=mode;try{localStorage.setItem('ruri-theme',mode)}catch{}syncDark()});
 
@@ -79,12 +82,33 @@ function updateTitleScroll(){
   titleText.classList.toggle('is-scrolling',delta>4);
   titleText.style.setProperty('--title-shift',Math.min(0,-delta)+'px');
   titleText.style.setProperty('--title-duration',Math.max(9,delta/24+5)+'s');
+  updateRailTitleScroll();
 }
-if(window.ResizeObserver)new ResizeObserver(updateTitleScroll).observe(titleText.parentElement);
-function updatePlayer(){player.classList.toggle('expanded',hovering||listOpen||volumeOpen||focusInside);requestAnimationFrame(updateTitleScroll)}
+/* The folded rail sets its title vertically, so its overflow runs along the
+   block axis and the same marquee idea pans the text up and down instead. The
+   window is what clips, so the window is what the text has to be compared to. */
+function updateRailTitleScroll(){
+  if(!narrow.matches)return;
+  const win=$('#player-rail-window'),el=$('#player-rail-title');if(!win||!el)return;
+  const overflow=el.offsetHeight-win.clientHeight;
+  const long=overflow>4;
+  win.classList.toggle('has-overflow',long);
+  el.classList.toggle('is-scrolling',long);
+  el.style.setProperty('--rail-shift',Math.min(0,-overflow)+'px');
+  el.style.setProperty('--rail-duration',Math.max(9,overflow/24+5)+'s');
+}
+if(window.ResizeObserver){
+  const measure=new ResizeObserver(updateTitleScroll);
+  measure.observe(titleText.parentElement);
+  /* The rail title only gains a box once the player takes its folded shape, so
+     observe it directly and re-measure the moment it becomes visible. */
+  const railWindow=$('#player-rail-window');if(railWindow)measure.observe(railWindow);
+}
+/* Only a really open player lifts the floating lyrics out of the way. */
+function updatePlayer(){player.classList.toggle('expanded',hovering||listOpen||volumeOpen||focusInside);document.body.classList.toggle('player-expanded',player.classList.contains('expanded'));requestAnimationFrame(updateTitleScroll)}
 function showPlaylist(open){listOpen=open;$('#music-playlist').hidden=!open;$('#music-list-toggle').setAttribute('aria-expanded',String(open));updatePlayer()}
-player.addEventListener('mouseenter',()=>{hovering=true;updatePlayer()});
-player.addEventListener('mouseleave',()=>{hovering=false;updatePlayer()});
+player.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){hovering=true;updatePlayer()}});
+player.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){hovering=false;updatePlayer()}});
 player.addEventListener('focusin',e=>{focusInside=e.target!==$('#player-toggle');updatePlayer()});
 player.addEventListener('focusout',()=>{queueMicrotask(()=>{focusInside=player.contains(document.activeElement)&&document.activeElement!==$('#player-toggle');updatePlayer()})});
 player.addEventListener('keydown',e=>{if(e.key==='Escape'){showVolume(false);showPlaylist(false);$('#player-toggle').focus()}});
@@ -92,7 +116,9 @@ $('#music-list-toggle').addEventListener('click',()=>showPlaylist(!listOpen));
 $('#music-list-close').addEventListener('click',()=>{showPlaylist(false);$('#music-list-toggle').focus()});
 document.addEventListener('pointerdown',e=>{if(!player.contains(e.target)){showVolume(false);showPlaylist(false);focusInside=false;hovering=false;updatePlayer()}});
 // Touch users can reveal controls without a hover-capable pointer.
-$('#player-toggle').addEventListener('click',()=>{if(matchMedia('(hover: none)').matches()){focusInside=true;updatePlayer()}toggleMusic()});
+$('#player-toggle').addEventListener('click',()=>{const collapsed=player.classList.contains('rail')&&!player.classList.contains('expanded');if(collapsed||matchMedia('(hover: none)').matches){focusInside=true;updatePlayer()}if(!collapsed)toggleMusic()});
+// The expanded mobile rail folds back on any outside tap, since hover never ends there.
+document.addEventListener('pointerdown',e=>{if(!player.classList.contains('rail')||!player.classList.contains('expanded'))return;if(player.contains(e.target)||$('#toc-toggle')?.contains(e.target)||document.body.classList.contains('toc-open'))return;focusInside=false;hovering=false;updatePlayer()},true);
 function updateOrder(){const label={sequence:tr('sequence'),single:tr('single'),shuffle:tr('shuffle')}[order];$('#music-order').dataset.order=order;$('#music-order').setAttribute('aria-label',label+tr('order_hint'));$('#music-order').title=label+tr('order_hint')}
 updateOrder();
 $('#music-order').addEventListener('click',()=>{const modes=['sequence','single','shuffle'];order=modes[(modes.indexOf(order)+1)%3];saveMusicSetting('ruri-play-order',order);updateOrder()});
@@ -187,7 +213,7 @@ function selectTrack(n,play=false){
   if(!songs.length)return;current=(n+songs.length)%songs.length;
   const song=songs[current];audio.src=song.url;
   const title=song.name+' · '+(Array.isArray(song.artist)?song.artist.join(' / '):(song.artist||''));
-  titleText.textContent=title;titleText.parentElement.title=title;requestAnimationFrame(updateTitleScroll);
+  titleText.textContent=title;titleText.parentElement.title=title;const railTitle=$('#player-rail-title');if(railTitle){railTitle.textContent=title;railTitle.title=title}requestAnimationFrame(updateTitleScroll);
   tracks.querySelectorAll('button').forEach((button,i)=>{button.setAttribute('aria-current',String(i===current))});
   const cover=$('#music-cover');cover.src=song.pic||song.cover||player.dataset.fallback;cover.onerror=()=>{cover.onerror=null;cover.src=player.dataset.fallback};
   feedback('');syncProgress();syncPlayback();loadLyrics(song);if(play)playMusic();
