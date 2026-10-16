@@ -153,6 +153,7 @@ ruri:
   homeEyebrow: NOTE, TECH & POEM
   homeHeading: [A quiet place, for your words.]
   footerText: Made with care.
+  favicon: favicon_io/favicon.svg
 menu:
   - name: home
     url: /
@@ -165,6 +166,8 @@ menu:
 ~~~
 
 `banner` 对应 `static/images/banner.webp`；`avatar` 对应 `static/avatar/avatar.webp`。不配置时不显示对应图片。文章 `cover` 可指定图片路径／URL，`false` 关闭。添加导航后需要创建对应页面。
+
+主题默认使用太阳系与旅行者 SVG 图标，并附带最高 256×256、包含七档尺寸的 ICO，以及 Apple／Android PNG 图标。可通过 `ruri.favicon` 指定自己的图标路径，设为 `""` 则不输出 favicon 链接。原稿保存在 `design/`。
 
 </details>
 

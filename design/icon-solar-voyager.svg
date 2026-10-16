@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">孤筝 · 弦上的太阳系</title>
+  <desc id="description">暖白太阳位于倾斜椭圆的右上焦点。四根倾斜23.44度的琴弦从左下展开，从上到下承载水星、金星、地球与月亮、火星。旅行者从第三根地球弦出发，沿倾斜32度的椭圆弧绕过上方与左侧，向外飞去。</desc>
+  <defs>
+    <linearGradient id="space" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#1C3B55"/>
+      <stop offset="1" stop-color="#10283E"/>
+    </linearGradient>
+    <linearGradient id="strings" gradientUnits="userSpaceOnUse" x1="-140" y1="310" x2="630" y2="310">
+      <stop stop-color="#8DBAD3" stop-opacity=".48"/>
+      <stop offset=".28" stop-color="#8DBAD3" stop-opacity=".58"/>
+      <stop offset=".65" stop-color="#A8CFE6" stop-opacity=".86"/>
+      <stop offset="1" stop-color="#8DBAD3" stop-opacity=".64"/>
+    </linearGradient>
+    <linearGradient id="voyager-trail" gradientUnits="userSpaceOnUse" x1="424" y1="323" x2="27" y2="269">
+      <stop stop-color="#90BAD3" stop-opacity=".8"/>
+      <stop offset=".52" stop-color="#AED5E9"/>
+      <stop offset="1" stop-color="#E7ECDE"/>
+    </linearGradient>
+    <radialGradient id="earth" cx=".3" cy=".25" r=".85">
+      <stop stop-color="#E0F2FB"/>
+      <stop offset="1" stop-color="#91BFD9"/>
+    </radialGradient>
+    <clipPath id="tile"><rect width="512" height="512" rx="88"/></clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="512" height="512" fill="url(#space)"/>
+
+    <!-- Strings rise 23.44 degrees to the right; planetary order is top to bottom. -->
+    <g id="planetary-strings" transform="rotate(-23.44 256 256)">
+      <g fill="none" stroke="url(#strings)" stroke-width="3.2" stroke-linecap="round">
+        <path id="mercury-string" d="M -140 310 H 630"/>
+        <path id="venus-string" d="M -140 347 H 630"/>
+        <path id="earth-string" d="M -140 384 H 630"/>
+        <path id="mars-string" d="M -140 421 H 630"/>
+      </g>
+      <!-- Mean physical radii scaled by 15.5 / 6371; no outline inflates small bodies. -->
+      <circle id="mercury" cx="245" cy="310" r="5.936274" fill="#AABBC6"/>
+      <circle id="venus" cx="285" cy="347" r="14.723905" fill="#DFD3B8"/>
+      <circle id="earth-planet" cx="330" cy="384" r="15.5" fill="url(#earth)"/>
+      <circle id="moon" cx="297" cy="384" r="4.226919" fill="#C2D2DC"/>
+      <circle id="mars" cx="338" cy="421" r="8.247528" fill="#CF9F8D"/>
+    </g>
+
+    <!-- True ellipse: centre (240,258), a=218, b=184, rotation=-32 degrees.
+         Focal distance c=sqrt(a*a-b*b)=116.91022196540386.
+         Upper-right focus=(339.145491,196.047021), exactly the Sun's centre.
+         Departure begins on string 3 (local y=384). The arc ends at parameter
+         225 degrees and continues for 42 px along its outward tangent. -->
+    <path id="voyager-trajectory"
+      d="M 424.345548 322.523811 A 218 184 -32 1 0 40.327449 229.349129 L 27.464235 269.330846"
+      fill="none" stroke="url(#voyager-trail)" stroke-width="3.2" stroke-linecap="round"/>
+
+    <!-- A small directional spacecraft mark, distinct from the circular planets. -->
+    <g id="voyager" transform="translate(27.464235 269.330846) rotate(17.834406)">
+      <path d="M 0 10 L -5.5 -1 L 0 -7 L 5.5 -1 Z" fill="#F2E9D1"/>
+    </g>
+
+    <path id="sun" transform="translate(339.145491 196.047021) scale(.9)"
+      d="M 0 -57 C 4 -12 9 -6 49 0 C 9 6 4 12 0 57 C -4 12 -9 6 -49 0 C -9 -6 -4 -12 0 -57 Z"
+      fill="#F2E7CB"/>
+  </g>
+</svg>

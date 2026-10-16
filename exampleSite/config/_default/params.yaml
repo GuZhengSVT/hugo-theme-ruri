@@ -64,7 +64,7 @@ ruri:
   # 页脚小字及 favicon 静态路径；空 favicon 不输出链接。
   # Footer text and static favicon path; empty favicon omits its link.
   footerText: Made with care.
-  favicon: ""
+  favicon: "favicon_io/favicon.svg"
   # 热力图排除的页面路径；其余 RegularPages 均计入，不限 mainSections。
   # Page excluded from heatmap; other RegularPages count, not only mainSections.
   # 默认 /archives；迁移旧统计可用 /about。

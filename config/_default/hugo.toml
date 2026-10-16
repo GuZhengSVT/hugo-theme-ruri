@@ -1,5 +1,7 @@
 [params]
 mainSections = ["posts", "post"]
+[params.ruri]
+favicon = "favicon_io/favicon.svg"
 [outputs]
 home = ["HTML", "RSS"]
 [markup.highlight]

@@ -147,6 +147,7 @@ ruri:
   brandMark: "r."
   tagline: Per aspera ad astra.
   homeHeading: [A quiet place, for your words.]
+  favicon: favicon_io/favicon.svg
 menu:
   - name: home
     url: /
@@ -159,6 +160,8 @@ menu:
 ~~~
 
 Place the banner at `static/images/banner.webp` and avatar at `static/avatar/avatar.webp`. Missing settings hide the images. Article `cover` accepts a path/URL or `false` to hide it. Create a page for each internal menu link.
+
+The theme defaults to the solar-system and Voyager SVG icon, with a seven-size ICO up to 256×256 and Apple/Android PNG icons. Set `ruri.favicon` to your own icon path, or `""` to omit the favicon link. The source artwork is in `design/`.
 
 </details>
 

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add the solar-system and Voyager default SVG favicon, seven-size ICO up to 256×256, Apple/Android PNGs, and source artwork.
 - Fold the mobile music player into a vertical title rail; the first touch expands controls without starting playback.
 - Add a mobile article contents drawer that follows in-page navigation and viewport changes, hidden on pages without headings.
 - Remove the empty mobile article sidebar space and align floating controls and lyrics.
