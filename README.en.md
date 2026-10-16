@@ -161,6 +161,16 @@ menu:
 
 Place the banner at `static/images/banner.webp` and avatar at `static/avatar/avatar.webp`. Missing settings hide the images. Article `cover` accepts a path/URL or `false` to hide it. Create a page for each internal menu link.
 
+Remote images are downloaded and converted to responsive WebP at build time. If content uses a CDN address that the build cannot fetch, map its prefix to the origin with `ruri.images.remoteSources`; the links in your content stay unchanged:
+
+~~~yaml
+ruri:
+  images:
+    remoteSources:
+      - prefix: https://cdn.jsdelivr.net/gh/your-name/your-media/
+        origin: https://raw.githubusercontent.com/your-name/your-media/main/
+~~~
+
 The theme defaults to the solar-system and Voyager SVG icon, with a seven-size ICO up to 256×256 and Apple/Android PNG icons. Set `ruri.favicon` to your own icon path, or `""` to omit the favicon link. The source artwork is in `design/`.
 
 </details>
@@ -213,6 +223,20 @@ The other groups use `friendsLink3` and `friendsLink4`.
 <summary>Code, images, math and diagrams</summary>
 
 Fenced code blocks display language/copy/collapse controls. Keep `markup.highlight.noClasses = false` for theme-aware highlighting. Content images use a local PhotoSwipe lightbox.
+
+The banner, category covers, article covers, content images and avatar generate responsive WebP variants at build time and select them with `srcset`; the original loads only when a reader opens the lightbox. When a page has no `description`, cards, meta tags and share links reuse the first 80 characters of the body text.
+
+Remote images are processed only when they are fetchable and use an image extension (`.jpg`/`.jpeg`/`.png`/`.webp`/`.tif`/`.tiff`/`.bmp`); dynamic endpoints with query strings, GIF and SVG keep their original URLs.
+
+Builds download and convert images, so cache `resources/_gen` and `resources/_remote` in CI and raise the site timeout:
+
+~~~toml
+timeout = '120s'
+
+[caches.getresource]
+dir = ':resourceDir/_remote'
+maxAge = '24h'
+~~~
 
 KaTeX requires `math.katex.enable: true` in theme parameters, `math: true` in page front matter and Goldmark passthrough (see example Hugo config). Mermaid fences automatically load the diagram script; `mermaid: true` is also supported. KaTeX and Mermaid use CDN assets.
 
@@ -349,12 +373,13 @@ Read [CHANGELOG.md](CHANGELOG.md) first. Keep personal configuration, content an
 python3 tests/smoke.py
 python3 tests/module-build.py
 python3 tests/features-build.py
+python3 tests/media-build.py
 node --check assets/ruri.js
 node --check assets/features.js
 node tests/lyrics.cjs
 ~~~
 
-Tests cover minimal/example/subpath builds, Module imports, links, copyright precedence and lyrics. They do not replace visual QA or third-party service checks. See [QA_REPORT.md](QA_REPORT.md) and [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md).
+Tests cover minimal/example/subpath builds, Module imports, links, copyright precedence, automatic excerpts, image processing and lyrics. They do not replace visual QA or third-party service checks. See [QA_REPORT.md](QA_REPORT.md) and [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md).
 
 ## Credits and license
 

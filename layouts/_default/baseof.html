@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ if not .IsHome }}{{ .Title }} · {{ end }}{{ .Site.Title }}</title>
-<meta name="description" content="{{ .Description | default .Site.Params.description | plainify }}">
+<meta name="description" content="{{ partial "description.html" . }}">
 <link rel="canonical" href="{{ .Permalink }}">{{ with .Site.Params.ruri.favicon }}<link rel="icon" href="{{ . | relURL }}">{{ end }}
 {{ with .OutputFormats.Get "RSS" }}<link rel="alternate" type="application/rss+xml" title="RSS" href="{{ .RelPermalink }}">{{ end }}
 {{ range .AllTranslations }}<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">{{ end }}
-<meta property="og:title" content="{{ .Title }}"><meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}"><meta property="og:url" content="{{ .Permalink }}">{{ with partial "cover.html" . }}<meta property="og:image" content="{{ . | absURL }}">{{ end }}
+<meta property="og:description" content="{{ partial "description.html" . }}">
+<meta property="og:title" content="{{ .Title }}"><meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}"><meta property="og:url" content="{{ .Permalink }}">{{ with partial "cover.html" . }}<meta property="og:image" content="{{ partial "media.html" (dict "src" . "page" $ "width" 1200) | absURL }}">{{ end }}
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('ruri-theme')||'auto'}catch(e){}</script>
 {{ $css := resources.Get "ruri.css" | minify | fingerprint }}<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 {{ $heat := resources.Get "heat-map.scss" | toCSS | minify | fingerprint }}<link rel="stylesheet" href="{{ $heat.RelPermalink }}">

@@ -1,14 +1,7 @@
 {{- $url := .Permalink -}}
 {{- $title := .Title -}}
 {{- $source := .Site.BaseURL -}}
-{{- $desc := "" -}}
-{{- if .Params.description -}}
-  {{- $desc = .Params.description | plainify | truncate 300 -}}
-{{- else if .Summary -}}
-  {{- $desc = .Summary  | plainify | truncate 300 -}}
-{{- else -}}
-  {{- $desc = .RawContent | truncate 300 -}}
-{{- end -}}
+{{- $desc := partial "description.html" . -}}
 
 {{- $shareMap := dict
   "weibo" (printf "https://service.weibo.com/share/share.php?url=%s&appkey=&title=%s&pic=&ralateUid=" $url $title)

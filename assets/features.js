@@ -55,9 +55,9 @@ async function initLightbox(version){
   const {default:Lightbox}=await import(vendor()+'photoswipe-lightbox.esm.min.js');if(version!==epoch)return;
   lightbox=new Lightbox({pswpModule:()=>import(vendor()+'photoswipe.esm.min.js')});lightbox.init();
   images.forEach(img=>{
-   const a=document.createElement('a');a.className='lightbox-link';a.href=img.currentSrc||img.src;a.setAttribute('aria-label',img.alt||label(12));img.before(a);a.append(img);
+   const a=document.createElement('a');a.className='lightbox-link';a.href=img.dataset.originalSrc||img.currentSrc||img.src;a.setAttribute('aria-label',img.alt||label(12));img.before(a);a.append(img);
    a.addEventListener('click',async e=>{if(e.ctrlKey||e.metaKey||e.shiftKey)return;e.preventDefault();try{await img.decode()}catch{}if(version!==epoch)return;
-    const data=images.map(x=>({src:x.currentSrc||x.src,width:x.naturalWidth||1600,height:x.naturalHeight||900,alt:x.alt}));lightbox.loadAndOpen(images.indexOf(img),data);
+    const data=images.map(x=>({src:x.dataset.originalSrc||x.currentSrc||x.src,width:Number(x.dataset.originalWidth)||x.naturalWidth||1600,height:Number(x.dataset.originalHeight)||x.naturalHeight||900,alt:x.alt}));lightbox.loadAndOpen(images.indexOf(img),data);
    });
   });
  }catch{/* Images remain readable without the optional viewer. */}

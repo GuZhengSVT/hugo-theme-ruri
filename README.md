@@ -167,6 +167,16 @@ menu:
 
 `banner` 对应 `static/images/banner.webp`；`avatar` 对应 `static/avatar/avatar.webp`。不配置时不显示对应图片。文章 `cover` 可指定图片路径／URL，`false` 关闭。添加导航后需要创建对应页面。
 
+远程图片会在构建时下载并生成 WebP 多档尺寸。若文章使用的是 CDN 地址而构建时无法抓取，可用 `ruri.images.remoteSources` 把前缀改写到原始地址，文章中的链接不必修改：
+
+~~~yaml
+ruri:
+  images:
+    remoteSources:
+      - prefix: https://cdn.jsdelivr.net/gh/your-name/your-media/
+        origin: https://raw.githubusercontent.com/your-name/your-media/main/
+~~~
+
 主题默认使用太阳系与旅行者 SVG 图标，并附带最高 256×256、包含七档尺寸的 ICO，以及 Apple／Android PNG 图标。可通过 `ruri.favicon` 指定自己的图标路径，设为 `""` 则不输出 favicon 链接。原稿保存在 `design/`。
 
 </details>
@@ -222,6 +232,20 @@ copyright: false
 <summary>代码、图片、公式与图表</summary>
 
 带语言标记的 Markdown 代码块自动显示语言栏和复制／折叠按钮；保持 `markup.highlight.noClasses = false` 以适配深浅色。正文图片支持本地 PhotoSwipe 灯箱。
+
+横幅、分类封面、文章封面、正文图片与头像会在构建时生成 WebP 多档尺寸，通过 `srcset` 按显示宽度和像素密度选择；点开放大时才加载原图。文章未填写 `description` 时，卡片、页面描述和分享链接会自动截取正文开头约 80 个字。
+
+远程图片需要可抓取且带图片扩展名（`.jpg`／`.jpeg`／`.png`／`.webp`／`.tif`／`.tiff`／`.bmp`）才会处理；带查询参数的动态图片接口、GIF 与 SVG 保持原地址。
+
+构建会下载并转换图片，建议在 CI 中缓存 `resources/_gen` 与 `resources/_remote`，并在站点配置中放宽超时：
+
+~~~toml
+timeout = '120s'
+
+[caches.getresource]
+dir = ':resourceDir/_remote'
+maxAge = '24h'
+~~~
 
 KaTeX 需要在主题参数中设置 `math.katex.enable: true`、文章 front matter 设置 `math: true`，并启用 Hugo Goldmark 的公式透传。完整透传配置见示例 `hugo.toml`。Mermaid 代码块会自动加载图表脚本，也可设置文章 `mermaid: true`。KaTeX 和 Mermaid 使用 CDN 资源。
 
@@ -362,12 +386,13 @@ git commit -m "chore: update ruri theme"
 python3 tests/smoke.py
 python3 tests/module-build.py
 python3 tests/features-build.py
+python3 tests/media-build.py
 node --check assets/ruri.js
 node --check assets/features.js
 node tests/lyrics.cjs
 ~~~
 
-覆盖最小站点、四语言示例、子路径、Module 导入、站内链接、版权优先级与歌词处理；不替代第三方服务或完整视觉验收。参见 [QA_REPORT.md](QA_REPORT.md) 与 [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)。
+覆盖最小站点、四语言示例、子路径、Module 导入、站内链接、版权优先级、自动摘要、图片处理与歌词；不替代第三方服务或完整视觉验收。参见 [QA_REPORT.md](QA_REPORT.md) 与 [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)。
 
 ## 致谢与许可
 

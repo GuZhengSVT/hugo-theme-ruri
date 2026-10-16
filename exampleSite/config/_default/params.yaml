@@ -46,6 +46,15 @@ social: []
 #     url: mailto:you@example.org
 
 ruri:
+  # 远程图片源映射（可选）：把内容里使用的 CDN 前缀改写为构建时可抓取的原始地址。
+  # prefix 为文章中使用的前缀，origin 为 Hugo 实际下载的地址；不配置则按原地址抓取。
+  # Optional remote image mapping: rewrite a CDN prefix in content to a fetchable origin.
+  # prefix is what content uses; origin is what Hugo downloads. Empty means fetch as-is.
+  images:
+    remoteSources: []
+    # remoteSources:
+    #   - prefix: "https://cdn.jsdelivr.net/gh/your-name/your-media/"
+    #     origin: "https://raw.githubusercontent.com/your-name/your-media/main/"
   # 品牌缩写（空值回退 r.）和品牌下方斜体标语。
   # Brand mark (empty falls back to r.) and italic tagline underneath.
   brandMark: "r."

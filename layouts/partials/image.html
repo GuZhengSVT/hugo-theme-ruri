@@ -1,0 +1,32 @@
+{{- $src := .src -}}
+{{- $page := .page -}}
+{{- $widths := .widths | default (slice 480 960 1440) -}}
+{{- $maxWidth := index $widths (sub (len $widths) 1) -}}
+{{- $original := $src | relURL -}}
+{{- $url := urls.Parse $src -}}
+{{- if and (not $url.Scheme) (not $url.Host) -}}
+  {{- $original = strings.TrimPrefix "/" $src | relURL -}}
+  {{- with $page -}}{{- with .Resources.Get $src -}}{{- $original = .RelPermalink -}}{{- end -}}{{- end -}}
+{{- end -}}
+{{- $source := $original -}}
+{{- $srcset := slice -}}
+{{- $width := .width | default 0 -}}
+{{- $height := .height | default 0 -}}
+{{- $pageKey := "" -}}
+{{- with $page -}}{{- $pageKey = .Path -}}{{- end -}}
+{{- $image := partialCached "media-resource.html" (dict "src" $src "page" $page) $src $pageKey -}}
+{{- with $image -}}
+  {{- if $.lightbox -}}{{- $original = .RelPermalink -}}{{- end -}}
+  {{- $width = math.Min .Width $maxWidth | int -}}
+  {{- $resized := .Resize (printf "%dx webp q82" $width) -}}
+  {{- $source = $resized.RelPermalink -}}
+  {{- $height = $resized.Height -}}
+  {{- range $widths -}}
+    {{- if lt . $width -}}
+      {{- $variant := $image.Resize (printf "%dx webp q82" .) -}}
+      {{- $srcset = $srcset | append (printf "%s %dw" $variant.RelPermalink $variant.Width) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $srcset = $srcset | append (printf "%s %dw" $resized.RelPermalink $resized.Width) -}}
+{{- end -}}
+<img src="{{ $source }}"{{ with $srcset }} srcset="{{ delimit . ", " }}" sizes="{{ $.sizes | default "(max-width: 760px) calc(100vw - 36px), (max-width: 1100px) calc(100vw - 350px), 820px" }}"{{ end }}{{ if and $width $height }} width="{{ $width }}" height="{{ $height }}"{{ end }} alt="{{ .alt | default "" }}"{{ with .title }} title="{{ . }}"{{ end }}{{ with .class }} class="{{ . }}"{{ end }} loading="{{ .loading | default "lazy" }}" decoding="async"{{ with .fetchpriority }} fetchpriority="{{ . }}"{{ end }}{{ if .lightbox }} data-original-src="{{ $original }}"{{ with $image }} data-original-width="{{ .Width }}" data-original-height="{{ .Height }}"{{ end }}{{ end }}>

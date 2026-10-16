@@ -1,0 +1,42 @@
+{{- /* Dynamic image APIs and animated/vector formats keep their original URLs. */ -}}
+{{- $src := .src -}}
+{{- $image := false -}}
+{{- $url := urls.Parse $src -}}
+{{- $extension := path.Ext $url.Path | lower -}}
+{{- if in (slice ".jpg" ".jpeg" ".png" ".webp" ".tif" ".tiff" ".bmp") $extension -}}
+  {{- if in (slice "http" "https") $url.Scheme -}}
+    {{- if not $url.RawQuery -}}
+      {{- $fetchURL := $src -}}
+      {{- range site.Params.ruri.images.remoteSources -}}
+        {{- if hasPrefix $src .prefix -}}
+          {{- $fetchURL = print .origin (strings.TrimLeft "/" (strings.TrimPrefix .prefix $src)) -}}
+        {{- end -}}
+      {{- end -}}
+      {{- with try (resources.GetRemote $fetchURL (dict "timeout" "30s")) -}}
+        {{- with .Err -}}
+          {{- warnf "Unable to optimize image %s: %s" $src . -}}
+        {{- else with .Value -}}
+          {{- $image = . -}}
+        {{- else -}}
+          {{- warnf "Unable to optimize image %s: not found" $src -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- else if not $url.Scheme -}}
+    {{- with .page -}}{{- $image = .Resources.Get $src -}}{{- end -}}
+    {{- if not $image -}}{{- $image = resources.Get (strings.TrimPrefix "/" $src) -}}{{- end -}}
+    {{- if not $image -}}
+      {{- $path := printf "static/%s" (strings.TrimPrefix "/" $src) -}}
+      {{- if and (fileExists $path) (not (os.Stat $path).IsDir) -}}
+        {{- $image = resources.FromString (printf "ruri-media/%s" (strings.TrimPrefix "/" $src)) (os.ReadFile $path) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- /* Check the actual response type as well as the requested extension. */ -}}
+{{- if $image -}}
+  {{- if not (and (eq $image.ResourceType "image") (in (slice "jpeg" "png" "webp" "tiff" "bmp") $image.MediaType.SubType)) -}}
+    {{- $image = false -}}
+  {{- end -}}
+{{- end -}}
+{{- return $image -}}

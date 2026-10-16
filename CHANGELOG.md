@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Generate responsive WebP variants for covers and content images at build time, with `srcset`/`sizes`, lazy loading and original-size lightbox fallback.
+- Add `description.html` so pages without a handwritten description reuse the first 80 characters of body text; cards, meta tags and share links share the same excerpt.
+- Add optional `ruri.images.remoteSources` mapping to rewrite CDN prefixes to a fetchable origin during builds.
 - Add the solar-system and Voyager default SVG favicon, seven-size ICO up to 256×256, Apple/Android PNGs, and source artwork.
 - Fold the mobile music player into a vertical title rail; the first touch expands controls without starting playback.
 - Add a mobile article contents drawer that follows in-page navigation and viewport changes, hidden on pages without headings.
