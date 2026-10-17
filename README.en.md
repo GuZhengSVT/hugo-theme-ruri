@@ -161,6 +161,8 @@ menu:
 
 Place the banner at `static/images/banner.webp` and avatar at `static/avatar/avatar.webp`. Missing settings hide the images. Article `cover` accepts a path/URL or `false` to hide it. Create a page for each internal menu link.
 
+Fetched originals and their generated image variants are published together under `ruri-media/remote/`, keeping the site root clear.
+
 Remote images are downloaded and converted to responsive WebP at build time. If content uses a CDN address that the build cannot fetch, map its prefix to the origin with `ruri.images.remoteSources`; the links in your content stay unchanged:
 
 ~~~yaml

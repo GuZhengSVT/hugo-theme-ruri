@@ -16,7 +16,8 @@
         {{- with .Err -}}
           {{- warnf "Unable to optimize image %s: %s" $src . -}}
         {{- else with .Value -}}
-          {{- $image = . -}}
+          {{- /* Copy before publishing or resizing so originals and variants stay together. */ -}}
+          {{- $image = resources.Copy (printf "ruri-media/remote/%s" (path.Base .Name)) . -}}
         {{- else -}}
           {{- warnf "Unable to optimize image %s: not found" $src -}}
         {{- end -}}

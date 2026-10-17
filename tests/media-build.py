@@ -125,14 +125,16 @@ This body must not replace the manual description.
     assert description in (out / 'index.html').read_text()
     remote_image = next(i for i in automatic.images if i.get('alt') == 'Remote & diagram')
     assert remote_image['loading'] == 'lazy' and remote_image['title'] == 'Original diagram'
-    assert remote_image['src'].startswith('/blog/') and remote_image['src'].endswith('.webp'), (remote_image, result.stdout, result.stderr)
-    assert remote_image['data-original-src'].startswith('/blog/')
+    assert remote_image['src'].startswith('/blog/ruri-media/remote/') and remote_image['src'].endswith('.webp'), (remote_image, result.stdout, result.stderr)
+    assert remote_image['data-original-src'].startswith('/blog/ruri-media/remote/')
     assert (out / remote_image['data-original-src'].removeprefix('/blog/')).read_bytes() == png(1000, 600)
     assert remote_image['data-original-width'] == '1000'
     assert remote_image['data-original-height'] == '600'
     assert remote_image['width'] == '1000' and remote_image['height'] == '600'
     assert next(i for i in automatic.images if i.get('alt') == 'Mapped')['src'] == remote_image['src']
     assert '480w' in remote_image['srcset'] and '960w' in remote_image['srcset']
+    for variant in remote_image['srcset'].split(','):
+        assert variant.strip().split()[0].startswith('/blog/ruri-media/remote/'), variant
     small = next(i for i in automatic.images if i.get('alt') == 'Small')
     assert small['width'] == '80' and small['height'] == '40'
     assert next(i for i in automatic.images if i.get('alt') == 'Mislabeled')['src'].endswith('.webp')
@@ -141,6 +143,10 @@ This body must not replace the manual description.
     assert dynamic['src'] == remote + '/local.png?random=1' and 'srcset' not in dynamic
     assert next(i for i in automatic.images if i.get('alt') == 'Missing')['src'] == remote + '/missing.png'
     assert not any('random=' in url for url in Handler.requests), Handler.requests
+    assert not list(out.glob('*_hu_*')), 'Image variants must not be published at the site root'
+    for image in automatic.images:
+        if image.get('data-original-width') and image.get('alt') != 'Small':
+            assert image['data-original-src'].startswith('/blog/ruri-media/remote/'), image
     for image in home.images + automatic.images + manual.images:
         if 'src' not in image:
             continue
