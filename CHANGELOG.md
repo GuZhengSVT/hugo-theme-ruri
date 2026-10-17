@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add optional `ruri.friendsShuffle` to shuffle friend links within each group on page load and in-page navigation; disabled by default.
 - Generate responsive WebP variants for covers and content images at build time, with `srcset`/`sizes`, lazy loading and original-size lightbox fallback.
 - Add `description.html` so pages without a handwritten description reuse the first 80 characters of body text; cards, meta tags and share links share the same excerpt.
 - Add optional `ruri.images.remoteSources` mapping to rewrite CDN prefixes to a fetchable origin during builds.

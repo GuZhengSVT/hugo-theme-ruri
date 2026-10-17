@@ -46,6 +46,9 @@ social: []
 #     url: mailto:you@example.org
 
 ruri:
+  # 每次加载页面时，在各友链分类内独立随机排序；false 保持数据文件顺序。
+  # Shuffle each friend group independently on page load; false keeps data-file order.
+  friendsShuffle: false
   # 远程图片源映射（可选）：把内容里使用的 CDN 前缀改写为构建时可抓取的原始地址。
   # prefix 为文章中使用的前缀，origin 为 Hugo 实际下载的地址；不配置则按原地址抓取。
   # Optional remote image mapping: rewrite a CDN prefix in content to a fetchable origin.

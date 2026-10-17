@@ -226,6 +226,13 @@ copyright: false
 
 另外两组使用 `friendsLink3`、`friendsLink4`；本地图片放在 `static/images/`。
 
+友链默认按数据文件顺序显示。在站点的 `config/_default/params.yaml` 中启用以下选项，即可在每次刷新或通过站内导航进入页面时，将四组友链各自独立随机排序，分类顺序保持不变。设为 `false` 或省略则使用固定顺序；随机结果偶尔可能与上次相同。
+
+~~~yaml
+ruri:
+  friendsShuffle: true
+~~~
+
 </details>
 
 <details>

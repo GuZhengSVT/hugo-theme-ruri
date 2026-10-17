@@ -43,7 +43,17 @@ function localizePlayer(){
  document.querySelectorAll('[data-ruri-label]').forEach(el=>{const label=tr(el.dataset.ruriLabel);el.setAttribute('aria-label',label);if(el.hasAttribute('title'))el.title=label});
  updateOrder();syncVolume();syncPlayback();if(songs.length)$('#music-count').textContent=songs.length+tr('tracks');
 }
-function initPage(){tocObserver?.disconnect();window.RuriMobileUi?.refresh();localizePlayer();
+function shuffleFriends(){
+  document.querySelectorAll('.friend-grid[data-shuffle="true"]').forEach(grid=>{
+    const links=[...grid.children];
+    for(let i=links.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [links[i],links[j]]=[links[j],links[i]];
+    }
+    grid.append(...links);
+  });
+}
+function initPage(){tocObserver?.disconnect();window.RuriMobileUi?.refresh();localizePlayer();shuffleFriends();
 initArchive();window.RuriFeatures.init();
 $('#theme-toggle')?.addEventListener('click',()=>{const dark=document.documentElement.dataset.theme==='dark'||(document.documentElement.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);const mode=dark?'light':'dark';document.documentElement.dataset.theme=mode;try{localStorage.setItem('ruri-theme',mode)}catch{}syncDark()});
 

@@ -217,6 +217,13 @@ Place local images under `static/images/`. Add category headings and shortcodes:
 
 The other groups use `friendsLink3` and `friendsLink4`.
 
+Friends follow data-file order by default. Enable the following option in your site's `config/_default/params.yaml` to shuffle each of the four groups independently on every refresh or in-page navigation, while keeping category order unchanged. Set it to `false` or omit it to retain fixed order. A random result can occasionally match the previous order.
+
+~~~yaml
+ruri:
+  friendsShuffle: true
+~~~
+
 </details>
 
 <details>

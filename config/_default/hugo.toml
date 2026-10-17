@@ -2,6 +2,7 @@
 mainSections = ["posts", "post"]
 [params.ruri]
 favicon = "favicon_io/favicon.svg"
+friendsShuffle = false
 [outputs]
 home = ["HTML", "RSS"]
 [markup.highlight]
