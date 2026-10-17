@@ -87,5 +87,15 @@ function initSearch(){
  },180)});
  signal.addEventListener('abort',()=>clearTimeout(timer),{once:true});
 }
-window.RuriFeatures={init(){controller=new AbortController();const version=++epoch;initSearch();initCode();initQR();initLightbox(version)},destroy(){epoch++;controller?.abort();lightbox?.destroy();lightbox=null;document.querySelectorAll('[data-feature-dialog]').forEach(d=>{d.close();d.remove()})}};
+async function initBangumi(){
+ const root=$('[data-bangumi-user]');if(!root)return;const signal=controller.signal;
+ try{const module=await import(root.dataset.module);if(!signal.aborted)module.init(root,{signal})}
+ catch{if(!signal.aborted)root.querySelector('.bangumi-status').textContent=JSON.parse(root.dataset.labels).error}
+}
+async function initCulture(){
+ const root=$('[data-culture]');if(!root)return;const signal=controller.signal;
+ try{const module=await import(root.dataset.cultureModule);if(!signal.aborted)module.init(root,{signal})}
+ catch{if(!signal.aborted)root.querySelector('.bangumi-status').textContent=JSON.parse(root.dataset.labels).error}
+}
+window.RuriFeatures={init(){controller=new AbortController();const version=++epoch;initSearch();initCode();initQR();initLightbox(version);initBangumi();initCulture()},destroy(){epoch++;controller?.abort();lightbox?.destroy();lightbox=null;document.querySelectorAll('[data-feature-dialog]').forEach(d=>{d.close();d.remove()})}};
 })();

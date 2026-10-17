@@ -1,0 +1,19 @@
+  {{ with .Site.Params.culture.bangumi.username }}
+    {{ $module := resources.Get "bangumi.js" | minify | fingerprint }}
+    {{ $labels := dict }}
+    {{ range slice "loading" "error" "empty" "total" "score" "rating" "progress" "unknown" "episodes" "previous" "next" "refresh" }}
+      {{ $labels = merge $labels (dict . (i18n (printf "bangumi_%s" .))) }}
+    {{ end }}
+    <section class="bangumi" data-bangumi-user="{{ . }}" data-module="{{ $module.RelPermalink }}" data-labels="{{ $labels | jsonify }}" aria-label="{{ i18n "bangumi_heading" }}">
+      <div class="bangumi-toolbar"><a href="https://bgm.tv/user/{{ . | urlquery }}" target="_blank" rel="noopener noreferrer">@{{ . }} ↗</a><button type="button" data-bangumi-refresh>{{ i18n "bangumi_refresh" }}</button></div>
+      <div class="bangumi-filters" role="group" aria-label="{{ i18n "bangumi_status" }}">
+        {{ range slice (dict "id" 3 "label" "watching") (dict "id" 1 "label" "wish") (dict "id" 2 "label" "watched") (dict "id" 4 "label" "onhold") (dict "id" 5 "label" "dropped") }}
+          <button type="button" data-bangumi-type="{{ .id }}" aria-pressed="{{ if eq .id 3 }}true{{ else }}false{{ end }}">{{ i18n (printf "bangumi_%s" .label) }}</button>
+        {{ end }}
+      </div>
+      <p class="bangumi-status" role="status" aria-live="polite">{{ i18n "bangumi_loading" }}</p>
+      <div class="bangumi-grid" aria-busy="true"></div>
+      <nav class="bangumi-pagination" aria-label="{{ i18n "bangumi_pages" }}" hidden><button type="button" data-bangumi-prev>{{ i18n "bangumi_previous" }}</button><span data-bangumi-page></span><button type="button" data-bangumi-next>{{ i18n "bangumi_next" }}</button></nav>
+      <noscript><p><a href="https://bgm.tv/anime/list/{{ . | urlquery }}/do">{{ i18n "bangumi_noscript" }}</a></p></noscript>
+    </section>
+  {{ else }}<p class="notice">{{ i18n "culture_configure" }}</p>{{ end }}

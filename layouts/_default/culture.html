@@ -1,0 +1,47 @@
+{{ define "main" }}
+{{ $config := .Site.Params.culture | default dict }}
+{{ $categories := $config.categories | default (slice "book" "anime" "movie" "music" "game") }}
+{{ $category := .Params.cultureCategory | default "" }}
+{{ $enabled := and $config.enable (or (not $category) (in $categories $category)) }}
+{{ $defaults := dict "book" "neodb" "anime" "bangumi" "movie" "neodb" "music" "neodb" "game" "neodb" }}
+{{ $sources := merge $defaults ($config.sources | default dict) }}
+{{ $provider := index $sources $category | default "" }}
+{{ $live := and (eq $provider "bangumi") (eq ($config.bangumi.mode | default "live") "live") }}
+{{ $labels := dict }}
+{{ range slice "empty" "error" "loading" "total" "updated" "unavailable" }}{{ $labels = merge $labels (dict . (i18n (printf "culture_%s" .))) }}{{ end }}
+{{ range slice "rating" "previous" "next" "progress" "unknown" }}{{ $labels = merge $labels (dict . (i18n (printf "bangumi_%s" .))) }}{{ end }}
+<article class="article compact-page culture-page"{{ if and $enabled $category (not $live) }}{{ $module := resources.Get "collections.js" | minify | fingerprint }} data-culture data-culture-module="{{ $module.RelPermalink }}" data-labels="{{ $labels | jsonify }}" data-collection-src="{{ printf "collections/%s/" $provider | relURL }}"{{ end }}>
+  <header class="article-heading"{{ if $enabled }} data-pagefind-body{{ end }}><p class="eyebrow">{{ if $category }}{{ with .Site.GetPage "/culture" }}<a href="{{ .RelPermalink }}">{{ .Title }}</a> / {{ end }}COLLECTION{{ else }}ARTS / COLLECTION{{ end }}</p><h1 id="culture-title" data-pagefind-meta="title">{{ .Title }}</h1></header>
+  {{ if not $enabled }}<p class="notice">{{ i18n "culture_disabled" }}</p>
+  {{ else }}
+    {{ with .Content }}<div class="prose" data-pagefind-body>{{ . }}</div>{{ end }}
+    <nav class="culture-categories" aria-label="{{ i18n "culture_categories" }}">
+      {{ range $categories }}{{ with $.Site.GetPage (printf "/culture/%s" .) }}<a href="{{ .RelPermalink }}"{{ if eq $category .Params.cultureCategory }} aria-current="page"{{ end }}>{{ .Title }}</a>{{ end }}{{ end }}
+    </nav>
+    {{ if $category }}
+      <div class="culture-panel" id="culture-{{ $category }}">
+        {{ if $live }}{{ partial "collections/bangumi.html" . }}
+        {{ else }}
+          {{ $profile := "" }}
+          {{ if eq $provider "neodb" }}{{ $profile = $config.neodb.profile | default "" }}{{ end }}
+          {{ if and (eq $provider "douban") $config.douban.user }}{{ $profile = printf "https://www.douban.com/people/%s/" $config.douban.user }}{{ end }}
+          {{ if and (eq $provider "bangumi") $config.bangumi.username }}{{ $profile = printf "https://bgm.tv/user/%s" $config.bangumi.username }}{{ end }}
+          <section class="bangumi" data-collection-category="{{ $category }}" aria-labelledby="culture-title">
+            {{ if $profile }}
+              <div class="bangumi-toolbar"><a href="{{ $profile }}" target="_blank" rel="noopener noreferrer">{{ if eq $provider "neodb" }}NeoDB{{ else if eq $provider "bangumi" }}Bangumi{{ else }}Douban{{ end }} ↗</a><span class="culture-updated"></span></div>
+              <div class="bangumi-filters" role="group" aria-label="{{ i18n "bangumi_status" }}">
+                {{ $shelves := slice "all" "wishlist" "progress" "complete" "dropped" }}{{ if eq $provider "bangumi" }}{{ $shelves = slice "all" "wishlist" "progress" "complete" "onhold" "dropped" }}{{ end }}
+                {{ range $shelves }}<button type="button" data-shelf="{{ . }}" aria-pressed="{{ if eq . "all" }}true{{ else }}false{{ end }}">{{ if eq . "all" }}{{ i18n "culture_all" }}{{ else if eq . "onhold" }}{{ i18n "bangumi_onhold" }}{{ else if eq $category "anime" }}{{ i18n (index (dict "wishlist" "bangumi_wish" "progress" "bangumi_watching" "complete" "bangumi_watched" "dropped" "bangumi_dropped") .) }}{{ else }}{{ i18n (printf "culture_%s_%s" $category .) }}{{ end }}</button>{{ end }}
+              </div>
+              <p class="bangumi-status" role="status" aria-live="polite">{{ i18n "culture_loading" }}</p>
+              <div class="bangumi-grid"></div>
+              <nav class="bangumi-pagination" aria-label="{{ i18n "bangumi_pages" }}" hidden><button type="button" data-collection-prev>{{ i18n "bangumi_previous" }}</button><span data-collection-page></span><button type="button" data-collection-next>{{ i18n "bangumi_next" }}</button></nav>
+              <noscript><p><a href="{{ $profile }}">{{ i18n "culture_noscript" }}</a></p></noscript>
+            {{ else }}<p class="notice">{{ i18n "culture_configure" }}</p>{{ end }}
+          </section>
+        {{ end }}
+      </div>
+    {{ else }}<p class="culture-intro">{{ i18n "culture_intro" }}</p>{{ end }}
+  {{ end }}
+</article>
+{{ end }}

@@ -182,9 +182,10 @@ ruri:
 </details>
 
 <details>
-<summary>归档、关于、友链与说说</summary>
+<summary>归档、文艺、关于、友链与说说</summary>
 
 - 归档：创建 `content/archives/_index.md`，front matter 设置 `title: 归档`。自动显示时间树、热力图及分类标签。
+- 文艺：创建 `content/culture/index.md`，使用下面的 `culture` 布局，包含书籍、动画、电影、音乐、游戏五个板块。
 - 关于：创建 `content/about/index.md`，写入个人介绍。
 - 友链：创建 `content/friend/index.md`，使用下面的短代码。
 - 说说：创建 `content/moments/index.md`，设置 `comments: true` 并启用 Waline。说说内容由 Waline 评论区承载。**通用演示不配置 Waline 服务，应显示说明文字；接入自己的服务后才能使用。**
@@ -205,6 +206,58 @@ copyright: false
 ---
 这里写页面正文。
 ~~~
+
+文艺是可选功能，默认 `culture.enable: false`，关闭时隐藏导航入口并且不加载收藏模块、数据或封面。启用前，将 `exampleSite/content/culture/` 复制到站点 `content/`；目录页与书籍、动画、电影、音乐、游戏各自是独立页面。在站点 `config/_default/params.yaml` 中配置：
+
+~~~yaml
+culture:
+  enable: true
+  categories: [book, anime, movie, music, game] # 可删减、调整顺序
+  sources:
+    book: neodb
+    anime: bangumi
+    movie: neodb
+    music: neodb
+    game: neodb
+  bangumi:
+    username: your-bangumi-username
+    mode: live # live：动画页实时读取；snapshot：构建时同步
+  neodb:
+    profile: https://neodb.social/users/your-username/
+  douban:
+    user: your-douban-user-id
+    exportFile: "" # 可选，站点内的导出 JSON 路径
+~~~
+
+菜单使用 `name: culture_title`、`url: /culture/`；示例放在归档后。分类页面只需 `layout: culture`、`cultureCategory: book`（或 `anime`、`movie`、`music`、`game`）、`sidebar: false`，账号只放在站点参数。未列入 `categories` 的页面也不加载数据。旧 `/watch/` 链接通过示例中的别名跳转。
+
+| 来源 | 支持分类 | 同步方式 |
+| --- | --- | --- |
+| Bangumi | 动画、书籍、音乐、游戏 | 官方公开 API；动画支持 `live` 和 `snapshot`，其他分类使用 `snapshot` |
+| NeoDB | 书籍、电影、音乐、游戏 | 匿名公开书架，完整分页；无需 Token |
+| 豆瓣 | 书籍、电影、音乐、游戏 | 公开收藏页，或本地 JSON 导出；个人五星评分统一转换到十分制 |
+
+例如，设置 `culture.sources.movie: douban` 后，电影页及构建脚本自动使用豆瓣账号，其他分类保持各自来源。豆瓣影视收藏可能包含剧集；Bangumi 的三次元条目不直接当作电影，NeoDB 的全部剧集也不直接当作动画。
+
+在博客根目录运行（需要 Hugo Extended、Python 3 和 curl）：
+
+~~~sh
+python3 themes/ruri/scripts/sync-culture.py
+hugo --gc --minify
+npx -y pagefind@1.4.0 --site public --glob '**/*.html'
+~~~
+
+同步脚本读取 Hugo 的有效配置，只处理启用的来源／分类。上游暂不可用或要求登录时保留上一份有效快照；首次同步失败显示“暂不可用”，不会伪装成空收藏，也不会阻止其余分类构建。GitHub Actions 可缓存 `static/collections/` 以保留最近快照；首次成功生成的快照也可提交到博客仓库。同步不自动提交源码，不归档每日副本；收藏内容未变时保持 JSON 与同步时间不变。
+
+客户端保持“入口 → 分类 → 状态／页码”分层加载：入口不请求收藏资源，每次只读取当前分类和状态的 24 条数据；翻页才创建新一页封面元素，并保留浏览器懒加载。封面仍来自原平台。Bangumi 实时模式在当前标签页缓存 10 分钟，“刷新”跳过当前页缓存；构建快照模式通过本站 JSON 展示评分、短评和动画进度。
+
+豆瓣可能限制公开访问。可将 `culture.douban.exportFile` 指向本地 JSON，避免构建时抓取；支持 [douban-books-movies-music-exporter](https://github.com/BrainEno/douban-books-movies-music-exporter) 的原始 JSON 数组，也支持下面的统一格式（`rating` 为十分制；`community_rating`、`cover`、`subtitle`、`comment` 可省略；必须包含配置给豆瓣的全部分类）：
+
+~~~json
+{"categories":{"movie":[{"id":"123","title":"示例电影","url":"https://movie.douban.com/subject/123/","status":"complete","rating":8,"cover":"https://example.org/poster.jpg","comment":"我的短评"}]}}
+~~~
+
+`status` 使用 `wishlist`、`progress`、`complete`、`dropped`。公开页解析遇到登录／验证码会报告同步失败，不处理登录凭据。NeoDB、豆瓣页面结构变化时可能需要更新解析器。公开主题示例不包含个人账号、收藏或服务配置。
 
 友链分类仍分别读取 `data/friends1.yml` 至 `data/friends4.yml`；共享渲染模板不会合并数据或改变分类。每份数据使用数组：
 

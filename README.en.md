@@ -176,7 +176,7 @@ The theme defaults to the solar-system and Voyager SVG icon, with a seven-size I
 </details>
 
 <details>
-<summary>Archives, about, friends and moments</summary>
+<summary>Archives, arts and culture, about, friends and moments</summary>
 
 Create `content/archives/_index.md` with a title for the archive timeline and heatmap. Create `content/about/index.md` for a biography and `content/friend/index.md` for friend links. Independent pages support:
 
@@ -194,6 +194,58 @@ copyright: false
 ---
 Your biography.
 ~~~
+
+Arts and culture is optional and disabled by default (`culture.enable: false`). Disabled or excluded categories load no collection modules, data or covers; the menu entry is hidden. Copy `exampleSite/content/culture/` into your site, then configure site `params.yaml`:
+
+~~~yaml
+culture:
+  enable: true
+  categories: [book, anime, movie, music, game]
+  sources:
+    book: neodb
+    anime: bangumi
+    movie: neodb
+    music: neodb
+    game: neodb
+  bangumi:
+    username: your-bangumi-username
+    mode: live # live anime API, or build-time snapshot
+  neodb:
+    profile: https://neodb.social/users/your-username/
+  douban:
+    user: your-douban-user-id
+    exportFile: "" # optional site-relative JSON export
+~~~
+
+Add `name: culture_title` and `url: /culture/` to the menu. Pages select `layout: culture` and `cultureCategory: book` (or `anime`, `movie`, `music`, `game`); accounts belong in site params. `categories` controls visibility and order. Examples redirect `/watch/` to the landing page.
+
+| Provider | Categories | Source |
+| --- | --- | --- |
+| Bangumi | Anime, books, music, games | Official public API; live mode for anime, snapshot mode for all supported categories |
+| NeoDB | Books, films, music, games | Complete anonymous public shelves, no token |
+| Douban | Books, films, music, games | Public collection pages or a local JSON export; personal five-star ratings converted to a ten-point scale |
+
+For example, `culture.sources.movie: douban` selects Douban for films while other categories keep their own providers. Douban film collections may include TV; Bangumi real-person media and NeoDB's entire TV category are not silently treated as films or anime.
+
+Run from your site root using Hugo Extended, Python 3 and curl:
+
+~~~sh
+python3 themes/ruri/scripts/sync-culture.py
+hugo --gc --minify
+npx -y pagefind@1.4.0 --site public --glob '**/*.html'
+~~~
+
+The sync script reads effective Hugo params and fetches only enabled sources/categories. On upstream errors it keeps valid previous snapshots; without an initial snapshot it publishes an unavailable state, rather than an empty library. Other providers and deployment continue. Cache `static/collections/` in Actions to retain recent snapshots; an initial successful snapshot may also be committed to the blog. The script does not commit source changes or archive dated copies. Unchanged collections retain identical JSON and timestamps.
+
+Loading remains landing → category → shelf/page. The landing page fetches no collection resources. Category pages request only their current 24-item page and create only those cover elements with browser lazy loading. Images remain on the provider. Bangumi live mode caches for ten minutes within the tab; Refresh bypasses the current page cache. Snapshot mode displays ratings, comments and anime progress from local JSON.
+
+Douban can restrict public access. `culture.douban.exportFile` supports raw JSON arrays from [douban-books-movies-music-exporter](https://github.com/BrainEno/douban-books-movies-music-exporter), or this normalized schema (ratings use a ten-point scale; optional fields include `cover`, `subtitle`, `comment`, `community_rating`; include every category assigned to Douban):
+
+~~~json
+{"categories":{"movie":[{"id":"123","title":"Example film","url":"https://movie.douban.com/subject/123/","status":"complete","rating":8}]}}
+~~~
+
+Statuses are `wishlist`, `progress`, `complete`, `dropped`. Login/challenge pages cause a sync warning; the importer uses no login credentials. NeoDB and Douban HTML changes may require parser updates. Public theme examples contain no personal accounts or collections.
 
 Moments at `content/moments/index.md` use the **Waline comment area**: set `comments: true` and configure your own Waline service. The generic demo does not configure Waline and should display an explanation.
 

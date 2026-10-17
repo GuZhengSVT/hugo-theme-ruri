@@ -34,6 +34,8 @@ menu:
     url: /
   - name: archives
     url: /archives/
+  - name: culture_title
+    url: /culture/
   - name: about
     url: /about/
 # 联系方式 name/url；twitter 显示 X，其他名称首字母大写。
@@ -256,3 +258,23 @@ player:
 # autoplay/fixed/loop/order/preload/volume/mutex/listFolded/lrcType.
 # 友链数据和短代码在 content/data 中维护；本文件不穷举 Hugo/Waline 上游选项。
 # Friend data and shortcodes live in content/data; this file does not enumerate all upstream Hugo/Waline options.
+
+# 文艺功能默认关闭；复制 exampleSite/content/culture/ 后启用。
+# Optional collections. Copy exampleSite/content/culture/ before enabling.
+culture:
+  enable: false
+  categories: [book, anime, movie, music, game]
+  sources:
+    book: neodb
+    anime: bangumi
+    movie: neodb
+    music: neodb
+    game: neodb
+  bangumi:
+    username: ""
+    mode: live # live: anime only; snapshot: build-time API sync
+  neodb:
+    profile: ""
+  douban:
+    user: ""
+    exportFile: "" # optional site-relative normalized JSON; otherwise public pages
