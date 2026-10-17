@@ -1,5 +1,6 @@
 """Regression fixtures: metadata precedence, explicit false, defaults, subpath assets."""
 from pathlib import Path
+import re
 import tempfile, subprocess, shutil
 ROOT=Path(__file__).resolve().parents[1]
 with tempfile.TemporaryDirectory(prefix='ruri-features-') as d:
@@ -39,4 +40,8 @@ license_type="by-nc-sa"
  assert 'class="site-totals"' not in default
  assert 'data-vendor="/blog/ruri/vendor/"' in default
  assert 'data-index="/blog/pagefind/pagefind.js"' in default
+ for name, kind in [('ruri','css'), ('heat-map','css'), ('ruri','js'), ('features','js')]:
+  url=re.search(r'/blog/assets/'+kind+'/'+name+r'\.min\.[a-f0-9]+\.'+kind,default).group(0)
+  assert (s/'public'/url.removeprefix('/blog/')).is_file(),url
+ assert not list((s/'public').glob('*.css')) and not list((s/'public').glob('*.js'))
  print('PASS copyright defaults, article overrides, false switches, footer switch, subpath URLs')

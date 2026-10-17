@@ -10,7 +10,7 @@
 {{ $labels := dict }}
 {{ range slice "empty" "error" "loading" "total" "updated" "unavailable" }}{{ $labels = merge $labels (dict . (i18n (printf "culture_%s" .))) }}{{ end }}
 {{ range slice "rating" "previous" "next" "progress" "unknown" }}{{ $labels = merge $labels (dict . (i18n (printf "bangumi_%s" .))) }}{{ end }}
-<article class="article compact-page culture-page"{{ if and $enabled $category (not $live) }}{{ $module := resources.Get "collections.js" | minify | fingerprint }} data-culture data-culture-module="{{ $module.RelPermalink }}" data-labels="{{ $labels | jsonify }}" data-collection-src="{{ printf "collections/%s/" $provider | relURL }}"{{ end }}>
+<article class="article compact-page culture-page"{{ if and $enabled $category (not $live) }}{{ $module := resources.Get "collections.js" | resources.Copy "assets/js/collections.js" | minify | fingerprint }} data-culture data-culture-module="{{ $module.RelPermalink }}" data-labels="{{ $labels | jsonify }}" data-collection-src="{{ printf "collections/%s/" $provider | relURL }}"{{ end }}>
   <header class="article-heading"{{ if $enabled }} data-pagefind-body{{ end }}><p class="eyebrow">{{ if $category }}{{ with .Site.GetPage "/culture" }}<a href="{{ .RelPermalink }}">{{ .Title }}</a> / {{ end }}COLLECTION{{ else }}ARTS / COLLECTION{{ end }}</p><h1 id="culture-title" data-pagefind-meta="title">{{ .Title }}</h1></header>
   {{ if not $enabled }}<p class="notice">{{ i18n "culture_disabled" }}</p>
   {{ else }}

@@ -61,7 +61,7 @@ neodb:
         assert 'data-bangumi-user="fixture-user"' in anime and 'data-collection-category=' not in anime
         assert anime.count('data-bangumi-type=') == 5
         assert 'data-bangumi-type="3" aria-pressed="true"' in anime
-        module = re.search(r'data-module="(/blog/bangumi\.[^"/]+\.js)"', anime).group(1)
+        module = re.search(r'data-module="(/blog/assets/js/bangumi\.[^"/]+\.js)"', anime).group(1)
         assert (site / 'public' / module.removeprefix('/blog/')).is_file()
         for category in ['book', 'movie', 'music', 'game']:
             html = (site / f'public/{lang}/culture/{category}/index.html').read_text()

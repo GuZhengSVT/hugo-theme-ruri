@@ -10,10 +10,10 @@
 <meta property="og:description" content="{{ partial "description.html" . }}">
 <meta property="og:title" content="{{ .Title }}"><meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}"><meta property="og:url" content="{{ .Permalink }}">{{ with partial "cover.html" . }}<meta property="og:image" content="{{ partial "media.html" (dict "src" . "page" $ "width" 1200) | absURL }}">{{ end }}
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('ruri-theme')||'auto'}catch(e){}</script>
-{{ $css := resources.Get "ruri.css" | minify | fingerprint }}<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
-{{ $heat := resources.Get "heat-map.scss" | toCSS | minify | fingerprint }}<link rel="stylesheet" href="{{ $heat.RelPermalink }}">
-{{ $features := resources.Get "features.js" | minify | fingerprint }}<script src="{{ $features.RelPermalink }}" defer></script>
-{{ $js := resources.Get "ruri.js" | minify | fingerprint }}<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{ $css := resources.Get "ruri.css" | resources.Copy "assets/css/ruri.css" | minify | fingerprint }}<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+{{ $heat := resources.Get "heat-map.scss" | toCSS | resources.Copy "assets/css/heat-map.css" | minify | fingerprint }}<link rel="stylesheet" href="{{ $heat.RelPermalink }}">
+{{ $features := resources.Get "features.js" | resources.Copy "assets/js/features.js" | minify | fingerprint }}<script src="{{ $features.RelPermalink }}" defer></script>
+{{ $js := resources.Get "ruri.js" | resources.Copy "assets/js/ruri.js" | minify | fingerprint }}<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
 {{ if hugo.IsProduction }}{{ with .Site.Params.google_analytics }}{{ partial "analytics/google.html" $ }}{{ end }}{{ with .Site.Params.clarity }}{{ partial "analytics/clarity.html" $ }}{{ end }}{{ end }}</head>
 <body id="top" data-vendor="{{ "ruri/vendor/" | relURL }}">
 <a class="skip" href="#main">{{ i18n "ruri_skip" }}</a>

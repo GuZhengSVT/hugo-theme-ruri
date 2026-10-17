@@ -1,5 +1,5 @@
   {{ with .Site.Params.culture.bangumi.username }}
-    {{ $module := resources.Get "bangumi.js" | minify | fingerprint }}
+    {{ $module := resources.Get "bangumi.js" | resources.Copy "assets/js/bangumi.js" | minify | fingerprint }}
     {{ $labels := dict }}
     {{ range slice "loading" "error" "empty" "total" "score" "rating" "progress" "unknown" "episodes" "previous" "next" "refresh" }}
       {{ $labels = merge $labels (dict . (i18n (printf "bangumi_%s" .))) }}

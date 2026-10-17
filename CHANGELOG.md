@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Group generated theme scripts and styles under `assets/js/` and `assets/css/`, retaining fingerprinted URLs and lazy-loaded collection modules.
+
 - Publish fetched image originals and responsive variants under `ruri-media/remote/` instead of the site root.
 
 - Add opt-in multilingual arts and culture pages with configurable categories and Bangumi/NeoDB/Douban sources, build-time snapshots or live anime API, per-page lazy loading, ratings, comments and progress.
