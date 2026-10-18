@@ -167,6 +167,30 @@ menu:
 
 `banner` 对应 `static/images/banner.webp`；`avatar` 对应 `static/avatar/avatar.webp`。不配置时不显示对应图片。文章 `cover` 可指定图片路径／URL，`false` 关闭。添加导航后需要创建对应页面。
 
+菜单支持普通链接和一级下拉菜单，按 `menu` 数组顺序显示；不添加就不显示。有 `children` 的顶级项作为展开开关，无需 `url`。桌面鼠标悬停展开，也可点击或用键盘操作。
+
+~~~yaml
+menu:
+  - name: menu_custom_page
+    url: /custom/
+  - name: menu_links
+    children:
+      - name: menu_docs
+        url: https://example.org/docs/
+      - name: about
+        url: /about/
+~~~
+
+`name` 可以是翻译键或直接显示的文字，顶级菜单和子菜单都支持。自定义名称及其翻译由站点管理，例如在站点 `i18n/zh-CN.yml` 中添加：
+
+~~~yaml
+menu_custom_page: 自定义页面
+menu_links: 常用链接
+menu_docs: 使用文档
+~~~
+
+在 `i18n/en.yml` 等对应语言文件中添加相同键的翻译。站内 `url` 自动添加当前语言前缀，HTTPS 外链保持原样；菜单配置和个人链接无需写入主题源码。
+
 远程图片会在构建时下载并生成 WebP 多档尺寸。若文章使用的是 CDN 地址而构建时无法抓取，可用 `ruri.images.remoteSources` 把前缀改写到原始地址，文章中的链接不必修改：
 
 ~~~yaml

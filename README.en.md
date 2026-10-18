@@ -161,6 +161,30 @@ menu:
 
 Place the banner at `static/images/banner.webp` and avatar at `static/avatar/avatar.webp`. Missing settings hide the images. Article `cover` accepts a path/URL or `false` to hide it. Create a page for each internal menu link.
 
+Menus support regular links and one-level dropdowns in array order. Custom entries appear only when configured. A top-level entry with `children` acts as a toggle and needs no `url`. Dropdowns open on mouse hover and support click and keyboard operation.
+
+~~~yaml
+menu:
+  - name: menu_custom_page
+    url: /custom/
+  - name: menu_links
+    children:
+      - name: menu_docs
+        url: https://example.org/docs/
+      - name: about
+        url: /about/
+~~~
+
+Both parent and child `name` values accept translation keys or literal labels. Keep custom labels and translations in your site, for example in `i18n/en.yml`:
+
+~~~yaml
+menu_custom_page: Custom page
+menu_links: Useful links
+menu_docs: Documentation
+~~~
+
+Add translations for the same keys to your other language files, such as `i18n/zh-CN.yml`. Internal URLs receive the current language prefix; HTTPS URLs stay unchanged. Keep menu configuration and personal links outside the theme source.
+
 Fetched originals and their generated image variants are published together under `ruri-media/remote/`, keeping the site root clear.
 
 Remote images are downloaded and converted to responsive WebP at build time. If content uses a CDN address that the build cannot fetch, map its prefix to the origin with `ruri.images.remoteSources`; the links in your content stay unchanged:

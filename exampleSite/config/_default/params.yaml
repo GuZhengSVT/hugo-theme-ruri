@@ -38,6 +38,16 @@ menu:
     url: /culture/
   - name: about
     url: /about/
+# 可选：在 menu 数组中添加普通页面链接或一级下拉菜单，按数组顺序显示。
+# Optional: append page links or one-level dropdowns to menu, in display order.
+# 自定义名称的翻译放在站点 i18n/<语言>.yml；没有翻译时直接显示 name。
+# Put custom translations in your site's i18n/<language>.yml; unmatched names display literally.
+#   - name: menu_custom_page
+#     url: /custom/  # 先创建对应页面。 / Create this page first.
+#   - name: menu_links
+#     children:  # 有 children 的顶级项只用于展开，无需 url。 / Dropdown toggle; no parent URL needed.
+#       - name: menu_docs
+#         url: https://example.org/docs/
 # 联系方式 name/url；twitter 显示 X，其他名称首字母大写。
 # Contacts with name/url; twitter renders as X, other names are capitalized.
 social: []
