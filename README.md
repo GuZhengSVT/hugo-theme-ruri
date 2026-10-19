@@ -167,13 +167,14 @@ menu:
 
 `banner` 对应 `static/images/banner.webp`；`avatar` 对应 `static/avatar/avatar.webp`。不配置时不显示对应图片。文章 `cover` 可指定图片路径／URL，`false` 关闭。添加导航后需要创建对应页面。
 
-菜单支持普通链接和一级下拉菜单，按 `menu` 数组顺序显示；不添加就不显示。有 `children` 的顶级项作为展开开关，无需 `url`。桌面鼠标悬停展开，也可点击或用键盘操作。
+菜单支持普通链接和一级下拉菜单，按 `menu` 数组顺序显示；不添加就不显示。有 `children` 的顶级项默认作为展开开关；同时配置 `url` 后，点击文字进入对应页面，点击旁边的箭头展开子菜单。桌面鼠标悬停也可展开，并支持键盘操作。
 
 ~~~yaml
 menu:
   - name: menu_custom_page
     url: /custom/
   - name: menu_links
+    url: /links/
     children:
       - name: menu_docs
         url: https://example.org/docs/

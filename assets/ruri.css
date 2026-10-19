@@ -26,6 +26,9 @@ a,button,summary,input,select{ -webkit-tap-highlight-color:transparent}
 .nav-dropdown summary{display:flex;align-items:center;gap:6px;list-style:none}
 .nav-dropdown summary::-webkit-details-marker{display:none}
 .nav-dropdown summary::after{content:"";width:5px;height:5px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(45deg);margin-top:-3px}
+.main-nav summary.nav-linked-summary{padding:0}
+.nav-linked-summary>a{display:block}
+.nav-dropdown .nav-linked-summary::after{margin-left:4px;margin-right:10px}
 .nav-dropdown[open]>summary,.nav-dropdown summary:hover{color:var(--accent)}
 .nav-submenu{position:absolute;left:0;top:100%;z-index:10;min-width:210px;width:max-content;padding:6px;background:var(--paper);border:1px solid var(--line);border-radius:6px;box-shadow:0 8px 24px #00000014}
 .main-nav .nav-submenu a{display:block;padding:9px 12px;border-radius:3px}

@@ -161,13 +161,14 @@ menu:
 
 Place the banner at `static/images/banner.webp` and avatar at `static/avatar/avatar.webp`. Missing settings hide the images. Article `cover` accepts a path/URL or `false` to hide it. Create a page for each internal menu link.
 
-Menus support regular links and one-level dropdowns in array order. Custom entries appear only when configured. A top-level entry with `children` acts as a toggle and needs no `url`. Dropdowns open on mouse hover and support click and keyboard operation.
+Menus support regular links and one-level dropdowns in array order. Custom entries appear only when configured. A top-level entry with `children` acts as a toggle by default. Add an optional `url` to make its label a link, while the adjacent arrow toggles the submenu. Dropdowns also open on mouse hover and support keyboard operation.
 
 ~~~yaml
 menu:
   - name: menu_custom_page
     url: /custom/
   - name: menu_links
+    url: /links/
     children:
       - name: menu_docs
         url: https://example.org/docs/

@@ -22,7 +22,7 @@
 <nav class="main-nav" aria-label="{{ i18n "home" }}">
 {{ range .Site.Params.menu }}{{ if or (ne .name "culture_title") $.Site.Params.culture.enable }}
 {{ if .children }}
-<details class="nav-dropdown"><summary>{{ i18n .name | default .name }}</summary><div class="nav-submenu">
+<details class="nav-dropdown"><summary{{ if .url }} class="nav-linked-summary"{{ end }}>{{ if .url }}{{ $href := strings.TrimPrefix "/" .url | relLangURL }}{{ if hasPrefix .url "https://" }}{{ $href = .url }}{{ end }}<a href="{{ $href }}"{{ if eq $href $.RelPermalink }} aria-current="page"{{ end }}>{{ i18n .name | default .name }}</a>{{ else }}{{ i18n .name | default .name }}{{ end }}</summary><div class="nav-submenu">
 {{ range .children }}{{ $href := strings.TrimPrefix "/" .url | relLangURL }}{{ if hasPrefix .url "https://" }}{{ $href = .url }}{{ end }}<a href="{{ $href }}" {{ if eq $href $.RelPermalink }}aria-current="page"{{ end }}>{{ i18n .name | default .name }}</a>{{ end }}
 </div></details>
 {{ else }}

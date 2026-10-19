@@ -45,7 +45,8 @@ menu:
 #   - name: menu_custom_page
 #     url: /custom/  # 先创建对应页面。 / Create this page first.
 #   - name: menu_links
-#     children:  # 有 children 的顶级项只用于展开，无需 url。 / Dropdown toggle; no parent URL needed.
+#     url: /links/  # 可选父级页面；文字跳转，箭头展开。 / Optional parent page; label links, arrow toggles.
+#     children:
 #       - name: menu_docs
 #         url: https://example.org/docs/
 # 联系方式 name/url；twitter 显示 X，其他名称首字母大写。
