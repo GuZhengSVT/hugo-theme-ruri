@@ -172,3 +172,5 @@ culture_game_dropped: "放弃"
 culture_intro: "书籍、动画、电影、音乐与游戏。选择一个板块，查看我的收藏与记录。"
 culture_disabled: "文艺功能未启用。"
 culture_unavailable: "数据源暂不可用，等待下次同步。"
+
+ruri_navigation_loading: "正在加载页面…"

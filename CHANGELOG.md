@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Show localized loading feedback for in-page navigation, fall back to a full load after 15 seconds, scroll before page scripts finish, and reuse KaTeX libraries across pages.
+
 - Group generated theme scripts and styles under `assets/js/` and `assets/css/`, retaining fingerprinted URLs and lazy-loaded collection modules.
 
 - Publish fetched image originals and responsive variants under `ruri-media/remote/` instead of the site root.

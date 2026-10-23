@@ -16,6 +16,7 @@
 {{ $js := resources.Get "ruri.js" | resources.Copy "assets/js/ruri.js" | minify | fingerprint }}<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
 {{ if hugo.IsProduction }}{{ with .Site.Params.google_analytics }}{{ partial "analytics/google.html" $ }}{{ end }}{{ with .Site.Params.clarity }}{{ partial "analytics/clarity.html" $ }}{{ end }}{{ end }}</head>
 <body id="top" data-vendor="{{ "ruri/vendor/" | relURL }}">
+<div id="navigation-status" class="navigation-status" role="status" aria-live="polite" hidden></div>
 <a class="skip" href="#main">{{ i18n "ruri_skip" }}</a>
 <div id="page-shell">{{ partial "interface.html" . }}<header class="site-header shell">
 <a class="brand" href="{{ .Site.Home.RelPermalink }}"><span class="brand-mark">{{ .Site.Params.ruri.brandMark | default "r." }}</span><span>{{ .Site.Title }}<small>{{ .Site.Params.ruri.tagline }}</small></span></a>

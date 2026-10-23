@@ -172,3 +172,5 @@ culture_game_dropped: "Dropped"
 culture_intro: "Books, anime, films, music and games. Choose a category to explore my collections."
 culture_disabled: "Arts and culture is disabled."
 culture_unavailable: "The source is unavailable. Waiting for the next sync."
+
+ruri_navigation_loading: "Loading page…"

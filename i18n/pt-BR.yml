@@ -47,3 +47,4 @@ heat_map_card:
   no_articles: Sem artigos
   words: palavra(s)
   total_articles: "$1 artigo(s), $2 palavra(s)"
+ruri_navigation_loading: "Carregando página…"

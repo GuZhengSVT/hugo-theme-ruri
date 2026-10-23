@@ -172,3 +172,5 @@ culture_game_dropped: "放棄"
 culture_intro: "書籍、動畫、電影、音樂與遊戲。選擇一個板塊，查看我的收藏與記錄。"
 culture_disabled: "文藝功能未啟用。"
 culture_unavailable: "資料來源暫不可用，等待下次同步。"
+
+ruri_navigation_loading: "正在載入頁面…"

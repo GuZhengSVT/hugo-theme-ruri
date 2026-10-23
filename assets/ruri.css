@@ -1,6 +1,10 @@
 :root{color-scheme:light;--bg:#fafbf9;--paper:#fff;--ink:#303d45;--muted:#78858b;--line:#e0e6e6;--accent:#467889;--tint:#edf3f3;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:15px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:24px}
+html.is-navigating::before{content:"";position:fixed;inset:0 0 auto;height:3px;background:linear-gradient(90deg,transparent,var(--accent),transparent) -100% 0 / 50% 100% no-repeat;z-index:1000;animation:navigation-progress 1.2s ease-in-out infinite}
+.navigation-status{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:1000;padding:7px 16px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);font-size:13px;box-shadow:0 3px 15px #00000012;pointer-events:none}
+@keyframes navigation-progress{to{background-position:200% 0}}
+@media(prefers-reduced-motion:reduce){html.is-navigating::before{animation:none;background:var(--accent)}}
 body{margin:0;background:var(--bg);color:var(--ink);line-height:1.75}
 a{color:inherit;text-decoration:none}
 a:hover{color:var(--accent)}
