@@ -1,4 +1,4 @@
-"""Portable build checks. Requires Python 3 and Hugo Extended 0.162.1+."""
+"""Portable build checks. Requires Python 3 and Hugo with SCSS support."""
 from pathlib import Path
 import tempfile, shutil, subprocess, tomllib
 from html.parser import HTMLParser

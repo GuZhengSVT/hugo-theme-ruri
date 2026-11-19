@@ -4,7 +4,7 @@
 
 **极简、平面、轻量的 Hugo 个人博客主题**
 
-[![Hugo Extended](https://img.shields.io/badge/Hugo_Extended-%E2%89%A5_0.162.1-ff4088?logo=hugo)](https://gohugo.io/)
+[![Hugo](https://img.shields.io/badge/Hugo-%E2%89%A5_0.162.1-ff4088?logo=hugo)](https://gohugo.io/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 ![Status](https://img.shields.io/badge/Status-Release_Candidate-orange)
 
@@ -34,7 +34,7 @@ Ruri 从 [hugo-theme-reimu](https://github.com/D-Sketon/hugo-theme-reimu) 改造
 
 ## 环境要求
 
-- **Hugo Extended ≥ 0.162.1**：编译热力图 SCSS；通过 `hugo version` 检查。
+- **Hugo ≥ 0.162.1**。0.170.0 及以上版本需要安装 Dart Sass 来编译热力图 SCSS。更早的版本请使用 Hugo Extended。
 - **Git**：安装与更新主题。
 - **Go ≥ 1.22**：仅 Hugo Module 安装需要，同时遵循所用 Hugo 版本的 Go 要求。
 - **Node.js / npm**：使用本文的 Pagefind 索引命令需要；Hugo 本身构建主题不需要 npm。
@@ -264,12 +264,12 @@ culture:
 
 例如，设置 `culture.sources.movie: douban` 后，电影页及构建脚本自动使用豆瓣账号，其他分类保持各自来源。豆瓣影视收藏可能包含剧集；Bangumi 的三次元条目不直接当作电影，NeoDB 的全部剧集也不直接当作动画。
 
-在博客根目录运行（需要 Hugo Extended、Python 3 和 curl）：
+在博客根目录运行（需要上文所列的 Hugo 构建环境、Python 3 和 curl）：
 
 ~~~sh
 python3 themes/ruri/scripts/sync-culture.py
 hugo --gc --minify
-npx -y pagefind@1.4.0 --site public --glob '**/*.html'
+npx -y pagefind@1.6.0 --site public --glob '**/*.html'
 ~~~
 
 同步脚本读取 Hugo 的有效配置，只处理启用的来源／分类。上游暂不可用或要求登录时保留上一份有效快照；首次同步失败显示“暂不可用”，不会伪装成空收藏，也不会阻止其余分类构建。GitHub Actions 可缓存 `static/collections/` 以保留最近快照；首次成功生成的快照也可提交到博客仓库。同步不自动提交源码，不归档每日副本；收藏内容未变时保持 JSON 与同步时间不变。
@@ -433,7 +433,7 @@ player:
 
 ~~~sh
 hugo --minify
-npx -y pagefind@1.4.0 --site public --glob '**/*.html'
+npx -y pagefind@1.6.0 --site public --glob '**/*.html'
 ~~~
 
 按此顺序执行，然后部署整个 `public/`，包括 `public/pagefind/`。Pagefind 基于构建后的 HTML 索引，不使用旧的 `index.json`。`hugo server` 不自动生成索引；检验搜索时可预览完整产物：

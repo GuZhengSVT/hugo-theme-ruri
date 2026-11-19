@@ -115,8 +115,8 @@ $line-height: 1.8em;
     margin: 0 20px;
     line-height: $line-height;
     list-style: disc;
-    margin-top: ($line-height / 2);
-    margin-bottom: ($line-height / 2);
+    margin-top: ($line-height * 0.5);
+    margin-bottom: ($line-height * 0.5);
   }
 
   li {

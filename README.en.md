@@ -4,7 +4,7 @@
 
 **A minimal, flat and lightweight Hugo blog theme.**
 
-[![Hugo Extended](https://img.shields.io/badge/Hugo_Extended-%E2%89%A5_0.162.1-ff4088?logo=hugo)](https://gohugo.io/)
+[![Hugo](https://img.shields.io/badge/Hugo-%E2%89%A5_0.162.1-ff4088?logo=hugo)](https://gohugo.io/)
 [![MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 [Author's blog](https://www.guzhengsvt.cn/) · [Example site](exampleSite) · [Changelog](CHANGELOG.md) · [Issues](https://github.com/GuZhengSVT/hugo-theme-ruri/issues)
@@ -33,7 +33,7 @@ Hugo templates, vanilla JavaScript, CSS and a little SCSS. Basic reading works w
 
 ## Requirements
 
-- **Hugo Extended >= 0.162.1** (tested version: 0.162.1); Extended compiles SCSS.
+- **Hugo ≥ 0.162.1**. With Hugo 0.170.0 or later, install Dart Sass to compile the heatmap SCSS. For earlier versions, use Hugo Extended.
 - **Git** for installation and updates.
 - **Go >= 1.22** for Module installation; also follow your Hugo release's Go requirements.
 - **Node.js/npm** for the Pagefind command below. Hugo itself needs no npm build.
@@ -254,12 +254,12 @@ Add `name: culture_title` and `url: /culture/` to the menu. Pages select `layout
 
 For example, `culture.sources.movie: douban` selects Douban for films while other categories keep their own providers. Douban film collections may include TV; Bangumi real-person media and NeoDB's entire TV category are not silently treated as films or anime.
 
-Run from your site root using Hugo Extended, Python 3 and curl:
+Run from your site root using the Hugo environment described above, Python 3 and curl:
 
 ~~~sh
 python3 themes/ruri/scripts/sync-culture.py
 hugo --gc --minify
-npx -y pagefind@1.4.0 --site public --glob '**/*.html'
+npx -y pagefind@1.6.0 --site public --glob '**/*.html'
 ~~~
 
 The sync script reads effective Hugo params and fetches only enabled sources/categories. On upstream errors it keeps valid previous snapshots; without an initial snapshot it publishes an unavailable state, rather than an empty library. Other providers and deployment continue. Cache `static/collections/` in Actions to retain recent snapshots; an initial successful snapshot may also be committed to the blog. The script does not commit source changes or archive dated copies. Unchanged collections retain identical JSON and timestamps.
@@ -423,7 +423,7 @@ Local navigation preserves playback. Audio availability and CORS depend on the s
 
 ~~~sh
 hugo --minify
-npx -y pagefind@1.4.0 --site public --glob '**/*.html'
+npx -y pagefind@1.6.0 --site public --glob '**/*.html'
 ~~~
 
 Deploy all of `public/` including `public/pagefind/`. Pagefind indexes generated HTML, replacing the old `index.json`. `hugo server` does not generate the index. To preview the complete build:
