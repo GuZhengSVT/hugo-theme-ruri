@@ -1,0 +1,145 @@
+.tools > #season-toggle[hidden],
+:root[data-season=classic] .winter-snow,
+:root[data-season=classic] .hero-image[data-winter-only] { display: none; }
+#season-toggle[aria-pressed=true] {
+  color: var(--accent);
+  background: var(--tint);
+  border-radius: 50%;
+}
+
+@mixin winter-night {
+  --night-bg: #1c282e;
+  --night-paper: #243239;
+  --night-tint: #2b3b42;
+  --night-line: #41555b;
+  --night-ink: #d1d7d5;
+  --night-muted: #a6b5b8;
+  --night-accent: #a0c3b5;
+  --night-selection: #3c555b;
+  --night-rose: #caa8b5;
+  --night-blue: #a4c2d2;
+  --night-sand: #d7c39f;
+  --night-lilac: #bcb1d2;
+  --night-clay: #d9ab99;
+}
+
+:root[data-season=winter] {
+  --bg: var(--night-bg, #f3f6f6);
+  --paper: var(--night-paper, #fcfdfc);
+  --tint: var(--night-tint, #e3edee);
+  --line: var(--night-line, #c7d6d8);
+  --ink: var(--night-ink, #293e48);
+  --muted: var(--night-muted, #516872);
+  --accent: var(--night-accent, #346557);
+  --ice-crystal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath id='arm' d='M40 40V3m0 9-4-4m4 4 4-4m-4 14-8-8m8 8 8-8m-8 19L28 21m12 12 12-12'/%3E%3Cuse xlink:href='%23arm' transform='rotate(60 40 40)'/%3E%3Cuse xlink:href='%23arm' transform='rotate(120 40 40)'/%3E%3Cuse xlink:href='%23arm' transform='rotate(180 40 40)'/%3E%3Cuse xlink:href='%23arm' transform='rotate(240 40 40)'/%3E%3Cuse xlink:href='%23arm' transform='rotate(300 40 40)'/%3E%3C/g%3E%3C/svg%3E");
+
+  &[data-theme=dark] { @include winter-night; }
+  @media (prefers-color-scheme: dark) {
+    &:not([data-theme=light]) { @include winter-night; }
+  }
+
+  ::selection, #search-results mark {
+    color: var(--ink);
+    background: var(--night-selection, #c4dedc);
+  }
+
+  .brand-mark, .hero-copy { position: relative; }
+  .brand-mark::after, .hero-copy::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    background: currentColor;
+    -webkit-mask: var(--ice-crystal) center / contain no-repeat;
+    mask: var(--ice-crystal) center / contain no-repeat;
+  }
+  .brand-mark::after {
+    width: 17px;
+    height: 17px;
+    top: 1px;
+    right: -8px;
+    transform: rotate(14deg);
+  }
+
+  .hero-copy {
+    isolation: isolate;
+    overflow: hidden;
+    background: linear-gradient(120deg, var(--tint) 38%, var(--paper) 138%);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .hero-copy::after {
+    z-index: -1;
+    width: clamp(92px, 12vw, 178px);
+    aspect-ratio: 1;
+    top: -15px;
+    right: -18px;
+    transform: rotate(13deg);
+    color: var(--accent);
+    opacity: .16;
+  }
+  .hero-copy .eyebrow { color: var(--accent); }
+  .hero h1 {
+    font-family: Baskerville, "Songti SC", "Noto Serif CJK SC", SimSun, Georgia, serif;
+    font-style: normal;
+  }
+  .hero-image > span {
+    z-index: 1;
+    color: #e6edeb;
+    background: #20343de8;
+    border-inline-start: 2px solid #a9c9bf;
+  }
+
+  // Keep the large crystals behind the page and the fine snow above its illustrations.
+  body:has(.winter-snow) { isolation: isolate; }
+  .winter-snow {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+  .winter-snow > i {
+    position: absolute;
+    top: -80px;
+    left: calc(var(--slot) * 100%);
+    width: var(--flake-size);
+    aspect-ratio: 1;
+    background: currentColor;
+    animation: winter-fall var(--fall-duration) linear infinite;
+    animation-delay: calc(-1 * var(--slot) * var(--fall-duration));
+  }
+
+  .winter-snow--crystals {
+    --flake-size: 46px;
+    --fall-duration: 34s;
+    z-index: -1;
+    color: var(--night-blue, #578096);
+    opacity: .36;
+    > i {
+      -webkit-mask: var(--ice-crystal) center / contain no-repeat;
+      mask: var(--ice-crystal) center / contain no-repeat;
+    }
+  }
+  .winter-snow--powder {
+    z-index: 2;
+    color: var(--night-ink, #83a4b2);
+    opacity: .55;
+    --flake-size: 3px;
+    --fall-duration: 20s;
+    > i { border-radius: 50%; }
+  }
+
+  @media (max-width: 760px) {
+    .hero-copy::after { width: 84px; top: -6px; right: 5px; }
+    .winter-snow--crystals > i { width: calc(var(--flake-size) * .72); }
+    .winter-snow > i:nth-child(even) { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce), print {
+    .winter-snow { display: none; }
+  }
+}
+
+@keyframes winter-fall {
+  from { transform: translate(-8px, 0) rotate(-18deg); }
+  50% { transform: translate(12px, calc(50vh + 40px)) rotate(18deg); }
+  to { transform: translate(-4px, calc(100vh + 80px)) rotate(54deg); }
+}

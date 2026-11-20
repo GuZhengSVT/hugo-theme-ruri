@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ .Language.Locale | default .Language.Lang }}">
+<html lang="{{ .Language.Locale | default .Language.Lang }}" data-season="{{ if eq .Site.Params.ruri.season "classic" }}classic{{ else }}winter{{ end }}">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ if not .IsHome }}{{ .Title }} · {{ end }}{{ .Site.Title }}</title>
@@ -9,8 +9,17 @@
 {{ range .AllTranslations }}<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">{{ end }}
 <meta property="og:description" content="{{ partial "description.html" . }}">
 <meta property="og:title" content="{{ .Title }}"><meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}"><meta property="og:url" content="{{ .Permalink }}">{{ with partial "cover.html" . }}<meta property="og:image" content="{{ partial "media.html" (dict "src" . "page" $ "width" 1200) | absURL }}">{{ end }}
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('ruri-theme')||'auto'}catch(e){}</script>
-{{ $css := resources.Get "ruri.css" | resources.Copy "assets/css/ruri.css" | minify | fingerprint }}<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+<script>
+try {
+  const root = document.documentElement;
+  root.dataset.theme = localStorage.getItem('ruri-theme') || 'auto';
+  const season = localStorage.getItem('ruri-season');
+  if (season === 'winter' || season === 'classic') root.dataset.season = season;
+} catch {}
+</script>
+{{ $winter := resources.Get "seasons/winter.scss" | toCSS }}
+{{ $css := slice (resources.Get "ruri.css") $winter | resources.Concat "assets/css/ruri.css" }}
+{{ $css = $css | minify | fingerprint }}<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 {{ $heat := resources.Get "heat-map.scss" | toCSS | resources.Copy "assets/css/heat-map.css" | minify | fingerprint }}<link rel="stylesheet" href="{{ $heat.RelPermalink }}">
 {{ $features := resources.Get "features.js" | resources.Copy "assets/js/features.js" | minify | fingerprint }}<script src="{{ $features.RelPermalink }}" defer></script>
 {{ $js := resources.Get "ruri.js" | resources.Copy "assets/js/ruri.js" | minify | fingerprint }}<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
@@ -30,8 +39,19 @@
 {{ $href := strings.TrimPrefix "/" .url | relLangURL }}{{ if hasPrefix .url "https://" }}{{ $href = .url }}{{ end }}<a href="{{ $href }}" {{ if eq $href $.RelPermalink }}aria-current="page"{{ end }}>{{ i18n .name | default .name }}</a>
 {{ end }}{{ end }}{{ end }}
 </nav>
-<div class="tools"><a class="rss-link" href="{{ "index.xml" | relLangURL }}" aria-label="RSS" title="RSS"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="19" r="1" fill="currentColor"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg></a><button type="button" id="search-open" aria-label="{{ i18n "search" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button type="button" id="theme-toggle" aria-label="{{ i18n "ruri_theme" }}" title="Light / Dark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg></button><details class="languages"><summary aria-label="Language" title="{{ i18n "ruri_language" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12M9 3v2M5 5c0 6 4 9 8 11M13 5c0 5-4 9-10 12M14 21l4-10 4 10M15.5 17h5"/></svg></summary><div>{{ range hugo.Sites }}{{ $home := .Home }}{{ $target := $home }}{{ range $.AllTranslations }}{{ if eq .Language.Lang $home.Language.Lang }}{{ $target = . }}{{ end }}{{ end }}<a href="{{ $target.RelPermalink }}" lang="{{ .Language.Lang }}">{{ .Language.Label }}</a>{{ end }}</div></details></div>
+<div class="tools"><a class="rss-link" href="{{ "index.xml" | relLangURL }}" aria-label="RSS" title="RSS"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="19" r="1" fill="currentColor"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg></a><button type="button" id="search-open" aria-label="{{ i18n "search" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button type="button" id="theme-toggle" aria-label="{{ i18n "ruri_theme" }}" title="Light / Dark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg></button>
+<button id="season-toggle" type="button" hidden aria-label="{{ i18n "ruri_winter_skin" }}" data-winter-title="{{ i18n "ruri_use_winter" }}" data-classic-title="{{ i18n "ruri_use_classic" }}">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M3.34 7l17.32 10M3.34 17 20.66 7M9.5 4.5 12 7l2.5-2.5m-5 15L12 17l2.5 2.5M4.3 10.4l3.4-.9-.9-3.4m10.4 11.8-.9-3.4 3.4-.9M4.3 13.6l3.4.9-.9 3.4m10.4-11.8-.9 3.4 3.4.9"/></svg>
+</button><details class="languages"><summary aria-label="Language" title="{{ i18n "ruri_language" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12M9 3v2M5 5c0 6 4 9 8 11M13 5c0 5-4 9-10 12M14 21l4-10 4 10M15.5 17h5"/></svg></summary><div>{{ range hugo.Sites }}{{ $home := .Home }}{{ $target := $home }}{{ range $.AllTranslations }}{{ if eq .Language.Lang $home.Language.Lang }}{{ $target = . }}{{ end }}{{ end }}<a href="{{ $target.RelPermalink }}" lang="{{ .Language.Lang }}">{{ .Language.Label }}</a>{{ end }}</div></details></div>
 </header>
+{{ $isPost := and .IsPage (in .Site.MainSections .Type) }}
+{{ if not $isPost }}
+  {{ range $kind, $count := dict "crystals" 18 "powder" 32 }}
+    <div class="winter-snow winter-snow--{{ $kind }}" aria-hidden="true">
+      {{- range seq $count }}<i style="--slot:{{ div (sub (float .) 0.5) $count }}"></i>{{ end -}}
+    </div>
+  {{ end }}
+{{ end }}
 {{ block "hero" . }}{{ end }}{{ $wide := eq .Params.sidebar false }}
 <div class="shell layout{{ if $wide }} no-sidebar{{ end }}{{ if eq .Params.contentWidth "narrow" }} moments-layout{{ end }}"><main id="main">{{ block "main" . }}{{ end }}</main>{{ if not $wide }}{{ partial "sidebar.html" . }}{{ end }}</div>
 {{ $totalWords := 0 }}{{ $totalMinutes := 0 }}{{ range where .Site.RegularPages "Type" "in" .Site.MainSections }}{{ $totalWords = add $totalWords .WordCount }}{{ $totalMinutes = add $totalMinutes .ReadingTime }}{{ end }}

@@ -1,0 +1,17 @@
+{{- $params := .page.Site.Params -}}
+{{- $classic := $params.banner | default "" -}}
+{{- $winter := index ($params.ruri.seasonBanners | default dict) "winter" | default $classic -}}
+{{- with $winter -}}
+  {{- $winterImage := partial "image.html" (merge $ (dict "src" .)) -}}
+  <div class="hero-image"{{ if ne $classic $winter }} data-season-banner{{ end }}{{ if not $classic }} data-winter-only{{ end }}>
+    {{- if eq $classic $winter }}
+      {{ $winterImage }}
+    {{- else }}
+      {{ $classicImage := "" }}{{ with $classic }}{{ $classicImage = partial "image.html" (merge $ (dict "src" .)) }}{{ end }}
+      <template data-season="winter">{{ $winterImage }}</template>
+      <template data-season="classic">{{ $classicImage }}</template>
+      <noscript>{{ if eq $params.ruri.season "classic" }}{{ $classicImage }}{{ else }}{{ $winterImage }}{{ end }}</noscript>
+    {{- end }}
+    <span><span class="quote-en">{{ $params.ruri.caption }}</span><br><span class="quote-zh">{{ $params.ruri.captionTranslation }}</span></span>
+  </div>
+{{- end -}}

@@ -146,6 +146,9 @@ avatar: avatar.webp
 ruri:
   brandMark: "r."
   tagline: Per aspera ad astra.
+  season: winter
+  # seasonBanners:
+  #   winter: images/winter.webp
   homeHeading: [A quiet place, for your words.]
   favicon: favicon_io/favicon.svg
 menu:
@@ -158,6 +161,8 @@ menu:
   - name: moments
     url: /moments/
 ~~~
+
+New visitors start with the winter skin. The snowflake button switches between winter and classic and remembers the choice in the browser. Set `ruri.season` to `classic` to change the default, or set `ruri.seasonBanners.winter` to use a winter homepage banner. Snowfall stays off on article detail pages and when visitors prefer reduced motion.
 
 Place the banner at `static/images/banner.webp` and avatar at `static/avatar/avatar.webp`. Missing settings hide the images. Article `cover` accepts a path/URL or `false` to hide it. Create a page for each internal menu link.
 

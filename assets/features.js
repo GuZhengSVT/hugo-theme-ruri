@@ -97,5 +97,53 @@ async function initCulture(){
  try{const module=await import(root.dataset.cultureModule);if(!signal.aborted)module.init(root,{signal})}
  catch{if(!signal.aborted)root.querySelector('.bangumi-status').textContent=JSON.parse(root.dataset.labels).error}
 }
-window.RuriFeatures={init(){controller=new AbortController();const version=++epoch;initSearch();initCode();initQR();initLightbox(version);initBangumi();initCulture()},destroy(){epoch++;controller?.abort();lightbox?.destroy();lightbox=null;document.querySelectorAll('[data-feature-dialog]').forEach(d=>{d.close();d.remove()})}};
+function initSeason(){
+  const root=document.documentElement;
+  const button=$('#season-toggle');
+  if(!button)return;
+  const hero=$('.hero-image[data-season-banner]');
+  let snowReady=false;
+  function apply(){
+    const season=root.dataset.season;
+    const winter=season==='winter';
+    button.setAttribute('aria-pressed',String(winter));
+    button.title=winter ? button.dataset.classicTitle : button.dataset.winterTitle;
+    if(hero){
+      const template=hero.querySelector('template[data-season="'+season+'"]');
+      hero.querySelector(':scope > img')?.remove();
+      hero.prepend(template.content.cloneNode(true));
+    }
+    if(winter && !snowReady){
+      initWinterSnow();
+      snowReady=true;
+    }
+  }
+  apply();
+  button.hidden=false;
+  button.addEventListener('click',()=>{
+    const season=root.dataset.season==='winter' ? 'classic' : 'winter';
+    root.dataset.season=season;
+    try{localStorage.setItem('ruri-season',season)}catch{}
+    apply();
+  },{signal:controller.signal});
+}
+function initWinterSnow(){
+  for(const layer of document.querySelectorAll('.winter-snow')){
+    const crystals=layer.classList.contains('winter-snow--crystals');
+    function scatter(flake){
+      const size=crystals ? 26+Math.random()*46 : 1.5+Math.random()*3;
+      flake.style.left=(Math.random()*100)+'%';
+      flake.style.setProperty('--flake-size',size+'px');
+    }
+    for(const flake of layer.children){
+      const seconds=crystals ? 26+Math.random()*15 : 14+Math.random()*10;
+      flake.style.animationDuration=seconds+'s';
+      flake.style.animationDelay=(-Math.random()*seconds)+'s';
+      scatter(flake);
+    }
+    // Reuse the flake when its fall wraps above the viewport.
+    layer.addEventListener('animationiteration',event=>scatter(event.target),{signal:controller.signal});
+  }
+}
+window.RuriFeatures={init(){controller=new AbortController();const version=++epoch;initSeason();initSearch();initCode();initQR();initLightbox(version);initBangumi();initCulture()},destroy(){epoch++;controller?.abort();lightbox?.destroy();lightbox=null;document.querySelectorAll('[data-feature-dialog]').forEach(d=>{d.close();d.remove()})}};
 })();

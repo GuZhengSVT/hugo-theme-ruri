@@ -150,6 +150,9 @@ avatar: avatar.webp
 ruri:
   brandMark: "r."
   tagline: Per aspera ad astra.
+  season: winter
+  # seasonBanners:
+  #   winter: images/winter.webp
   homeEyebrow: NOTE, TECH & POEM
   homeHeading: [A quiet place, for your words.]
   footerText: Made with care.
@@ -164,6 +167,8 @@ menu:
   - name: moments
     url: /moments/
 ~~~
+
+首次访问默认使用冬季皮肤。导航栏的雪花按钮可切换经典皮肤，浏览器会记住选择。站长可将 `ruri.season` 设为 `classic` 来更改默认值，或用 `ruri.seasonBanners.winter` 指定冬季首页题图。飘雪会在文章详情页自动关闭，也会遵循系统的「减少动态效果」设置。
 
 `banner` 对应 `static/images/banner.webp`；`avatar` 对应 `static/avatar/avatar.webp`。不配置时不显示对应图片。文章 `cover` 可指定图片路径／URL，`false` 关闭。添加导航后需要创建对应页面。
 

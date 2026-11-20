@@ -1,6 +1,7 @@
 [params]
 mainSections = ["posts", "post"]
 [params.ruri]
+season = "winter"
 favicon = "favicon_io/favicon.svg"
 friendsShuffle = false
 [outputs]

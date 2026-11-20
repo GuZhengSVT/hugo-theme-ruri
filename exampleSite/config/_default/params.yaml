@@ -59,6 +59,11 @@ social: []
 #     url: mailto:you@example.org
 
 ruri:
+  # 首次访问使用 winter 或 classic。访客可以在导航栏切换皮肤。
+  # Start visitors in winter or classic. The header toggle remembers their choice.
+  season: winter
+  # seasonBanners:
+  #   winter: images/winter.webp
   # 每次加载页面时，在各友链分类内独立随机排序；false 保持数据文件顺序。
   # Shuffle each friend group independently on page load; false keeps data-file order.
   friendsShuffle: false
