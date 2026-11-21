@@ -1,0 +1,64 @@
+{{ define "main" }}
+{{ $style := resources.Get "moments.css" | resources.Copy "assets/css/moments.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}">
+{{ $waline := site.Params.waline }}
+{{ $enabled := and $waline.enable $waline.serverURL (ne .Params.comments false) }}
+<section id="comments" class="moments" aria-labelledby="moments-title">
+  <header class="moments-heading">
+    <div><h1 id="moments-title" data-pagefind-meta="title">{{ .Title }}</h1><div class="moments-intro" data-pagefind-body>{{ .Content }}</div></div>
+    {{ if $enabled }}<button type="button" class="moments-write" aria-haspopup="dialog">＋ {{ i18n "moments_write" }}</button>{{ end }}
+  </header>
+  {{ if $enabled }}
+    {{ $pageSize := $waline.pageSize | default 10 }}
+    {{ $sort := index (dict "oldest" "insertedAt_asc" "hottest" "like_desc") ($waline.commentSorting | default "latest") | default "insertedAt_desc" }}
+    {{ $api := printf "%s/api/comment?%s" (strings.TrimSuffix "/" $waline.serverURL) (querify "path" .RelPermalink "page" 1 "pageSize" $pageSize "sortBy" $sort "lang" .Language.Lang) }}
+    {{ $snapshot := slice }}
+    {{ with try (resources.GetRemote $api (dict "timeout" "8s")) }}
+      {{ with .Err }}{{ warnf "Unable to preload moments for %s, using the live feed" $.RelPermalink }}{{ end }}
+      {{ with .Value }}
+        {{ with try (transform.Unmarshal (dict "format" "json") .Content) }}
+          {{ with .Value }}{{ if eq .errno 0 }}{{ $snapshot = .data.data }}{{ end }}{{ end }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+    {{ $vendor := "ruri/vendor/waline-3.16.2/" | relURL }}
+    <link rel="stylesheet" href="{{ $vendor }}waline.css">
+    {{ $options := dict "serverURL" $waline.serverURL "path" .RelPermalink "lang" .Language.Lang "pageSize" $pageSize }}
+    {{ range slice "locale" "meta" "requiredMeta" "wordLimit" "pageview" "emoji" "login" "commentSorting" "noCopyright" "noRss" "recaptchaV3Key" "turnstileKey" "search" "reaction" "imageUploader" "highlighter" "texRenderer" }}
+      {{ if isset $waline (lower .) }}{{ $options = merge $options (dict . (index $waline (lower .))) }}{{ end }}
+    {{ end }}
+    <moments-wall data-options="{{ $options | jsonify }}" data-client="{{ $vendor }}waline.js"
+      data-missing="{{ i18n "moments_missing" }}" data-loading="{{ i18n "ruri_comments_loading" }}" data-error="{{ i18n "ruri_comments_error" }}" data-empty="{{ i18n "moments_empty" }}" data-replies="{{ i18n "moments_replies" }}">
+      <div class="moments-grid">
+        {{ range $snapshot }}
+          {{ $lines := slice }}
+          {{ range split (replaceRE "(?i)<br\\s*/?>|</(?:p|li|h[1-6])>" "\n" .comment) "\n" }}
+            {{ with (. | plainify | htmlUnescape | strings.TrimSpace) }}{{ $lines = $lines | append . }}{{ end }}
+          {{ end }}
+          {{ $photo := "" }}
+          {{ range findRESubmatch `(?i)<img\b[^>]*?\bsrc="(https?://[^"]+)"[^>]*>` .comment }}
+            {{ if and (not $photo) (not (findRE "(?i)emoji" (index . 0))) }}{{ $photo = index . 1 | htmlUnescape }}{{ end }}
+          {{ end }}
+          {{ $date := time.AsTime (int (div .time 1000)) }}
+          <button type="button" class="moment-card" data-id="{{ .objectId }}" aria-haspopup="dialog">
+            <span class="moment-byline"><strong>{{ .nick }}</strong><time datetime="{{ $date.Format "2006-01-02T15:04:05Z07:00" }}">{{ $date.Format "2006-01-02" }}</time></span>
+            <span class="moment-excerpt">{{ range $index, $line := $lines }}{{ if $index }}<br>{{ end }}{{ $line }}{{ end }}</span>
+            {{ with $photo }}<img class="moment-photo" src="{{ . }}" alt="" loading="lazy" decoding="async">{{ end }}
+            <span class="moment-count">{{ i18n "moments_replies" }} · {{ len (.children | default slice) }}</span>
+          </button>
+        {{ end }}
+      </div>
+      <div class="moments-footer"><span role="status"></span><button type="button" class="moments-more" hidden>{{ i18n "ruri_more" }}</button></div>
+      <dialog class="moment-dialog" aria-labelledby="moment-title">
+        <header><h2 id="moment-title">{{ .Title }}</h2><button type="button" class="moment-close" aria-label="{{ i18n "ruri_close" }}" autofocus>×</button></header>
+        <div class="moment-preview"></div>
+        <p class="moment-status" role="status"></p>
+        <button type="button" class="moment-retry" hidden>{{ i18n "ruri_comments_error" }}</button>
+        <div class="moment-waline"></div>
+      </dialog>
+    </moments-wall>
+    {{ $script := resources.Get "moments.js" | resources.Copy "assets/js/moments.js" | minify | fingerprint }}
+    <script src="{{ $script.RelPermalink }}" data-page-script defer></script>
+  {{ end }}
+</section>
+{{ end }}

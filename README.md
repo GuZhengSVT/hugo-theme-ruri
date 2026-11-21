@@ -217,8 +217,8 @@ ruri:
 - 归档：创建 `content/archives/_index.md`，front matter 设置 `title: 归档`。自动显示时间树、热力图及分类标签。
 - 文艺：创建 `content/culture/index.md`，使用下面的 `culture` 布局，包含书籍、动画、电影、音乐、游戏五个板块。
 - 关于：创建 `content/about/index.md`，写入个人介绍。
-- 友链：创建 `content/friend/index.md`，使用下面的短代码。
-- 说说：创建 `content/moments/index.md`，设置 `comments: true` 并启用 Waline。说说内容由 Waline 评论区承载。**通用演示不配置 Waline 服务，应显示说明文字；接入自己的服务后才能使用。**
+- 友链：创建 `content/friend/index.md`。旧的分类短代码和下面的 `friendGroups` 配置均支持固定宽度瀑布流、半透明卡片和分区内随机排序。
+- 说说：创建 `content/moments/index.md`，设置 `comments: true` 并启用 Waline。首页卡片在构建时预载，打开页面后刷新。图片按原始比例显示，点击卡片可查看完整内容和回复。**通用演示不配置 Waline 服务，应显示说明文字；接入自己的服务后才能使用。**
 
 独立页面可使用这些布局字段：
 
@@ -308,6 +308,22 @@ npx -y pagefind@1.6.0 --site public --glob '**/*.html'
 ~~~
 
 另外两组使用 `friendsLink3`、`friendsLink4`；本地图片放在 `static/images/`。
+
+要将卡片放在正文前，在友链页的 front matter 设置分组。正文中的折叠项显示在卡片之后、评论之前。
+
+~~~markdown
+---
+title: 友情链接
+sidebar: false
+friendGroups:
+  friends1: 博客
+---
+{{< friend-details "本站信息" >}}
+在这里填写站名、网址和简介。
+{{< /friend-details >}}
+~~~
+
+可选的 `resourceHeading` 为本站 `/recommended/` 页面添加入口卡片，封面在站点参数 `ruri.friendResourceCover` 中设置。
 
 友链默认按数据文件顺序显示。在站点的 `config/_default/params.yaml` 中启用以下选项，即可在每次刷新或通过站内导航进入页面时，将四组友链各自独立随机排序，分类顺序保持不变。设为 `false` 或省略则使用固定顺序；随机结果偶尔可能与上次相同。
 

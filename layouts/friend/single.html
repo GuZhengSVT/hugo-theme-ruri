@@ -1,0 +1,38 @@
+{{ define "main" }}
+{{ $css := resources.Get "friends.css" | resources.Copy "assets/css/friends.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}">
+<div class="friends-page">
+  <h1 id="friends-title" data-pagefind-meta="title">{{ .Title }}</h1>
+  {{ if .Params.friendGroups }}
+  {{ $label := .Params.friendsHeading | default .Title }}
+  <section class="friends-directory" id="{{ $label | anchorize }}" aria-label="{{ $label }}" data-pagefind-body>
+    {{ range $key, $heading := .Params.friendGroups }}
+      <section class="friends-section" aria-labelledby="{{ $heading | anchorize }}">
+        <h2 id="{{ $heading | anchorize }}">{{ $heading }}</h2>
+        {{ partial "friends.html" (index hugo.Data $key) }}
+      </section>
+    {{ end }}
+    {{ with .Params.resourceHeading }}{{ with $.Site.GetPage "/recommended" }}
+      <section class="friends-section" aria-labelledby="{{ $.Params.resourceHeading | anchorize }}">
+        <h2 id="{{ $.Params.resourceHeading | anchorize }}">{{ $.Params.resourceHeading }}</h2>
+        <div class="friend-grid">
+          {{ $cover := "" }}
+          {{ with site.Params.ruri.friendResourceCover }}{{ $cover = partial "media.html" (dict "src" . "page" $ "width" 120) }}{{ end }}
+          {{ partial "friend-directory-card.html" (dict "name" .Title "url" .RelPermalink "desc" .Description "image" $cover) }}
+        </div>
+      </section>
+    {{ end }}{{ end }}
+  </section>
+  {{ with .Content }}<div class="friends-guide" data-pagefind-body>{{ . }}</div>{{ end }}
+  {{ else }}
+    <div class="friends-directory prose" data-pagefind-body>{{ .Content }}</div>
+  {{ end }}
+  {{ if and site.Params.waline.enable site.Params.waline.serverURL (ne .Params.comments false) }}
+    <section class="comments" id="comments">
+      <h2>{{ index (site.Params.comment.title | default dict) .Language.Lang | default (i18n "comment") }}</h2>
+      <button id="comments-load" data-server="{{ site.Params.waline.serverURL }}" data-lang="{{ .Language.Lang }}" data-options="{{ site.Params.waline | jsonify }}">{{ i18n "comment" }}</button>
+      <div id="waline"></div>
+    </section>
+  {{ end }}
+</div>
+{{ end }}

@@ -15,6 +15,10 @@ toc: 文章目录
 home: 首页
 about: 关于
 friend: 友链
+moments_write: 写一条
+moments_empty: 还没有碎碎念。
+moments_replies: 回复
+moments_missing: 这条碎碎念已不在当前列表中。
 archives: 归档
 
 sidebar:

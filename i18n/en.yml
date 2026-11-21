@@ -15,6 +15,10 @@ toc: Contents
 home: Home
 about: About
 friend: Friend
+moments_write: Write a moment
+moments_empty: No moments yet.
+moments_replies: Replies
+moments_missing: This moment is no longer in the current list.
 archives: Archives
 
 sidebar:

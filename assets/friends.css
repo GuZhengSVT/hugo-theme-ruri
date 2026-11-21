@@ -1,0 +1,75 @@
+.friends-page {
+  --friend-width: 280px;
+  --friend-gap: 16px;
+  --friend-step: calc(var(--friend-width) + var(--friend-gap));
+}
+.friends-page > h1, .friends-directory {
+  /* Fit whole columns so the headings and cards share the same left edge. */
+  max-width: max(var(--friend-width), round(down, 100% + var(--friend-gap), var(--friend-step)) - var(--friend-gap));
+  margin-inline: auto;
+}
+.friends-page h1 { margin-block: 0 24px; font-size: clamp(1.85rem, 4vw, 2.8rem); }
+.friends-section { margin-bottom: 26px; }
+.friends-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: 1.2rem;
+}
+.friends-section h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.friends-page .friend-grid {
+  display: block;
+  columns: var(--friend-width) auto;
+  column-gap: var(--friend-gap);
+  margin: 0;
+}
+.friends-page .friend-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  break-inside: avoid;
+  width: min(100%, var(--friend-width));
+  margin-bottom: var(--friend-gap);
+  padding: 17px 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+  border-radius: 14px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%),
+    color-mix(in srgb, var(--paper) 72%, transparent);
+  box-shadow: inset 3px 0 color-mix(in srgb, var(--accent) 65%, transparent), 0 3px 12px color-mix(in srgb, var(--ink) 6%, transparent);
+  transition: border-color .16s, box-shadow .16s;
+}
+.friends-page .friend-card:is(:hover, :focus-visible) {
+  border-color: var(--accent);
+  background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 19%, transparent), transparent 78%),
+    color-mix(in srgb, var(--paper) 82%, transparent);
+  box-shadow: inset 3px 0 var(--accent), 0 4px 16px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.friends-page .friend-identity { display: flex; align-items: center; gap: 12px; width: 100%; }
+.friend-identity > div { min-width: 0; overflow-wrap: anywhere; }
+.friends-page .friend-avatar {
+  position: relative;
+  flex: 0 0 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--tint);
+  color: var(--accent);
+  font-size: 1.2rem;
+  font-weight: 650;
+}
+.friends-page .friend-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--tint); }
+.friends-page .friend-card strong { font-size: 1.04rem; color: var(--accent); }
+.friends-page .friend-card small { display: block; margin-top: 2px; color: var(--muted); font-size: .77rem; }
+.friends-page .friend-card p { margin: 0; color: var(--ink); font-size: .92rem; line-height: 1.65; }
+.friends-page .comments, .friends-guide { max-width: 800px; margin-inline: auto; }
+.friends-guide { margin-top: 32px; border-top: 1px solid var(--line); }
+.friend-details { border-bottom: 1px solid var(--line); }
+.friend-details summary { padding: 15px 4px; color: var(--accent); font-weight: 600; }
+.friend-details .prose { padding: 0 4px 15px; }
+.friend-details .prose > :last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .friends-page .friend-card { transition: none; }
+}

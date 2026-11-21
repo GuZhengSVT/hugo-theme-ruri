@@ -15,6 +15,10 @@ toc: 見出し
 home: ホーム
 about: プロフィール
 friend: フレンド
+moments_write: つぶやく
+moments_empty: まだつぶやきはありません。
+moments_replies: 返信
+moments_missing: このつぶやきは現在の一覧にありません。
 archives: アーカイブ
 
 not_found:

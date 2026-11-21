@@ -279,7 +279,7 @@ Douban can restrict public access. `culture.douban.exportFile` supports raw JSON
 
 Statuses are `wishlist`, `progress`, `complete`, `dropped`. Login/challenge pages cause a sync warning; the importer uses no login credentials. NeoDB and Douban HTML changes may require parser updates. Public theme examples contain no personal accounts or collections.
 
-Moments at `content/moments/index.md` use the **Waline comment area**: set `comments: true` and configure your own Waline service. The generic demo does not configure Waline and should display an explanation.
+For `content/moments/index.md`, set `comments: true` and configure your own Waline service. The first page of cards is preloaded at build time and refreshed on entry. Images keep their aspect ratio. Select a card to read the full thread and reply. The generic demo does not configure Waline and should display an explanation.
 
 Friend categories read separate `data/friends1.yml` through `data/friends4.yml` files; sharing the renderer does not merge categories. Each file contains an array:
 
@@ -300,6 +300,22 @@ Place local images under `static/images/`. Add category headings and shortcodes:
 ~~~
 
 The other groups use `friendsLink3` and `friendsLink4`.
+
+To place cards before the page body, set the groups in the friend page’s front matter. Disclosures in the body appear after the cards and before the comments.
+
+~~~markdown
+---
+title: Friends
+sidebar: false
+friendGroups:
+  friends1: Blogs
+---
+{{< friend-details "Site information" >}}
+Add the site name, URL and description here.
+{{< /friend-details >}}
+~~~
+
+The optional `resourceHeading` adds a card linking to your `/recommended/` page. Set its cover with the site parameter `ruri.friendResourceCover`.
 
 Friends follow data-file order by default. Enable the following option in your site's `config/_default/params.yaml` to shuffle each of the four groups independently on every refresh or in-page navigation, while keeping category order unchanged. Set it to `false` or omit it to retain fixed order. A random result can occasionally match the previous order.
 

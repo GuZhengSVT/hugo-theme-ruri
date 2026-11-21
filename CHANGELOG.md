@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a preloaded Waline moments wall with thread dialogs and a fixed-width, translucent friend directory with foldable site and application details.
+
 - Show localized loading feedback for in-page navigation, fall back to a full load after 15 seconds, scroll before page scripts finish, and reuse KaTeX libraries across pages.
 
 - Group generated theme scripts and styles under `assets/js/` and `assets/css/`, retaining fingerprinted URLs and lazy-loaded collection modules.

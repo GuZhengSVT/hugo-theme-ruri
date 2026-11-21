@@ -1,1 +1,10 @@
-<div class="friend-grid"{{ if site.Params.ruri.friendsShuffle }} data-shuffle="true"{{ end }}>{{ range . }}<a href="{{ .url }}" target="_blank" rel="noopener noreferrer"><img src="{{ .image | relURL }}" alt="" width="48" height="48" loading="lazy"><div><strong>{{ .name }}</strong><p>{{ .desc }}</p></div></a>{{ end }}</div>
+{{ $directory := or (eq page.Path "/friend") (eq page.Type "friend") }}
+<div class="friend-grid"{{ if site.Params.ruri.friendsShuffle }} data-shuffle="true"{{ end }}>
+  {{ range . }}
+    {{ if $directory }}
+      {{ partial "friend-directory-card.html" . }}
+    {{ else }}
+      <a href="{{ .url }}" target="_blank" rel="noopener noreferrer"><img src="{{ .image | relURL }}" alt="" width="48" height="48" loading="lazy"><div><strong>{{ .name }}</strong><p>{{ .desc }}</p></div></a>
+    {{ end }}
+  {{ end }}
+</div>

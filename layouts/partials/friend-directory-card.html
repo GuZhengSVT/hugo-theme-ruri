@@ -1,0 +1,11 @@
+{{ $host := (urls.Parse .url).Hostname }}
+<a class="friend-card" href="{{ .url }}"{{ if $host }} target="_blank" rel="noopener noreferrer"{{ end }}>
+  <div class="friend-identity">
+    <span class="friend-avatar" aria-hidden="true">
+      <span>{{ substr .name 0 1 }}</span>
+      {{ with .image }}<img src="{{ . | relURL }}" alt="" width="46" height="46" loading="lazy" decoding="async" onerror="this.hidden=true">{{ end }}
+    </span>
+    <div><strong>{{ .name }}</strong>{{ with $host }}<small>{{ strings.TrimPrefix "www." . }}</small>{{ end }}</div>
+  </div>
+  {{ with .desc }}<p>{{ . }}</p>{{ end }}
+</a>

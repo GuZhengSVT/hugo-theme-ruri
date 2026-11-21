@@ -1,0 +1,5 @@
+{{ $title := .Get 0 }}
+<details class="friend-details">
+  <summary id="{{ $title | anchorize }}">{{ $title }}</summary>
+  <div class="prose">{{ .Page.RenderString (dict "display" "block") .Inner }}</div>
+</details>

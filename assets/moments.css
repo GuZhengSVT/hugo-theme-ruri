@@ -1,0 +1,118 @@
+.moments {
+  --card-width: 284px;
+  --wall-gap: 18px;
+}
+.moments-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 0 auto 28px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 22px;
+}
+.moments-heading h1 { margin: 0 0 5px; font-size: clamp(1.8rem, 4vw, 2.7rem); }
+.moments-intro { color: var(--muted); }
+.moments-intro :is(h3, p) { display: inline; font: inherit; margin: 0 .45em 0 0; }
+.moments-write, .moments-more, .moment-retry {
+  flex: none;
+  border-radius: 2em;
+  color: var(--accent);
+  background: var(--paper);
+}
+moments-wall { display: block; }
+.moments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, min(100%, var(--card-width)));
+  justify-content: center;
+  align-items: start;
+  gap: var(--wall-gap);
+}
+.moments-grid[data-packed] { grid-auto-rows: 1px; row-gap: 0; }
+.moment-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--paper);
+  padding: 18px;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.moment-card:hover, .moment-card:focus-visible {
+  border-color: var(--accent);
+  background: var(--paper);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.moment-byline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; justify-content: space-between; }
+.moment-byline strong { font-size: .92rem; }
+.moment-byline time, .moment-count { color: var(--muted); font-size: .8rem; }
+.moment-excerpt {
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 9;
+  overflow: hidden;
+}
+.moment-excerpt:empty { display: none; }
+.moment-photo { display: block; width: 100%; height: auto; object-fit: contain; border-radius: 6px; background: var(--tint); }
+.moment-count { border-top: 1px solid var(--line); padding-top: 9px; }
+.moments-footer { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 22px auto; color: var(--muted); }
+.moment-dialog {
+  width: min(680px, calc(100% - 24px));
+  max-height: min(86dvh, 900px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 24px 22px;
+  border-radius: 14px;
+}
+.moment-dialog::backdrop { background: rgb(15 26 31 / 62%); }
+html:has(.moment-dialog[open]) { overflow: hidden; }
+.moment-dialog > header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+  margin-bottom: 16px;
+  padding: 8px 0;
+}
+.moment-dialog h2 { margin: 0; font-size: 1.12rem; }
+.moment-close { width: 44px; height: 44px; border: 0; border-radius: 50%; padding: 0; font-size: 1.6rem; }
+.moment-preview { white-space: pre-line; overflow-wrap: anywhere; }
+.moment-preview .moment-photo { width: auto; max-height: 50dvh; margin-top: 12px; }
+.moment-status { color: var(--muted); }
+.moment-status:empty { display: none; }
+.moment-waline {
+  --waline-color: var(--ink);
+  --waline-bg-color: var(--paper);
+  --waline-bg-color-light: var(--tint);
+  --waline-bg-color-hover: var(--tint);
+  --waline-theme-color: var(--accent);
+  --waline-active-color: var(--accent);
+  --waline-border-color: var(--line);
+  --waline-info-bg-color: var(--tint);
+  --waline-info-color: var(--muted);
+  --waline-dark-grey: var(--muted);
+  --waline-light-grey: var(--muted);
+  --waline-border: 1px solid var(--line);
+}
+.moment-waline [data-waline] > :is(.wl-meta-head, .wl-loading, .wl-operation, .wl-empty),
+.moment-waline .wl-cards > .wl-card-item:not([data-selected]),
+.moment-dialog:not([data-compose]) [data-waline] > :is(.wl-comment, .wl-meta-foot),
+.moment-dialog[data-compose] .wl-cards { display: none; }
+.moment-waline .wl-content { overflow-wrap: anywhere; }
+.moment-waline .wl-cards > .wl-card-item { padding-top: 0; }
+.moment-waline .wl-cards > .wl-card-item > .wl-card { border-bottom: 0; }
+@media (max-width: 600px) {
+  .moments-heading { align-items: flex-start; }
+  .moments-intro :is(h3, p) { display: block; }
+  .moment-dialog { padding-inline: 14px; }
+}
