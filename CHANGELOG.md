@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Load resource links and their images on first expansion in the friend directory.
+
 - Add a preloaded Waline moments wall with thread dialogs and a fixed-width, translucent friend directory with foldable site and application details.
 
 - Show localized loading feedback for in-page navigation, fall back to a full load after 15 seconds, scroll before page scripts finish, and reuse KaTeX libraries across pages.

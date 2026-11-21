@@ -3,22 +3,42 @@
   --friend-gap: 16px;
   --friend-step: calc(var(--friend-width) + var(--friend-gap));
 }
-.friends-page > h1, .friends-directory {
+.friends-page > h1, .friends-directory, .friends-guide {
   /* Fit whole columns so the headings and cards share the same left edge. */
   max-width: max(var(--friend-width), round(down, 100% + var(--friend-gap), var(--friend-step)) - var(--friend-gap));
   margin-inline: auto;
 }
 .friends-page h1 { margin-block: 0 24px; font-size: clamp(1.85rem, 4vw, 2.8rem); }
 .friends-section { margin-bottom: 26px; }
-.friends-section h2 {
+.friends-section h2, :is(.friend-resources, .friend-details) > summary {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin: 0 0 14px;
-  color: var(--ink);
   font-size: 1.2rem;
 }
-.friends-section h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.friends-section h2 { margin: 0 0 14px; color: var(--ink); }
+.friends-section h2::after, :is(.friend-resources, .friend-details) > summary::after {
+  content: "";
+  flex: 1;
+  margin-inline-start: 14px;
+  height: 1px;
+  background: var(--line);
+}
+:is(.friend-resources, .friend-details) > summary {
+  padding: 10px 0;
+  color: var(--accent);
+  font-weight: 600;
+  list-style: none;
+}
+:is(.friend-resources, .friend-details) > summary::-webkit-details-marker { display: none; }
+:is(.friend-resources, .friend-details) > summary::before {
+  content: "";
+  border-block: .3em solid transparent;
+  border-inline-start: .55em solid currentColor;
+  margin-inline-end: .3em;
+}
+:is(.friend-resources, .friend-details)[open] > summary::before { transform: rotate(90deg); }
+.friend-resources[open] > summary { margin-bottom: 14px; }
+.friend-resources [role="status"] { color: var(--muted); }
 .friends-page .friend-grid {
   display: block;
   columns: var(--friend-width) auto;
@@ -64,10 +84,8 @@
 .friends-page .friend-card strong { font-size: 1.04rem; color: var(--accent); }
 .friends-page .friend-card small { display: block; margin-top: 2px; color: var(--muted); font-size: .77rem; }
 .friends-page .friend-card p { margin: 0; color: var(--ink); font-size: .92rem; line-height: 1.65; }
-.friends-page .comments, .friends-guide { max-width: 800px; margin-inline: auto; }
-.friends-guide { margin-top: 32px; border-top: 1px solid var(--line); }
-.friend-details { border-bottom: 1px solid var(--line); }
-.friend-details summary { padding: 15px 4px; color: var(--accent); font-weight: 600; }
+.friends-page .comments { max-width: 800px; margin-inline: auto; }
+.friends-guide { margin-top: 32px; }
 .friend-details .prose { padding: 0 4px 15px; }
 .friend-details .prose > :last-child { margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {

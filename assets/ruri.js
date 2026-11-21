@@ -43,8 +43,8 @@ function localizePlayer(){
  document.querySelectorAll('[data-ruri-label]').forEach(el=>{const label=tr(el.dataset.ruriLabel);el.setAttribute('aria-label',label);if(el.hasAttribute('title'))el.title=label});
  updateOrder();syncVolume();syncPlayback();if(songs.length)$('#music-count').textContent=songs.length+tr('tracks');
 }
-function shuffleFriends(){
-  document.querySelectorAll('.friend-grid[data-shuffle="true"]').forEach(grid=>{
+function shuffleFriends(root=document){
+  root.querySelectorAll('.friend-grid[data-shuffle="true"]').forEach(grid=>{
     const links=[...grid.children];
     for(let i=links.length-1;i>0;i--){
       const j=Math.floor(Math.random()*(i+1));
@@ -53,7 +53,41 @@ function shuffleFriends(){
     grid.append(...links);
   });
 }
-function initPage(){tocObserver?.disconnect();window.RuriMobileUi?.refresh();localizePlayer();shuffleFriends();
+function initFriendResources(){
+  const details = $('.friend-resources');
+  if (!details) return;
+  const panel = details.querySelector('.friend-resource-cards');
+  const status = details.querySelector('[role="status"]');
+  const retry = details.querySelector('button');
+  let markup, loading = false;
+
+  async function load(){
+    if (!details.open || loading || panel.childElementCount) return;
+    loading = true;
+    retry.hidden = true;
+    status.textContent = status.dataset.loading;
+    try {
+      if (markup === undefined) {
+        const response = await fetch(details.dataset.src, {signal: AbortSignal.timeout(15000)});
+        if (!response.ok) throw Error();
+        markup = await response.json();
+      }
+      if (details.open && details.isConnected) {
+        panel.innerHTML = markup;
+        shuffleFriends(panel);
+      }
+    } catch {
+      retry.hidden = false;
+    } finally {
+      loading = false;
+      status.textContent = '';
+    }
+  }
+  details.addEventListener('toggle', load);
+  retry.addEventListener('click', load);
+  if (details.open) load();
+}
+function initPage(){tocObserver?.disconnect();window.RuriMobileUi?.refresh();localizePlayer();shuffleFriends();initFriendResources();
 initArchive();window.RuriFeatures.init();
 document.querySelectorAll('.nav-dropdown').forEach(menu=>{
   menu.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')menu.open=true});

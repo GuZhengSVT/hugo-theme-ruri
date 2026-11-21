@@ -3,25 +3,29 @@
 <link rel="stylesheet" href="{{ $css.RelPermalink }}">
 <div class="friends-page">
   <h1 id="friends-title" data-pagefind-meta="title">{{ .Title }}</h1>
-  {{ if .Params.friendGroups }}
+  {{ if or .Params.friendGroups .Params.resourceHeading }}
   {{ $label := .Params.friendsHeading | default .Title }}
   <section class="friends-directory" id="{{ $label | anchorize }}" aria-label="{{ $label }}" data-pagefind-body>
     {{ range $key, $heading := .Params.friendGroups }}
+      {{ if and $.Params.resourceHeading (eq $key "friends4") }}{{ continue }}{{ end }}
       <section class="friends-section" aria-labelledby="{{ $heading | anchorize }}">
         <h2 id="{{ $heading | anchorize }}">{{ $heading }}</h2>
         {{ partial "friends.html" (index hugo.Data $key) }}
       </section>
     {{ end }}
-    {{ with .Params.resourceHeading }}{{ with $.Site.GetPage "/recommended" }}
-      <section class="friends-section" aria-labelledby="{{ $.Params.resourceHeading | anchorize }}">
-        <h2 id="{{ $.Params.resourceHeading | anchorize }}">{{ $.Params.resourceHeading }}</h2>
-        <div class="friend-grid">
-          {{ $cover := "" }}
-          {{ with site.Params.ruri.friendResourceCover }}{{ $cover = partial "media.html" (dict "src" . "page" $ "width" 120) }}{{ end }}
-          {{ partial "friend-directory-card.html" (dict "name" .Title "url" .RelPermalink "desc" .Description "image" $cover) }}
-        </div>
-      </section>
-    {{ end }}{{ end }}
+    {{ with .Params.resourceHeading }}
+      {{ $heading := . }}
+      {{ with hugo.Data.friends4 }}
+        {{ $cards := partial "friends.html" . }}
+        {{ $payload := resources.FromString (printf "assets/friends/resources.%s.json" $.Language.Lang) ($cards | jsonify | string) | fingerprint }}
+        <details class="friends-section friend-resources" data-src="{{ $payload.RelPermalink }}">
+          <summary id="{{ $heading | anchorize }}">{{ $heading }}</summary>
+          <div class="friend-resource-cards"></div>
+          <span role="status" data-loading="{{ i18n "ruri_resources_loading" }}"></span>
+          <button type="button" hidden>{{ i18n "ruri_retry" }}</button>
+        </details>
+      {{ end }}
+    {{ end }}
   </section>
   {{ with .Content }}<div class="friends-guide" data-pagefind-body>{{ . }}</div>{{ end }}
   {{ else }}

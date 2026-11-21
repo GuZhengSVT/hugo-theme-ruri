@@ -1,6 +1,6 @@
 """Regression fixtures: metadata precedence, explicit false, defaults, subpath assets."""
 from pathlib import Path
-import re
+import json, re
 import tempfile, subprocess, shutil
 ROOT=Path(__file__).resolve().parents[1]
 with tempfile.TemporaryDirectory(prefix='ruri-features-') as d:
@@ -58,9 +58,15 @@ license_type="by-nc-sa"
  moments=(s/'public/moments/index.html').read_text()
  assert 'Offline introduction.' in moments and '<moments-wall' not in moments
  assert (s/'public/ruri/vendor/waline-3.16.2/waline.js').is_file()
- friend.write_text('---\ntitle: Friends\nfriendGroups:\n  friends1: Blogs\n---\n{{< friend-details "Apply" >}}Send a link.{{< /friend-details >}}')
+ (s/'data/friends4.json').write_text('[{"name":"Resource fixture","url":"https://resource.example.org/","image":"images/resource.png"}]')
+ friend.write_text('---\ntitle: Friends\nfriendGroups:\n  friends1: Blogs\n  friends4: Tools\nresourceHeading: Resources\n---\n{{< friend-details "Apply" >}}Send a link.{{< /friend-details >}}')
  subprocess.run(['hugo','--source',str(s)],check=True,stdout=subprocess.DEVNULL)
  directory=(s/'public/friend/index.html').read_text()
  assert directory.index('class="friend-card"') < directory.index('<details class="friend-details">')
  assert 'Send a link.' in directory and '/blog/assets/css/friends.min.' in directory
+ assert 'resource.example.org' not in directory and 'images/resource.png' not in directory
+ url=re.search(r'<details class="friends-section friend-resources" data-src="(/blog/[^"]+)"',directory).group(1)
+ cards=json.loads((s/'public'/url.removeprefix('/blog/')).read_text())
+ assert 'class="friend-card"' in cards and 'https://resource.example.org/' in cards and '/blog/images/resource.png' in cards
+ print('PASS deferred resource cards and subpath image URLs')
  print('PASS legacy friend shortcodes, directory disclosures, offline moments and bundled client')

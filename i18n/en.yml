@@ -104,6 +104,7 @@ ruri_minutes: "min read"
 
 ruri_searching: "Searching…"
 ruri_results: "results"
+ruri_resources_loading: "Loading resource sites…"
 ruri_retry: "Unable to load. Please retry."
 ruri_copy_link: "Copy link"
 ruri_close: "Close"

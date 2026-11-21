@@ -104,6 +104,7 @@ ruri_minutes: "分鐘閱讀"
 
 ruri_searching: "搜尋中…"
 ruri_results: "筆結果"
+ruri_resources_loading: "正在載入資源網站…"
 ruri_retry: "暫時無法載入，請重試。"
 ruri_copy_link: "複製連結"
 ruri_close: "關閉"

@@ -104,6 +104,7 @@ ruri_minutes: "分钟阅读"
 
 ruri_searching: "搜索中…"
 ruri_results: "条结果"
+ruri_resources_loading: "正在加载资源站…"
 ruri_retry: "暂时无法加载，请重试。"
 ruri_copy_link: "复制链接"
 ruri_close: "关闭"

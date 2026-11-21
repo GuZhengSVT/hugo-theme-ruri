@@ -104,6 +104,7 @@ ruri_minutes: "分で読めます"
 
 ruri_searching: "検索中…"
 ruri_results: "件の結果"
+ruri_resources_loading: "リソースサイトを読み込み中…"
 ruri_retry: "読み込めません。再試行してください。"
 ruri_copy_link: "リンクをコピー"
 ruri_close: "閉じる"

@@ -323,7 +323,7 @@ friendGroups:
 {{< /friend-details >}}
 ~~~
 
-可选的 `resourceHeading` 为本站 `/recommended/` 页面添加入口卡片，封面在站点参数 `ruri.friendResourceCover` 中设置。
+设置 `resourceHeading` 可在分区末尾显示折叠的资源站。首次展开时才读取 `data/friends4.yml` 生成的卡片并加载图片，再次展开会复用已加载的内容。
 
 友链默认按数据文件顺序显示。在站点的 `config/_default/params.yaml` 中启用以下选项，即可在每次刷新或通过站内导航进入页面时，将四组友链各自独立随机排序，分类顺序保持不变。设为 `false` 或省略则使用固定顺序；随机结果偶尔可能与上次相同。
 

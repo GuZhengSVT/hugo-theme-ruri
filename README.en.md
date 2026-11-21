@@ -315,7 +315,7 @@ Add the site name, URL and description here.
 {{< /friend-details >}}
 ~~~
 
-The optional `resourceHeading` adds a card linking to your `/recommended/` page. Set its cover with the site parameter `ruri.friendResourceCover`.
+Set `resourceHeading` to add a collapsed resource directory after the friend groups. Cards from `data/friends4.yml` and their images load on first expansion and are reused when reopened.
 
 Friends follow data-file order by default. Enable the following option in your site's `config/_default/params.yaml` to shuffle each of the four groups independently on every refresh or in-page navigation, while keeping category order unchanged. Set it to `false` or omit it to retain fixed order. A random result can occasionally match the previous order.
 
