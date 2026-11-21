@@ -101,9 +101,6 @@ a,button,summary,input,select{ -webkit-tap-highlight-color:transparent}
 .recent{padding-left:21px;font-size:12px}
 .recent li{padding:5px 0}
 .recent li::marker{color:var(--muted)}
-.music-controls{display:flex;gap:4px}
-.music-controls[hidden]{display:none}
-.music-controls button{padding:3px 8px}
 .pagination{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:35px 0}
 .pagination a{padding:5px 10px;font-size:12px}
 .pagination [aria-current]{background:var(--accent);color:var(--night-bg,#fff)}
@@ -154,12 +151,64 @@ a,button,summary,input,select{ -webkit-tap-highlight-color:transparent}
 .link-card img{width:100px!important;height:75px!important}
 dialog{background:var(--paper);color:var(--ink);border:1px solid var(--line);width:min(640px,calc(100% - 32px));max-height:80vh;padding:28px}
 dialog::backdrop{background:#1c344577}
-dialog form{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-dialog label{display:block;font-size:12px;color:var(--muted)}
-dialog input{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:12px;margin-top:10px}
-#search-results a{display:block;padding:14px 0;border-bottom:1px solid var(--line)}
-#search-results small{display:block;color:var(--muted)}
-#search-status{font-size:12px;color:var(--muted)}
+/* The search field stays in place as the list below it changes length. */
+.search-dialog{
+  --search-gutter:clamp(16px,4vw,30px);
+  position:fixed;inset:0 0 auto;margin:min(14vh,8rem) auto 0;margin-top:min(14dvh,8rem);
+  width:min(44rem,calc(100% - 24px));max-width:none;max-height:min(42rem,83vh);max-height:min(42rem,83dvh);
+  padding:0;overflow:hidden;border:1px solid var(--line);border-radius:16px;
+  background:var(--paper);color:var(--ink);box-shadow:0 18px 64px #0003;overflow-wrap:anywhere
+}
+.search-dialog[open]{display:flex;flex-direction:column}
+.search-dialog::backdrop{background:rgb(15 24 30 / .48)}
+.search-dialog .search-head{display:flex;flex:none;align-items:center;justify-content:space-between;gap:16px;padding:var(--search-gutter) var(--search-gutter) 16px}
+.search-dialog .search-kicker{margin:0 0 4px;color:var(--accent);font-size:.72rem;font-weight:650;letter-spacing:.14em;text-transform:uppercase}
+.search-dialog #search-title{margin:0;font-size:clamp(1.5rem,4vw,1.85rem);font-weight:550;line-height:1.3}
+.search-dialog .search-close{display:grid;flex:none;place-items:center;width:40px;height:40px;padding:0;border-radius:50%;color:var(--muted)}
+.search-dialog .search-close:hover{color:var(--ink)}
+.search-dialog .search-close svg,.search-dialog .search-field svg{display:block;width:18px;height:18px;flex:none}
+.search-dialog .search-field{display:flex;flex:none;align-items:center;gap:10px;margin:0 var(--search-gutter) 20px;padding:0 14px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--accent)}
+.search-dialog .search-field:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+.search-dialog #search-input{min-width:0;flex:1;margin:0;padding:12px 0;border:0;background:transparent;color:var(--ink);font-size:16px;line-height:1.45}
+.search-dialog #search-input:focus{outline:none} /* The field draws the focus ring. */
+.search-dialog #search-input::placeholder{color:var(--muted);opacity:1}
+.search-dialog .search-scroll{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px var(--search-gutter) 20px;border-top:1px solid var(--line)}
+.search-dialog .search-caption{margin:0 0 8px;color:var(--muted);font-size:.8rem;font-weight:550;line-height:1.5;letter-spacing:.035em}
+.search-dialog #search-status:empty{margin:0} /* Keep the live region available for announcements. */
+.search-dialog:is([data-state=error],[data-state=empty]) #search-status:not(:empty){padding:10px 14px;border-inline-start:2px solid var(--accent);background:var(--tint);color:var(--ink)}
+.search-dialog .search-recent{list-style:none;margin:0;padding:0}
+.search-dialog .search-recent li+li,.search-dialog .search-result+.search-result{border-top:1px solid var(--line)}
+.search-dialog .search-recent a,.search-dialog .search-result{padding:11px 10px;border-radius:5px}
+.search-dialog .search-recent a{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;font-size:.94rem;line-height:1.55}
+.search-dialog .search-recent time{color:var(--muted);font-size:.78rem;font-variant-numeric:tabular-nums}
+.search-dialog .search-recent a::after{content:"";width:6px;height:6px;border:solid var(--muted);border-width:1px 1px 0 0;transform:rotate(45deg)}
+.search-dialog .search-result{display:block;color:var(--ink)}
+.search-dialog .search-result strong{display:block;font-size:1rem;font-weight:600;line-height:1.5}
+.search-dialog .search-result small:not(:empty){display:block;margin-top:3px;color:var(--muted);font-size:.85rem;line-height:1.65}
+.search-dialog .search-result mark{background:var(--tint);color:var(--accent);font-weight:650}
+.search-dialog .search-recent a:is(:hover,:focus-visible),.search-dialog .search-result:is(:hover,:focus-visible){color:var(--accent);background:var(--tint)}
+.search-dialog .search-more{display:block;margin:16px auto 2px;padding:7px 18px;border-radius:6px;font-size:.88rem}
+.search-dialog .search-more:is(:disabled,[aria-disabled="true"]){color:var(--muted);cursor:wait}
+.search-dialog :is(a,button):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.search-dialog [hidden],.search-dialog #search-results:empty,.search-dialog #search-idle:empty,.search-dialog #search-idle:has(.search-recent:empty){display:none}
+@media(max-width:420px){
+  .search-dialog{border-radius:12px}
+  .search-dialog .search-recent a{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}
+  .search-dialog .search-recent a::after{grid-area:1/2/span 2}
+}
+@media(max-height:440px){
+  .search-dialog{margin-top:8px;max-height:calc(100vh - 16px);max-height:calc(100dvh - 16px)}
+  .search-dialog .search-head{padding-block:10px}
+  .search-dialog .search-field{margin-bottom:12px}
+}
+@keyframes ruri-search-in{from{opacity:0;transform:translateY(-6px)}}
+@media(prefers-reduced-motion:no-preference){
+  .search-dialog[open]{animation:ruri-search-in .18s ease-out}
+  .search-dialog:not([open]){opacity:0;transform:translateY(-6px)}
+  .search-dialog:not([open])::backdrop{opacity:0}
+  /* Discrete transitions keep the closing dialog in the top layer until the fade ends. */
+  .search-dialog,.search-dialog::backdrop{transition:opacity .15s ease-out,transform .15s ease-out,display .15s allow-discrete,overlay .15s allow-discrete}
+}
 .skip{position:absolute;top:-100px;left:10px;padding:10px;background:var(--paper);z-index:10}
 .skip:focus{top:10px}
 .empty{padding:70px 0}
@@ -433,13 +482,6 @@ dialog input{width:100%;border:1px solid var(--line);background:var(--bg);color:
    own baseline metrics and never sits dead centre in the square. */
 .back-top svg{display:block;width:18px;height:18px}
 .site-footer{padding-bottom:175px}
-#floating-player{position:fixed;left:20px;bottom:20px;width:500px;max-width:calc(100vw - 92px);background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:14px;z-index:60;box-shadow:0 4px 24px #0001}
-#floating-player[hidden]{display:none}
-#music-cover{width:68px;height:68px;flex-shrink:0;background:var(--tint)}
-.player-body{flex:1;min-width:0}
-#floating-player audio{width:100%;height:32px;display:block;margin:7px 0}
-#floating-player .music-controls{display:flex;gap:8px}
-#floating-player button{padding:1px 10px}
 #waline{--waline-theme-color:var(--accent);--waline-active-color:var(--accent);--waline-bg-color:var(--paper);--waline-bg-color-light:var(--tint);--waline-text-color:var(--ink);--waline-border-color:var(--line);--waline-info-bg-color:var(--tint);--waline-info-color:var(--muted)}
 #heatmap{max-width:100%}
 #heatmap .inner-box{min-width:0}
@@ -465,10 +507,6 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 .reading-sidebar{display:none}
 .reading-sidebar .sidebar-inner{position:static;max-height:none;overflow:visible}
 .reading-sidebar .toc{max-height:260px;overflow:auto}
-.reading-sidebar .music{padding:12px 0;margin-bottom:12px}
-.reading-sidebar .music .eyebrow,.reading-sidebar .music-title,.reading-sidebar .music-source{display:none}
-#floating-player{left:10px;bottom:10px;max-width:calc(100vw - 66px);padding:10px;gap:8px}
-#music-cover{width:44px;height:44px}
 .back-top{right:10px;bottom:20px;width:36px;height:36px}
 .archive-taxonomies{padding:16px}
 }
@@ -481,11 +519,6 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 .post-image{height:auto!important;aspect-ratio:16/10}
 .featured-categories a{height:230px}
 .featured-categories span{font-family:"Segoe Print","Bradley Hand",cursive;font-style:italic;font-size:32px}
-#floating-player{width:auto;max-width:none;padding:8px;border-radius:4px;overflow:hidden;transition:width .22s ease}
-#floating-player .player-body{width:430px;display:none}
-#floating-player.expanded .player-body{display:block}
-#player-toggle{border:0;padding:0;line-height:0}
-#music-cover{width:92px;height:92px;cursor:pointer;border-radius:3px}
 .toc{max-width:430px;min-width:340px}
 .toc ul{padding-left:18px}
 .toc details{margin:2px 0}
@@ -501,9 +534,6 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 .post-card{grid-template-columns:minmax(0,1fr) 155px}
 .post-image{aspect-ratio:16/10}
 .toc{min-width:0;max-width:none}
-#floating-player{max-width:calc(100vw - 66px)}
-#music-cover{width:58px;height:58px}
-#floating-player .player-body{width:calc(100vw - 150px)}
 }
 
 .hero h1{font-family:"Baskerville","Palatino Linotype",Georgia,serif;font-style:italic}
@@ -520,9 +550,6 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 .toc details{overflow:visible}
 .no-sidebar{grid-template-columns:minmax(0,1fr);max-width:1240px}
 .no-sidebar main{width:100%}
-#floating-player{align-items:stretch;transition:width .25s ease,box-shadow .25s ease}
-#floating-player .player-body{align-self:center}
-#music-cover{height:100%;min-height:92px;aspect-ratio:1;object-fit:cover}
 
 @media(max-width:760px){.post-image{min-height:145px}
 .hero h1{font-size:30px}
@@ -530,24 +557,8 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 .no-sidebar{width:calc(100% - 36px)}
 }
 
-#floating-player{transition:width .28s ease,box-shadow .28s ease}
-.player-body{opacity:0;max-width:0;overflow:hidden;transition:opacity .2s ease,max-width .28s ease}
-.expanded .player-body{opacity:1;max-width:430px}
 .comments-jump{margin-top:12px}
 .toc{margin-bottom:12px!important}
-
-/* Verified correction: fixed-size artwork and animatable controller. */
-#floating-player{--cover-size:104px;width:var(--cover-size);height:var(--cover-size);padding:0;gap:0;border:0;border-radius:0;max-width:calc(100vw - 24px);display:flex;align-items:stretch;overflow:hidden;transition:width .3s ease}
-
-#floating-player.expanded{width:384px}
-
-#floating-player #player-toggle{flex:0 0 var(--cover-size);width:var(--cover-size);height:var(--cover-size);padding:0;margin:0;border:0;line-height:0}
-
-#floating-player #music-cover{display:block;width:var(--cover-size);height:var(--cover-size);min-height:0;aspect-ratio:1;object-fit:cover;border-radius:0;margin:0}
-
-#floating-player .player-body,#floating-player.expanded .player-body{display:block;flex:0 0 min(280px,calc(100vw - 128px));width:min(280px,calc(100vw - 128px));max-width:none;height:104px;align-self:stretch;padding:8px 12px;opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .3s}
-
-#floating-player.expanded .player-body{opacity:1;visibility:visible}
 
 .reading-sidebar .sidebar-inner{width:100%;max-width:100%;max-height:none;overflow:visible}
 
@@ -573,10 +584,6 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 .featured-categories span{font-size:32px}
 }
 
-@media(prefers-reduced-motion:reduce){#floating-player,#floating-player .player-body{transition:none}
-}
-
-
 /* Compact article rhythm and responsive friend cards. */
 .section-heading.article-list-heading{margin-bottom:0}
 
@@ -594,7 +601,6 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 
 .friend-grid p{font-size:12px;line-height:1.7;margin:6px 0 0;white-space:normal;overflow-wrap:anywhere;word-break:normal}
 
-#floating-player{left:0;bottom:0}
 
 
 /* Compact standalone pages. */
@@ -902,28 +908,44 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 
 .archive-load p:empty{display:none}
 
-/* Custom lightweight audio UI, outside the navigated page shell. */
-#floating-player{overflow:visible}
-
-#floating-player .player-body,#floating-player.expanded .player-body{overflow:hidden;padding:10px 14px;height:104px}
-
-#floating-player #music-audio{display:none}
-
-#player-toggle{position:relative;overflow:hidden}
-
-#cover-state{position:absolute;inset:auto 6px 6px auto;display:grid;place-items:center;width:24px;height:24px;background:#0008;color:white;font-size:12px;line-height:1;border-radius:50%}
-
-
-.music-title-window{overflow:hidden;white-space:nowrap;height:24px;line-height:24px;font-size:12px;color:var(--ink)}
-#music-title{display:inline-block;white-space:nowrap;max-width:none}
-
-#music-title.is-scrolling{animation:music-title-pan var(--title-duration,12s) ease-in-out infinite alternate}
-
-@keyframes music-title-pan{0%,15%{transform:translateX(0)}
-85%,100%{transform:translateX(var(--title-shift))}
+/* The card clips its contents to the animated width. The sibling popovers
+   remain outside that clip. Keep the inner text laid out at its final width. */
+#floating-player{
+  --cover-size:104px;
+  --player-height:106px;
+  --player-width:min(396px,calc(100vw - 32px));
+  --player-serif:Baskerville,"Songti SC","Noto Serif CJK SC",SimSun,Georgia,serif;
+  position:fixed;z-index:60;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));
+  width:calc(var(--cover-size) + 2px);height:var(--player-height);
+  transition:width .28s ease,height .28s ease
 }
+#floating-player[hidden]{display:none}
+#floating-player.expanded{width:var(--player-width)}
+.player-surface{
+  display:flex;align-items:stretch;width:100%;height:100%;overflow:hidden;overflow:clip;
+  border:1px solid var(--line);border-radius:5px;color:var(--ink);
+  background:linear-gradient(110deg,var(--paper) 45%,color-mix(in srgb,var(--tint) 50%,var(--paper)));
+  box-shadow:0 4px 16px #0001
+}
+.player-artwork{position:relative;flex:0 0 var(--cover-size);min-width:0;background:var(--tint)}
+#player-toggle,#music-cover{display:block;width:100%;height:100%;padding:0;border:0}
+#music-cover{object-fit:cover}
+#floating-player :focus-visible{outline-offset:-3px}
+.player-body{
+  flex:0 0 calc(var(--player-width) - var(--cover-size) - 2px);min-width:0;
+  display:grid;align-content:center;gap:2px;padding:5px 12px;
+  visibility:hidden
+}
+#floating-player.expanded .player-body{visibility:visible}
+#music-audio{display:none}
 
-.music-progress{display:flex;align-items:center;gap:8px;height:27px;font-size:10px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.music-title-window{overflow:hidden;white-space:nowrap;font:600 17px/1.55 var(--player-serif);color:var(--ink)}
+#music-title,#music-tracks .track-line>span{display:inline-block;white-space:nowrap}
+#music-title .track-artist{font:400 12px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--muted)}
+#music-title.is-scrolling,#music-tracks .is-scrolling{animation:music-title-pan var(--title-duration) ease-in-out infinite alternate}
+@keyframes music-title-pan{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(var(--title-shift))}}
+
+.music-progress{display:flex;align-items:center;gap:8px;height:19px;font-size:10px;font-variant-numeric:tabular-nums;color:var(--muted)}
 
 #music-seek{appearance:none;-webkit-appearance:none;flex:1;min-width:0;height:4px;margin:0;border:0;border-radius:4px;cursor:pointer;background:linear-gradient(to right,var(--accent) var(--progress,0%),var(--line) var(--progress,0%))}
 
@@ -933,37 +955,43 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 
 #music-seek:disabled{opacity:.4;cursor:default}
 
-#floating-player .music-controls{display:flex;align-items:center;justify-content:flex-start;gap:4px;height:26px}
+#floating-player .music-controls{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));align-items:center;gap:2px}
+.music-controls button{
+  display:grid;place-items:center;min-width:0;height:34px;padding:0;
+  border:0;border-radius:4px;color:var(--muted);line-height:1
+}
+.music-controls button:enabled:hover,.music-controls button[aria-expanded=true],
+#music-lyrics-toggle[aria-pressed=true]{background:var(--tint);color:var(--accent)}
+.music-controls #music-play{justify-self:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--paper)}
+.music-controls #music-play:enabled:hover{background:var(--ink);color:var(--paper)}
 
-#floating-player .music-controls button{border:0;padding:3px 7px;font-size:11px;line-height:20px;border-radius:4px;white-space:nowrap}
-
-#floating-player .music-controls button:hover,#music-lyrics-toggle[aria-pressed=true]{background:var(--tint);color:var(--accent)}
-
-#floating-player #music-prev,#floating-player #music-next{font-size:22px}
-
-#music-play{min-width:28px}
-
-#music-playlist{position:absolute;left:0;bottom:calc(100% + 10px);width:min(420px,calc(100vw - 24px));max-height:min(420px,65vh);overflow:auto;overscroll-behavior:contain;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 28px #0002;scrollbar-width:thin}
-
+#music-playlist{
+  position:absolute;left:0;bottom:calc(100% + 8px);width:min(22rem,var(--player-width));
+  max-height:min(390px,60vh);max-height:min(390px,calc(100dvh - var(--player-height) - 36px - env(safe-area-inset-bottom) - env(safe-area-inset-top)));
+  overflow:auto;overflow-x:hidden;overscroll-behavior:contain;background:var(--paper);color:var(--ink);
+  border:1px solid var(--line);border-radius:5px;box-shadow:0 5px 20px #0001;scrollbar-width:thin
+}
 #music-playlist[hidden],#music-lyrics[hidden]{display:none}
+#music-playlist header{
+  position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;
+  padding:5px 8px 5px 14px;background:var(--paper);border-bottom:1px solid var(--line);font-size:13px
+}
+#music-playlist header strong{font:600 17px/1.5 var(--player-serif)}
+#music-count{font:400 11px/1.5 system-ui,sans-serif;color:var(--muted);margin-left:6px}
 
-#music-playlist header{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;background:var(--paper);padding:12px 16px;border-bottom:1px solid var(--line);z-index:1;font-size:13px}
-
-#music-count{font-size:10px;font-weight:400;color:var(--muted);margin-left:6px}
-
-#music-playlist #music-list-close{border:0;font-size:20px;padding:0 5px}
-
-#music-tracks{list-style:none;margin:0;padding:6px}
-
-#music-tracks li{margin:0}
-
-#music-tracks button{display:block;text-align:left;width:100%;padding:10px 12px;border:0;border-radius:6px;background:transparent;color:var(--ink)}
-
-#music-tracks button:hover,#music-tracks button[aria-current=true]{background:var(--tint);color:var(--accent)}
-
-#music-tracks strong,#music-tracks small{display:block;white-space:normal;overflow-wrap:anywhere;font-size:12px;font-weight:400;line-height:1.6}
-
-#music-tracks small{font-size:10px;color:var(--muted)}
+#music-list-close{width:36px;height:36px;padding:0;border:0;font-size:20px;color:var(--muted)}
+#music-tracks{list-style:none;margin:0;padding:0}
+#music-tracks li+li{border-top:1px solid var(--line)}
+#music-tracks button{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:12px;
+  width:100%;padding:8px 14px;text-align:start;border:0;color:var(--ink)
+}
+#music-tracks button:enabled:hover,#music-tracks button:focus-visible{background:var(--tint)}
+#music-tracks button[aria-current=true]{background:var(--tint);color:var(--accent);box-shadow:inset 3px 0 var(--accent)}
+#music-tracks .track-line{grid-column:1;display:block;min-width:0;overflow:hidden;white-space:nowrap;line-height:1.6}
+#music-tracks strong{font-size:14px;font-weight:550}
+#music-tracks small,.track-duration{color:var(--muted);font-size:11px}
+.track-duration{grid-column:2;grid-row:1 / span 2;font-variant-numeric:tabular-nums}
 
 #music-feedback{font-size:11px;color:var(--muted);padding:0 16px}
 
@@ -971,27 +999,10 @@ html.waline-dark #heatmap .outer-box{--heat-level-0:var(--tint);--heat-level-1:c
 
 #music-lyrics{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:55;max-width:min(620px,calc(100vw - 280px));pointer-events:none;text-align:center;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 18px;font-size:15px;line-height:1.7;box-shadow:0 2px 12px #0001;overflow-wrap:anywhere;transition:bottom .28s ease}
 
-/* Resting lyrics sit on the floor; once the player unfolds they step above its
-   104px artwork so the two never cover each other. Applies at every width. */
-body.player-expanded #music-lyrics{bottom:118px}
-
-@media(max-width:760px){/* Keep clear of the folded rail in the bottom-left corner. */
-/* Centred, so the width cap must clear both the rail on the left and the two
-   square controls on the right. */
-#music-lyrics{max-width:min(620px,calc(100vw - 112px));width:max-content;font-size:13px}
-#floating-player .player-body,#floating-player.expanded .player-body{padding:10px 8px}
-#floating-player .music-controls button{padding:3px 4px}
+body.player-expanded #music-lyrics{bottom:calc(128px + env(safe-area-inset-bottom))}
+@media(max-width:760px){
+  #music-lyrics{max-width:min(620px,calc(100vw - 112px));width:max-content;font-size:13px}
 }
-
-@media(prefers-reduced-motion:reduce){#music-title.is-scrolling,#player-rail-title.is-scrolling{animation:none}
-.music-title-window{overflow-x:auto}
-#floating-player.rail #player-rail-title{overflow-y:auto}
-#music-lyrics{transition:none}
-}
-
-
-/* Icon-only controls retain accessible labels and tooltips. */
-#floating-player .music-controls #music-order,#floating-player .music-controls #music-lyrics-toggle,#floating-player .music-controls #music-list-toggle{display:grid;place-items:center;width:30px;height:26px;padding:4px}
 
 .music-controls svg{display:block;width:18px;height:18px}
 
@@ -1001,32 +1012,22 @@ body.player-expanded #music-lyrics{bottom:118px}
 
 #music-lyrics-toggle[aria-pressed=false]{opacity:.5}
 
-#music-list-toggle[aria-expanded=true]{background:var(--tint);color:var(--accent)}
-
 /* Detail covers use their intrinsic aspect ratio at every viewport width. */
 .article .article-cover{display:block;width:100%;height:auto;max-height:none;aspect-ratio:auto;object-fit:contain}
 
 
-/* Artwork and its playback button are siblings, never nested buttons. */
-#floating-player .player-artwork{position:relative;flex:0 0 var(--cover-size);width:var(--cover-size);height:var(--cover-size)}
-
-#floating-player #cover-state{position:absolute;z-index:2;right:5px;bottom:5px;left:auto;top:auto;width:30px;height:30px;display:grid;place-items:center;padding:0;margin:0;border:0;border-radius:50%;background:#0009;color:#fff;font-size:13px;line-height:1;cursor:pointer;pointer-events:auto;touch-action:manipulation}
-
-#floating-player #cover-state:hover{background:#000c}
-
-
-/* Consistent control geometry and volume popover. */
-#floating-player .music-controls{height:28px;gap:2px}
-
-#floating-player .music-controls button,#floating-player .music-controls #music-order,#floating-player .music-controls #music-lyrics-toggle,#floating-player .music-controls #music-list-toggle{display:grid;place-items:center;width:28px;min-width:0;height:28px;padding:5px;flex:0 0 28px;line-height:1}
-
+#cover-state{
+  position:absolute;right:5px;bottom:5px;display:grid;place-items:center;width:32px;height:32px;padding:0;
+  border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--accent);touch-action:manipulation
+}
+#cover-state:hover{background:var(--tint)}
 #floating-player button svg{width:18px;height:18px}
 
 #floating-player .icon-pause,#floating-player.is-playing .icon-play{display:none}
 
 #floating-player.is-playing .icon-pause{display:block}
 
-#music-volume-panel{position:absolute;left:112px;bottom:calc(100% + 10px);width:220px;max-width:calc(100vw - 124px);display:flex;align-items:center;gap:10px;padding:12px;background:var(--paper);border:1px solid var(--line);border-radius:8px;box-shadow:0 5px 20px #0002;z-index:3}
+#music-volume-panel{position:absolute;right:0;bottom:calc(100% + 8px);width:min(220px,var(--player-width));display:flex;align-items:center;gap:10px;padding:12px;background:var(--paper);border:1px solid var(--line);border-radius:5px;box-shadow:0 5px 20px #0001;z-index:3}
 
 #music-volume-panel[hidden]{display:none}
 
@@ -1044,12 +1045,6 @@ body.player-expanded #music-lyrics{bottom:118px}
 
 #floating-player.is-muted .volume-cross{display:block}
 
-#music-volume-toggle[aria-expanded=true]{background:var(--tint);color:var(--accent)}
-
-@media(max-width:400px){#floating-player .music-controls button,#floating-player .music-controls #music-order,#floating-player .music-controls #music-lyrics-toggle,#floating-player .music-controls #music-list-toggle{width:24px;flex-basis:24px;padding:3px}
-}
-
-
 #music-lyrics .lyric-original,#music-lyrics .lyric-translation{display:block}
 
 #music-lyrics .lyric-translation{font-size:.85em;color:var(--muted);margin-top:3px;line-height:1.6}
@@ -1064,7 +1059,7 @@ body.player-expanded #music-lyrics{bottom:118px}
 .code-toolbar button:focus-visible{outline:2px solid var(--night-accent,#8be9fd)}.code-body[hidden]{display:none}.prose .code-box .highlight{margin:0;border-radius:0}.code-body{overflow:auto}
 .prose .lightbox-link{display:block;cursor:zoom-in}.lightbox-link:has(>.article-cover){display:block}
 .media-dialog{width:min(400px,calc(100% - 32px));text-align:center;overflow:auto}.media-dialog header{display:flex;align-items:center;justify-content:space-between;gap:12px}.media-dialog header button{font-size:24px}.media-dialog img,.media-dialog canvas{display:block;max-width:100%;height:auto;margin:18px auto}.media-dialog a{display:block;overflow-wrap:anywhere;font-size:12px}.article-copyright p{margin:6px 0}
-#search-results mark{background:var(--night-selection,#ffe598);color:var(--night-ink,#222)}#search-results>button{margin-top:14px;padding:8px 16px}.site-totals{display:block}
+.site-totals{display:block}
 
 
 /* ==========================================================================
@@ -1085,91 +1080,30 @@ body.player-expanded #music-lyrics{bottom:118px}
 
 /* --- Floating player: a slim rail that expands on tap. --- */
 #floating-player.rail{
-  --rail-width:20px;
-  --rail-height:88px;
-  width:var(--rail-width);
-  min-width:var(--rail-width);
-  height:var(--rail-height);
-  max-width:var(--rail-width);
-  padding:0;
-  gap:0;
-  border:1px solid var(--line);
-  border-radius:0;
-  /* The playlist and volume popovers hang outside the player, so this box must
-     not clip. Each inner box clips its own content instead. */
-  overflow:visible;
-  cursor:pointer;
-  box-shadow:0 3px 14px #0002;
-  transition:width .28s ease,box-shadow .28s ease
+  --cover-size:clamp(62px,19vw,100px);
+  --player-width:min(396px,calc(100vw - 12px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  left:env(safe-area-inset-left);bottom:max(8px,env(safe-area-inset-bottom));width:30px;height:88px
 }
-
-#floating-player.rail.expanded{
-  width:calc(100vw - 20px);
-  max-width:none;
-  height:var(--cover-size);
-  cursor:default;
-  box-shadow:0 6px 26px #0003
-}
-
-#floating-player.rail .player-artwork{flex:0 0 var(--rail-width);width:var(--rail-width);height:100%;overflow:hidden}
-
-#floating-player.rail.expanded .player-artwork{flex:0 0 var(--cover-size);width:var(--cover-size);height:var(--cover-size);overflow:visible}
-
-/* The folded rail is type only: artwork would dominate a strip this thin. */
-#floating-player.rail:not(.expanded) #music-cover{display:none}
-
-#floating-player.rail.expanded #music-cover{display:block;flex:0 0 var(--cover-size);width:var(--cover-size);height:var(--cover-size);min-height:0}
-
-#floating-player.rail #player-toggle{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;width:100%;height:100%;padding:0;margin:0;border:0;line-height:1.25}
-
-#floating-player.rail.expanded #player-toggle{display:block;flex:0 0 var(--cover-size);width:var(--cover-size);height:var(--cover-size)}
-
+#floating-player.rail.expanded{width:var(--player-width);height:var(--player-height)}
+#floating-player.rail .player-surface{border-radius:0 5px 5px 0}
+#floating-player.rail .player-body{padding:5px 6px}
+#floating-player.rail .music-controls{gap:0}
+#floating-player.rail .music-controls button{height:38px}
+#floating-player.rail .music-controls #music-play{height:32px;width:32px;max-width:100%}
+#floating-player.rail:not(.expanded) .player-artwork{flex-basis:100%}
+#floating-player.rail:not(.expanded) #music-cover,#floating-player.rail:not(.expanded) #cover-state{display:none}
+#floating-player.rail:not(.expanded) #player-toggle{display:grid;place-items:center;overflow:hidden;background:var(--tint)}
 /* The window clips; the text inside only ever moves. Putting the clip and the
    transform on one element would drag the clip along with the text and slice the
    marquee in half. */
-#floating-player.rail #player-rail-window{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex:0 1 auto;
-  min-height:0;
-  overflow:hidden
-}
-
-/* A name that already fits is simply centred and still. */
+#floating-player.rail #player-rail-window{display:block;max-height:100%;overflow:hidden}
 #floating-player.rail #player-rail-title{
-  display:block;
-  flex:none;
-  width:100%;
-  writing-mode:vertical-rl;
-  text-orientation:mixed;
-  text-align:center;
-  font-size:11px;
-  line-height:1.15;
-  color:var(--muted);
-  white-space:nowrap
+  display:block;writing-mode:vertical-rl;text-orientation:mixed;
+  font:12px/1.3 var(--player-serif);color:var(--accent);white-space:nowrap
 }
-
-/* Only an over-long name leaves the centre, because a centred item that already
-   overflows is clipped on both sides and can never be scrolled into view. */
-#floating-player.rail #player-rail-window.has-overflow{align-items:flex-start}
-
 #floating-player.rail #player-rail-title.is-scrolling{animation:rail-title-pan var(--rail-duration,12s) ease-in-out infinite alternate}
-
-@keyframes rail-title-pan{0%,15%{transform:translateY(0)}
-85%,100%{transform:translateY(var(--rail-shift))}
-}
-
+@keyframes rail-title-pan{0%,15%{transform:translateY(0)}85%,100%{transform:translateY(var(--rail-shift))}}
 #floating-player.rail.expanded #player-rail-window{display:none}
-
-#floating-player.rail:not(.expanded) #cover-state{display:none}
-
-#floating-player.rail:not(.expanded):hover{background:var(--tint)}
-
-/* The artwork state badge keeps its own column once the rail is open. */
-#floating-player.rail #cover-state{right:4px;bottom:4px;width:22px;height:22px;font-size:11px}
-
-#floating-player.rail.expanded #cover-state{right:6px;bottom:6px;width:26px;height:26px;font-size:12px}
 
 /* --- Contents: floating launcher plus a right-side sliding drawer. --- */
 
@@ -1250,7 +1184,39 @@ body.toc-open:before{content:"";position:fixed;inset:0;z-index:68;background:#0e
 body.toc-open #toc-toggle{display:none}
 }
 
-@media(prefers-reduced-motion:reduce){#floating-player.rail,.toc-drawer{transition:none}
+/* On phones the transport gets the whole row beneath the square sleeve. */
+@media(max-width:480px){
+  #floating-player.rail{--cover-size:58px;--player-height:104px}
+  #floating-player.rail.expanded .player-surface{
+    display:grid;grid-template-columns:var(--cover-size) calc(var(--player-width) - var(--cover-size) - 2px);
+    grid-template-rows:32px 26px 44px
+  }
+  #floating-player.rail.expanded .player-artwork{grid-column:1;grid-row:1 / span 2}
+  #floating-player.rail.expanded .player-body{display:contents}
+  #floating-player.rail .music-title-window,#floating-player.rail .music-progress{grid-column:2;margin-inline:12px}
+  #floating-player.rail .music-title-window{align-self:end}
+  #floating-player.rail .music-progress{align-self:center}
+  #floating-player.rail .music-controls{grid-column:1 / -1;border-top:1px solid var(--line)}
+  #floating-player.rail .music-controls button{height:100%}
+  #floating-player.rail .music-controls #music-play{
+    width:100%;height:100%;border-radius:0;
+    background:radial-gradient(circle 15px,var(--accent) 98%,transparent)
+  }
+  #floating-player.rail .music-controls #music-play:enabled:hover{background:radial-gradient(circle 15px,var(--ink) 98%,transparent)}
+  #floating-player.rail #cover-state{width:24px;height:24px;right:2px;bottom:2px}
+  #floating-player.rail #cover-state svg{width:14px;height:14px}
+}
+
+@media(pointer:coarse){
+  #music-seek,#music-volume{height:24px;background-size:100% 4px;background-position:center;background-repeat:no-repeat}
+  #floating-player #music-mute{height:36px;flex-basis:36px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #floating-player,#music-lyrics,.toc-drawer{transition:none}
+  #music-title.is-scrolling,#music-tracks .is-scrolling,#floating-player.rail #player-rail-title.is-scrolling{animation:none}
+  .music-title-window,#music-tracks .track-line{overflow-x:auto;scrollbar-width:none}
+  #floating-player.rail #player-rail-window{overflow-y:auto;scrollbar-width:none}
 }
 .culture-page{max-width:1100px;margin-inline:auto}
 .bangumi-heading{font-size:20px;font-weight:500;margin:0 0 16px}

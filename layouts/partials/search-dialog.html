@@ -1,0 +1,25 @@
+<dialog id="search-dialog" class="search-dialog" aria-labelledby="search-title" data-pagefind-ignore
+  data-state="idle" data-index="{{ "pagefind/pagefind.js" | relURL }}" data-no-results="{{ i18n "ruri_search_no_results" }}">
+  <header class="search-head">
+    <div><p class="search-kicker">{{ i18n "ruri_search_index" }}</p><h2 id="search-title">{{ i18n "search" }}</h2></div>
+    <button class="search-close" type="button" data-close aria-label="{{ i18n "ruri_close" }}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    </button>
+  </header>
+  <div class="search-field">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+    <input id="search-input" type="search" aria-label="{{ i18n "search" }}" aria-controls="search-results" placeholder="{{ (index (.Site.Params.pagefind_search | default dict) "placeholder") | default (i18n "ruri_search_placeholder") }}" autocomplete="off" autofocus>
+  </div>
+  <div class="search-scroll">
+    <section id="search-idle" aria-labelledby="search-recent-title">
+      {{ with first 3 (where .Site.RegularPages "Type" "in" .Site.MainSections).ByDate.Reverse }}
+        <h3 class="search-caption" id="search-recent-title">{{ i18n "recent_posts" }}</h3>
+        <ul class="search-recent">
+          {{ range . }}<li><a href="{{ .RelPermalink }}"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006.01.02" }}</time><span>{{ .LinkTitle }}</span></a></li>{{ end }}
+        </ul>
+      {{ end }}
+    </section>
+    <p id="search-status" class="search-caption" role="status"></p>
+    <div id="search-results"></div>
+  </div>
+</dialog>

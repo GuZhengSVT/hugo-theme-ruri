@@ -78,7 +78,7 @@ neodb:
     subprocess.run(['hugo', '--source', str(site)], check=True, stdout=subprocess.DEVNULL)
     disabled = (site / 'public/en/culture/book/index.html').read_text()
     assert 'Arts and culture is disabled.' in disabled
-    assert '<nav class="main-nav" aria-label="Home"></nav>' in disabled
+    assert re.search(r'<nav class="main-nav" aria-label="Home">\s*</nav>', disabled)
     assert 'data-culture-module=' not in disabled and 'data-collection-src=' not in disabled
     config.write_text(original.replace('categories=["book","anime","movie","music","game"]', 'categories=["anime"]'))
     subprocess.run(['hugo', '--source', str(site)], check=True, stdout=subprocess.DEVNULL)

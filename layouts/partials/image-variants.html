@@ -1,0 +1,26 @@
+{{- $image := .image -}}
+{{- $width := $image.Width -}}
+{{- $height := $image.Height -}}
+{{- $orient := false -}}
+{{- with $image.Meta -}}
+  {{- $orient = and (ge .Orientation 2) (le .Orientation 8) -}}
+  {{- if and $orient (ge .Orientation 5) -}}
+    {{- $width = $image.Height -}}
+    {{- $height = $image.Width -}}
+  {{- end -}}
+{{- end -}}
+{{- $images := slice -}}
+{{- range .widths -}}
+  {{- $w := math.Min . $width | int -}}
+  {{- $spec := printf "%dx webp q%d" $w $.quality -}}
+  {{- $variant := false -}}
+  {{- if $orient -}}
+    {{- /* Orient before resizing, without encoding an intermediate image. */ -}}
+    {{- $variant = $image.Filter images.AutoOrient (images.Process (print "resize " $spec)) -}}
+  {{- else -}}
+    {{- $variant = $image.Resize $spec -}}
+  {{- end -}}
+  {{- $images = $images | append $variant -}}
+  {{- if eq $w $width -}}{{- break -}}{{- end -}}
+{{- end -}}
+{{- return (dict "images" $images "originalWidth" $width "originalHeight" $height) -}}

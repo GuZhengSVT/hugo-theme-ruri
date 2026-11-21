@@ -38,6 +38,9 @@
 {{- if $image -}}
   {{- if not (and (eq $image.ResourceType "image") (in (slice "jpeg" "png" "webp" "tiff" "bmp") $image.MediaType.SubType)) -}}
     {{- $image = false -}}
+  {{- else if not (and (gt $image.Width 0) (gt $image.Height 0)) -}}
+    {{- /* Mislabeled images can have no decoded dimensions; keep their original URLs. */ -}}
+    {{- $image = false -}}
   {{- end -}}
 {{- end -}}
 {{- return $image -}}

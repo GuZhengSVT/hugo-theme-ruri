@@ -1,5 +1,8 @@
 categories: Categorias
 search: Buscar
+ruri_search_index: "Índice de texto completo"
+ruri_search_placeholder: "Busque artigos e páginas…"
+ruri_search_no_results: "Nenhum resultado. Tente uma palavra mais curta."
 tags: Tags
 prev: Anterior
 next: Próximo

@@ -41,7 +41,7 @@ function initArchive(){
 }
 function localizePlayer(){
  document.querySelectorAll('[data-ruri-label]').forEach(el=>{const label=tr(el.dataset.ruriLabel);el.setAttribute('aria-label',label);if(el.hasAttribute('title'))el.title=label});
- updateOrder();syncVolume();syncPlayback();if(songs.length)$('#music-count').textContent=songs.length+tr('tracks');
+ updateOrder();syncVolume();syncPlayback();updatePlayer();if(songs.length)$('#music-count').textContent=songs.length+tr('tracks');
 }
 function shuffleFriends(root=document){
   root.querySelectorAll('.friend-grid[data-shuffle="true"]').forEach(grid=>{
@@ -102,12 +102,12 @@ initTabs();initComments();document.querySelectorAll('.toc ul ul').forEach(ul=>{c
 const audio=$('#music-audio'),tracks=$('#music-tracks'),player=$('#floating-player');
 const titleText=$('#music-title'),seek=$('#music-seek'),lyricOverlay=$('#music-lyrics');
 let songs=[],current=0,loading=false,lyrics=[],lyricController=null,lyricVersion=0;
-let order='sequence',lyricsEnabled=true,hovering=false,listOpen=false,focusInside=false,volumeOpen=false;
+let order='sequence',lyricsEnabled=true,hovering=false,touchOpen=false,listOpen=false,focusInside=false,volumeOpen=false;
 try{order=localStorage.getItem('ruri-play-order')||order;lyricsEnabled=localStorage.getItem('ruri-lyrics')!=='off'}catch{}
 if(!['sequence','single','shuffle'].includes(order))order='sequence';
 const feedback=message=>{$('#music-feedback').textContent=message};
 const saveMusicSetting=(key,value)=>{try{localStorage.setItem(key,value)}catch{}};
-function showVolume(open){volumeOpen=open;$('#music-volume-panel').hidden=!open;$('#music-volume-toggle').setAttribute('aria-expanded',String(open));updatePlayer()}
+function showVolume(open){if(open&&listOpen)showPlaylist(false);volumeOpen=open;$('#music-volume-panel').hidden=!open;$('#music-volume-toggle').setAttribute('aria-expanded',String(open));updatePlayer()}
 $('#music-volume-toggle').addEventListener('click',()=>showVolume(!volumeOpen));
 function syncVolume(){
   const level=Math.round(audio.volume*100),muted=audio.muted||level===0;
@@ -127,11 +127,19 @@ $('#music-volume').addEventListener('input',()=>{audio.volume=Number($('#music-v
 $('#music-mute').addEventListener('click',()=>{audio.muted=!audio.muted;syncVolume()});
 syncVolume();
 function musicTime(value){if(!Number.isFinite(value)||value<0)return '0:00';return Math.floor(value/60)+':'+String(Math.floor(value%60)).padStart(2,'0')}
+function measureMarquee(label){
+  const overflow=label.offsetWidth-label.parentElement.clientWidth;
+  label.classList.toggle('is-scrolling',overflow>1);
+  if(overflow>1){
+    label.style.setProperty('--title-shift',-overflow+'px');
+    label.style.setProperty('--title-duration',Math.max(8,overflow/24+4)+'s');
+  }
+}
+function updatePlaylistScroll(){
+  if(listOpen)tracks.querySelectorAll('.track-line>span').forEach(measureMarquee);
+}
 function updateTitleScroll(){
-  const delta=titleText.scrollWidth-titleText.parentElement.clientWidth;
-  titleText.classList.toggle('is-scrolling',delta>4);
-  titleText.style.setProperty('--title-shift',Math.min(0,-delta)+'px');
-  titleText.style.setProperty('--title-duration',Math.max(9,delta/24+5)+'s');
+  measureMarquee(titleText);
   updateRailTitleScroll();
 }
 /* The folded rail sets its title vertically, so its overflow runs along the
@@ -142,7 +150,6 @@ function updateRailTitleScroll(){
   const win=$('#player-rail-window'),el=$('#player-rail-title');if(!win||!el)return;
   const overflow=el.offsetHeight-win.clientHeight;
   const long=overflow>4;
-  win.classList.toggle('has-overflow',long);
   el.classList.toggle('is-scrolling',long);
   el.style.setProperty('--rail-shift',Math.min(0,-overflow)+'px');
   el.style.setProperty('--rail-duration',Math.max(9,overflow/24+5)+'s');
@@ -150,25 +157,44 @@ function updateRailTitleScroll(){
 if(window.ResizeObserver){
   const measure=new ResizeObserver(updateTitleScroll);
   measure.observe(titleText.parentElement);
+  new ResizeObserver(updatePlaylistScroll).observe(tracks);
   /* The rail title only gains a box once the player takes its folded shape, so
      observe it directly and re-measure the moment it becomes visible. */
   const railWindow=$('#player-rail-window');if(railWindow)measure.observe(railWindow);
 }
 /* Only a really open player lifts the floating lyrics out of the way. */
-function updatePlayer(){player.classList.toggle('expanded',hovering||listOpen||volumeOpen||focusInside);document.body.classList.toggle('player-expanded',player.classList.contains('expanded'));requestAnimationFrame(updateTitleScroll)}
-function showPlaylist(open){listOpen=open;$('#music-playlist').hidden=!open;$('#music-list-toggle').setAttribute('aria-expanded',String(open));updatePlayer()}
+function updatePlayer(){
+  const expanded=hovering||touchOpen||listOpen||volumeOpen||focusInside;
+  player.classList.toggle('rail',narrow.matches);
+  player.classList.toggle('expanded',expanded);
+  document.body.classList.toggle('player-expanded',expanded);
+  requestAnimationFrame(updateTitleScroll);
+}
+function showPlaylist(open){
+  if(open&&volumeOpen)showVolume(false);
+  listOpen=open;$('#music-playlist').hidden=!open;
+  $('#music-list-toggle').setAttribute('aria-expanded',String(open));
+  if(open)updatePlaylistScroll();
+  updatePlayer();
+}
 player.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){hovering=true;updatePlayer()}});
 player.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){hovering=false;updatePlayer()}});
 player.addEventListener('focusin',e=>{focusInside=e.target!==$('#player-toggle');updatePlayer()});
-player.addEventListener('focusout',()=>{queueMicrotask(()=>{focusInside=player.contains(document.activeElement)&&document.activeElement!==$('#player-toggle');updatePlayer()})});
-player.addEventListener('keydown',e=>{if(e.key==='Escape'){showVolume(false);showPlaylist(false);$('#player-toggle').focus()}});
+player.addEventListener('focusout',e=>{
+  if(player.contains(e.relatedTarget))return;
+  focusInside=false;if(e.relatedTarget)touchOpen=false;updatePlayer();
+});
+player.addEventListener('keydown',e=>{if(e.key==='Escape'){touchOpen=false;showVolume(false);showPlaylist(false);$('#player-toggle').focus()}});
 $('#music-list-toggle').addEventListener('click',()=>showPlaylist(!listOpen));
 $('#music-list-close').addEventListener('click',()=>{showPlaylist(false);$('#music-list-toggle').focus()});
-document.addEventListener('pointerdown',e=>{if(!player.contains(e.target)){showVolume(false);showPlaylist(false);focusInside=false;hovering=false;updatePlayer()}});
-// Touch users can reveal controls without a hover-capable pointer.
-$('#player-toggle').addEventListener('click',()=>{const collapsed=player.classList.contains('rail')&&!player.classList.contains('expanded');if(collapsed||matchMedia('(hover: none)').matches){focusInside=true;updatePlayer()}if(!collapsed)toggleMusic()});
-// The expanded mobile rail folds back on any outside tap, since hover never ends there.
-document.addEventListener('pointerdown',e=>{if(!player.classList.contains('rail')||!player.classList.contains('expanded'))return;if(player.contains(e.target)||$('#toc-toggle')?.contains(e.target)||document.body.classList.contains('toc-open'))return;focusInside=false;hovering=false;updatePlayer()},true);
+document.addEventListener('pointerdown',e=>{if(!player.contains(e.target)){touchOpen=false;focusInside=false;hovering=false;showVolume(false);showPlaylist(false)}});
+// Keep the touch panel open as focus moves from the cover to a control.
+$('#player-toggle').addEventListener('click',()=>{
+  const collapsed=player.classList.contains('rail')&&!player.classList.contains('expanded');
+  if(collapsed||matchMedia('(hover: none)').matches){touchOpen=true;updatePlayer()}
+  if(!collapsed)toggleMusic()
+});
+narrow.addEventListener('change',()=>{touchOpen=false;updatePlayer()});
 function updateOrder(){const label={sequence:tr('sequence'),single:tr('single'),shuffle:tr('shuffle')}[order];$('#music-order').dataset.order=order;$('#music-order').setAttribute('aria-label',label+tr('order_hint'));$('#music-order').title=label+tr('order_hint')}
 updateOrder();
 $('#music-order').addEventListener('click',()=>{const modes=['sequence','single','shuffle'];order=modes[(modes.indexOf(order)+1)%3];saveMusicSetting('ruri-play-order',order);updateOrder()});
@@ -240,13 +266,11 @@ $('#music-play').addEventListener('click',toggleMusic);
 $('#cover-state').addEventListener('click',e=>{e.stopPropagation();toggleMusic()});
 function syncPlayback(){
   const playing=!audio.paused&&!audio.ended;
-
-
-  $('#cover-state').setAttribute('aria-label',playing?tr('pause_music'):tr('play_music'));$('#cover-state').setAttribute('aria-pressed',String(playing));$('#cover-state').title=playing?tr('pause_music'):tr('play_music');
-  $('#music-play').setAttribute('aria-label',playing?tr('pause'):tr('play'));
-  $('#music-play').title=playing?tr('pause'):tr('play');
-  $('#player-toggle').setAttribute('aria-label',playing?tr('pause_music'):tr('play_music'));
-  $('#player-toggle').setAttribute('aria-pressed',String(playing));
+  for(const id of ['#cover-state','#player-toggle','#music-play']){
+    const label=id==='#music-play'?tr(playing?'pause':'play'):tr(playing?'pause_music':'play_music');
+    const button=$(id);button.setAttribute('aria-label',label);button.title=label;
+    button.setAttribute('aria-pressed',String(playing));
+  }
   player.classList.toggle('is-playing',playing);renderLyric();
 }
 function syncProgress(){
@@ -259,11 +283,19 @@ function syncProgress(){
 seek.addEventListener('input',()=>{if(Number.isFinite(audio.duration)&&audio.duration>0){audio.currentTime=Number(seek.value)/1000*audio.duration;syncProgress()}});
 for(const event of ['timeupdate','durationchange','loadedmetadata','emptied','seeked'])audio.addEventListener(event,syncProgress);
 for(const event of ['play','pause','ended'])audio.addEventListener(event,syncPlayback);
+function trackTitle(name,artist=''){
+  titleText.textContent=name;
+  if(artist){
+    const credit=document.createElement('span');credit.className='track-artist';
+    credit.textContent=' · '+artist;titleText.append(credit);
+  }
+  const text=titleText.textContent;
+  titleText.parentElement.title=text;const railTitle=$('#player-rail-title');railTitle.textContent=text;railTitle.title=text;requestAnimationFrame(updateTitleScroll);
+}
 function selectTrack(n,play=false){
   if(!songs.length)return;current=(n+songs.length)%songs.length;
   const song=songs[current];audio.src=song.url;
-  const title=song.name+' · '+(Array.isArray(song.artist)?song.artist.join(' / '):(song.artist||''));
-  titleText.textContent=title;titleText.parentElement.title=title;const railTitle=$('#player-rail-title');if(railTitle){railTitle.textContent=title;railTitle.title=title}requestAnimationFrame(updateTitleScroll);
+  trackTitle(song.name,artistName(song));
   tracks.querySelectorAll('button').forEach((button,i)=>{button.setAttribute('aria-current',String(i===current))});
   const cover=$('#music-cover');cover.src=song.pic||song.cover||player.dataset.fallback;cover.onerror=()=>{cover.onerror=null;cover.src=player.dataset.fallback};
   feedback('');syncProgress();syncPlayback();loadLyrics(song);if(play)playMusic();
@@ -273,15 +305,42 @@ $('#music-prev').addEventListener('click',()=>selectTrack(nextIndex(-1),true));
 $('#music-next').addEventListener('click',()=>selectTrack(nextIndex(),true));
 audio.addEventListener('ended',()=>{if(order==='single'){audio.currentTime=0;playMusic()}else selectTrack(nextIndex(),true)});
 audio.addEventListener('error',()=>{feedback(tr('audio_error'));renderLyric()});
+function artistName(song){return Array.isArray(song.artist)?song.artist.join(' / '):(song.artist||'')}
+function trackLine(tag,text){
+  const line=document.createElement(tag),label=document.createElement('span');
+  line.className='track-line';line.title=text;label.textContent=text;line.append(label);return line;
+}
+function renderTracks(){
+  tracks.replaceChildren();
+  songs.forEach((song,i)=>{
+    const li=document.createElement('li'),button=document.createElement('button');
+    button.type='button';button.setAttribute('aria-current',String(i===current));
+    button.append(trackLine('strong',song.name),trackLine('small',artistName(song)));
+    if(song.duration){
+      const time=document.createElement('span');time.className='track-duration';
+      time.textContent=musicTime(song.duration);button.append(time);
+    }
+    button.addEventListener('click',()=>selectTrack(i,true));li.append(button);tracks.append(li);
+  });
+  $('#music-count').textContent=songs.length+tr('tracks');
+  updatePlaylistScroll();
+}
 async function loadMusic(){
-  if(!player||player.dataset.enabled==='false')return;if(songs.length){player.hidden=false;return}if(loading)return;if(!player.dataset.api&&(!player.dataset.audio||player.dataset.audio==='null'))return;loading=true;
+  if(!player||player.dataset.enabled==='false'||!player.hidden||loading)return;
+  const {api,server,type,id}=player.dataset;
+  loading=true;
   try{
-    songs=JSON.parse(player.dataset.audio||'[]');
-    if(!Array.isArray(songs))songs=[];
-    if(!songs.length&&!player.dataset.api)return;if(!songs.length){const url=player.dataset.api.replace(':server',encodeURIComponent(player.dataset.server)).replace(':type',encodeURIComponent(player.dataset.type)).replace(':id',encodeURIComponent(player.dataset.id)).replace(':r',String(Math.random()));const response=await fetch(url,{signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error();songs=await response.json()}
-    songs=songs.filter(song=>song.url&&/^https?:\/\//.test(song.url));if(!songs.length)throw Error();
-    tracks.replaceChildren();songs.forEach((song,i)=>{const li=document.createElement('li'),button=document.createElement('button'),name=document.createElement('strong'),artist=document.createElement('small');button.type='button';name.textContent=song.name;artist.textContent=Array.isArray(song.artist)?song.artist.join(' / '):(song.artist||'');button.append(name,artist);button.addEventListener('click',()=>selectTrack(i,true));li.append(button);tracks.append(li)});
-    $('#music-count').textContent=songs.length+tr('tracks');player.hidden=false;selectTrack(0);
+    let playlist=JSON.parse(player.dataset.audio||'null');
+    if(!Array.isArray(playlist)||!playlist.length){
+      if(!api)return;
+      const url=api.replace(':server',encodeURIComponent(server)).replace(':type',encodeURIComponent(type)).replace(':id',encodeURIComponent(id)).replace(':r',String(Math.random()));
+      const response=await fetch(url,{signal:AbortSignal.timeout(15000)});
+      if(!response.ok)return;
+      playlist=await response.json();
+    }
+    songs=playlist.filter(song=>/^https?:\/\//.test(song?.url));
+    if(!songs.length)return;
+    renderTracks();player.hidden=false;selectTrack(0);
   }catch{songs=[]}finally{loading=false}
 }
 let walineModule;

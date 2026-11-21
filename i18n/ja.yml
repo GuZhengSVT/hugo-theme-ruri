@@ -1,5 +1,8 @@
 categories: カテゴリー
 search: 検索
+ruri_search_index: "全文索引"
+ruri_search_placeholder: "記事やページを検索…"
+ruri_search_no_results: "一致する項目がありません。短いキーワードで試してください。"
 tags: タグ
 prev: 戻る
 next: 次へ

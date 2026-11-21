@@ -1,5 +1,8 @@
 categories: Categories
 search: Search
+ruri_search_index: "Full-text index"
+ruri_search_placeholder: "Search articles and pages…"
+ruri_search_no_results: "No matches. Try a shorter keyword."
 tags: Tags
 prev: Prev
 next: Next

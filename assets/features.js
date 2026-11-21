@@ -63,29 +63,51 @@ async function initLightbox(version){
  }catch{/* Images remain readable without the optional viewer. */}
 }
 function initSearch(){
- const dialog=$('#search-dialog'),input=$('#search-input'),results=$('#search-results'),status=$('#search-status');if(!dialog)return;
- const signal=controller.signal;bindDialog(dialog);$('#search-open')?.addEventListener('click',()=>{dialog.showModal();input.focus()});
+ const dialog=$('#search-dialog');if(!dialog)return;
+ const input=$('#search-input'),idle=$('#search-idle'),results=$('#search-results'),status=$('#search-status'),signal=controller.signal;
  let sequence=0,timer;
- input.addEventListener('input',()=>{clearTimeout(timer);const token=++sequence;timer=setTimeout(async()=>{
-  const q=input.value.trim();results.replaceChildren();status.textContent=q?label(8):'';if(!q)return;
-  try{
-   const lang=document.documentElement.lang.toLowerCase(),key=dialog.dataset.index+'?lang='+encodeURIComponent(lang);
-   if(!searchModules.has(key))searchModules.set(key,import(key).then(async m=>{await m.options({language:lang});return m}).catch(e=>{searchModules.delete(key);throw e}));
-   const pagefind=await searchModules.get(key),found=await pagefind.search(q);if(signal.aborted||token!==sequence)return;
-   status.textContent=found.results.length+' '+label(9);let shown=0;
-   const more=document.createElement('button');more.type='button';more.textContent=label(7);
-   async function next(){more.disabled=true;try{
-    const batch=await Promise.all(found.results.slice(shown,shown+10).map(r=>r.data()));if(signal.aborted||token!==sequence)return;
-    for(const item of batch){const a=document.createElement('a'),title=document.createElement('strong'),excerpt=document.createElement('small');a.href=item.url;title.textContent=item.meta.title||item.url;
-     // Allow only Pagefind's mark highlighting, never arbitrary indexed HTML.
-     const doc=new DOMParser().parseFromString(item.excerpt||'','text/html');function append(node,parent){for(const child of node.childNodes){if(child.nodeType===3)parent.append(document.createTextNode(child.textContent));else if(child.nodeType===1){if(child.tagName==='MARK'){const mark=document.createElement('mark');append(child,mark);parent.append(mark)}else append(child,parent)}}}append(doc.body,excerpt);
-     a.append(title,excerpt);results.append(a);
-    }shown+=batch.length;more.remove();if(shown<found.results.length)results.append(more);
-   }catch{status.textContent=label(10)}finally{more.disabled=false}}
-   more.addEventListener('click',next);await next();
-  }catch{if(!signal.aborted&&token===sequence)status.textContent=label(10)}
- },180)});
- signal.addEventListener('abort',()=>clearTimeout(timer),{once:true});
+ function state(name,message){dialog.dataset.state=name;idle.hidden=name!=='idle';status.textContent=message}
+ function update(){
+  clearTimeout(timer);const token=++sequence,q=input.value.trim();results.replaceChildren();
+  if(!q){state('idle','');return}
+  state('loading',label(8));
+  const current=()=>!signal.aborted&&dialog.open&&token===sequence;
+  timer=setTimeout(async()=>{
+   if(!current())return;
+   try{
+    const lang=document.documentElement.lang.toLowerCase(),key=dialog.dataset.index+'?lang='+encodeURIComponent(lang);
+    if(!searchModules.has(key))searchModules.set(key,import(key).then(async m=>{await m.options({language:lang});return m}).catch(e=>{searchModules.delete(key);throw e}));
+    const pagefind=await searchModules.get(key);if(!current())return;
+    const found=await pagefind.search(q);if(!current())return;
+    const total=found.results.length;if(!total){state('empty',dialog.dataset.noResults);return}
+    let shown=0;
+    const more=document.createElement('button');more.type='button';more.className='search-more';more.textContent=label(7);
+    async function next(){
+     if(!current()||more.hasAttribute('aria-disabled'))return;
+     more.setAttribute('aria-disabled','true');state('loading',label(8));
+     try{
+      const batch=await Promise.all(found.results.slice(shown,shown+10).map(r=>r.data()));if(!current())return;
+      const links=batch.map(item=>{
+       const a=document.createElement('a'),title=document.createElement('strong'),excerpt=document.createElement('small');a.className='search-result';a.href=item.url;title.textContent=item.meta.title||item.url;
+       // Allow only Pagefind's mark highlighting, never arbitrary indexed HTML.
+       const doc=new DOMParser().parseFromString(item.excerpt||'','text/html');function append(node,parent){for(const child of node.childNodes){if(child.nodeType===3)parent.append(document.createTextNode(child.textContent));else if(child.nodeType===1){if(child.tagName==='MARK'){const mark=document.createElement('mark');append(child,mark);parent.append(mark)}else append(child,parent)}}}append(doc.body,excerpt);
+       a.append(title,excerpt);return a;
+      });
+      const fromMore=document.activeElement===more;results.append(...links);shown+=links.length;
+      if(shown<total)results.append(more);else more.remove();
+      state('results',total+' '+label(9));if(fromMore)links[0].focus();
+     }catch{if(current()){state('error',label(10));if(!more.parentNode)results.append(more)}}
+     finally{more.removeAttribute('aria-disabled')}
+    }
+    more.addEventListener('click',next);await next();
+   }catch{if(current())state('error',label(10))}
+  },180);
+ }
+ bindDialog(dialog);$('#search-open')?.addEventListener('click',()=>{
+  if(!dialog.open){input.value='';update();dialog.showModal()}
+  input.focus();
+ },{signal});
+ input.addEventListener('input',update,{signal});signal.addEventListener('abort',()=>clearTimeout(timer),{once:true});
 }
 async function initBangumi(){
  const root=$('[data-bangumi-user]');if(!root)return;const signal=controller.signal;

@@ -1,5 +1,8 @@
 categories: 分类
 search: 搜索
+ruri_search_index: "全文索引"
+ruri_search_placeholder: "搜索文章和页面…"
+ruri_search_no_results: "没有找到匹配内容，试试更短的关键词。"
 tags: 标签
 prev: 上一页
 next: 下一页

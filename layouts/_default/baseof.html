@@ -39,7 +39,7 @@ try {
 {{ $href := strings.TrimPrefix "/" .url | relLangURL }}{{ if hasPrefix .url "https://" }}{{ $href = .url }}{{ end }}<a href="{{ $href }}" {{ if eq $href $.RelPermalink }}aria-current="page"{{ end }}>{{ i18n .name | default .name }}</a>
 {{ end }}{{ end }}{{ end }}
 </nav>
-<div class="tools"><a class="rss-link" href="{{ "index.xml" | relLangURL }}" aria-label="RSS" title="RSS"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="19" r="1" fill="currentColor"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg></a><button type="button" id="search-open" aria-label="{{ i18n "search" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button type="button" id="theme-toggle" aria-label="{{ i18n "ruri_theme" }}" title="Light / Dark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg></button>
+<div class="tools"><a class="rss-link" href="{{ "index.xml" | relLangURL }}" aria-label="RSS" title="RSS"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="19" r="1" fill="currentColor"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg></a><button type="button" id="search-open" aria-haspopup="dialog" aria-controls="search-dialog" aria-label="{{ i18n "search" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button type="button" id="theme-toggle" aria-label="{{ i18n "ruri_theme" }}" title="Light / Dark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg></button>
 <button id="season-toggle" type="button" hidden aria-label="{{ i18n "ruri_winter_skin" }}" data-winter-title="{{ i18n "ruri_use_winter" }}" data-classic-title="{{ i18n "ruri_use_classic" }}">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M3.34 7l17.32 10M3.34 17 20.66 7M9.5 4.5 12 7l2.5-2.5m-5 15L12 17l2.5 2.5M4.3 10.4l3.4-.9-.9-3.4m10.4 11.8-.9-3.4 3.4-.9M4.3 13.6l3.4.9-.9 3.4m10.4-11.8-.9 3.4 3.4.9"/></svg>
 </button><details class="languages"><summary aria-label="Language" title="{{ i18n "ruri_language" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12M9 3v2M5 5c0 6 4 9 8 11M13 5c0 5-4 9-10 12M14 21l4-10 4 10M15.5 17h5"/></svg></summary><div>{{ range hugo.Sites }}{{ $home := .Home }}{{ $target := $home }}{{ range $.AllTranslations }}{{ if eq .Language.Lang $home.Language.Lang }}{{ $target = . }}{{ end }}{{ end }}<a href="{{ $target.RelPermalink }}" lang="{{ .Language.Lang }}">{{ .Language.Label }}</a>{{ end }}</div></details></div>
@@ -56,27 +56,16 @@ try {
 <div class="shell layout{{ if $wide }} no-sidebar{{ end }}{{ if eq .Params.contentWidth "narrow" }} moments-layout{{ end }}"><main id="main">{{ block "main" . }}{{ end }}</main>{{ if not $wide }}{{ partial "sidebar.html" . }}{{ end }}</div>
 {{ $totalWords := 0 }}{{ $totalMinutes := 0 }}{{ range where .Site.RegularPages "Type" "in" .Site.MainSections }}{{ $totalWords = add $totalWords .WordCount }}{{ $totalMinutes = add $totalMinutes .ReadingTime }}{{ end }}
 <footer class="shell site-footer"><div>© {{ with .Site.Params.footer.since }}{{ . }}–{{ end }}{{ now.Year }} {{ .Site.Params.author }}<br><small>{{ if .Site.Params.footer.powered }}Hugo / ruri · {{ end }}{{ .Site.Params.ruri.footerText }}{{ if .Site.Params.footer.count }}<span class="site-totals"> · {{ $totalWords }} {{ i18n "ruri_words" }} · {{ $totalMinutes }} {{ i18n "ruri_minutes" }}</span>{{ end }}</small></div><div>{{ if .Site.Params.search_visits.enable }}{{ if fileExists "static/search-visits.json" }}{{ with os.ReadFile "static/search-visits.json" | transform.Unmarshal }}<small class="visits">{{ i18n "search_visits.weekly" }} {{ .totals.weekly }} · {{ i18n "search_visits.yearly" }} {{ .totals.yearly }} · {{ i18n "search_visits.total" }} {{ .totals.total }}<br>{{ i18n "search_visits.updated" }} {{ .updatedAt }}</small>{{ end }}{{ end }}{{ end }}</div></footer>
-<dialog id="search-dialog" data-index="{{ "pagefind/pagefind.js" | relURL }}"><form method="dialog"><strong>{{ i18n "search" }}</strong><button aria-label="{{ i18n "ruri_close" }}">×</button></form><label for="search-input">{{ .Site.Params.pagefind_search.placeholder | default (i18n "search") }}</label><input id="search-input" type="search" autocomplete="off"><p id="search-status" aria-live="polite"></p><div id="search-results"></div></dialog>
+{{ partialCached "search-dialog.html" . .Language.Lang }}
 {{/* The contents launcher is rendered inside #page-shell on purpose: in-page
      navigation replaces only that shell, so a button outside it would never
      exist for a reader arriving from another page. Pages without a reading
      sidebar (sidebar:false) and pages with the contents switched off render
      nothing, so the launcher always matches the sidebar it depends on. */}}{{ if and (not $wide) .IsPage (ne .Params.toc false) (findRE "<a href=" .TableOfContents) }}{{ with .TableOfContents }}<button id="toc-toggle" type="button" aria-controls="ruri-toc" aria-expanded="false" aria-label="{{ i18n "toc" }}" title="{{ i18n "toc" }}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>{{ end }}{{ end }}</div>{{ partial "player.html" . }}{{/* Only an article detail page offers the contents launcher; standalone pages
-     keep the sidebar listing they have always had. */}}<a class="back-top" href="#top" aria-label="{{ i18n "ruri_top" }}" title="{{ i18n "ruri_top" }}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></a><template id="ruri-toc-template"><div class="toc-head"><span class="toc-head-title">{{ i18n "toc" }}</span><button type="button" class="toc-close" aria-label="{{ i18n "ruri_close" }}">×</button></div></template><script>/* Mobile-only reading aids: a slim tappable player rail and a contents drawer.
-   Both are decided before first paint so the player never flashes its desktop
-   shape on a narrow viewport, and they stay completely inert above 760px. */
+     keep the sidebar listing they have always had. */}}<a class="back-top" href="#top" aria-label="{{ i18n "ruri_top" }}" title="{{ i18n "ruri_top" }}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></a><template id="ruri-toc-template"><div class="toc-head"><span class="toc-head-title">{{ i18n "toc" }}</span><button type="button" class="toc-close" aria-label="{{ i18n "ruri_close" }}">×</button></div></template><script>/* Move the article contents into a drawer on narrow screens. */
 (()=>{
 const narrow=matchMedia('(max-width:760px)');
 document.documentElement.classList.toggle('mobile-ui',narrow.matches);
-function syncRail(){
-  const player=document.getElementById('floating-player');if(!player)return;
-  /* The rail is a narrow-viewport layout, not a touch-device one: a wide touch
-     screen keeps the desktop player and its plain tap-to-play cover. Read the
-     query live so a rotation or resize lands on the right shape. */
-  const rail=narrow.matches;
-  player.classList.toggle('rail',rail);
-  if(!rail){player.classList.remove('expanded');document.body.classList.remove('player-expanded')}
-}
 /* The contents button is rendered with the page, inside #page-shell, so in-page
    navigation brings a fresh one along with the contents it belongs to. The guard
    below only has to cover the case the server cannot: a page whose sidebar was
@@ -134,11 +123,9 @@ function teardownToc(){
     if(jump&&aside)aside.append(jump);
   }
   dropTocDrawer();
-  document.body.classList.remove('player-expanded');
 }
 let drawerApi=null,uiAbort=null,activeShell=null;
 function initMobileUi(){
-  syncRail();
   const shell=document.getElementById('page-shell');
   /* initPage() bootstraps before DOMContentLoaded, so this can arrive twice for
      the same shell. The contents have already moved into the drawer by then and
@@ -186,12 +173,10 @@ function initMobileUi(){
 function refresh(){
   if(document.getElementById('page-shell')===activeShell)return;
   dropTocDrawer();
-  document.body.classList.remove('player-expanded');
-  syncRail();
   initMobileUi();
 }
 window.RuriMobileUi={refresh};
 document.addEventListener('DOMContentLoaded',initMobileUi);
-addEventListener('pageshow',()=>{syncRail();if(!narrow.matches)teardownToc()});
-narrow.addEventListener('change',event=>{document.documentElement.classList.toggle('mobile-ui',event.matches);drawerApi?.close();syncRail();initMobileUi()});
+addEventListener('pageshow',initMobileUi);
+narrow.addEventListener('change',event=>{document.documentElement.classList.toggle('mobile-ui',event.matches);drawerApi?.close();initMobileUi()});
 })();</script></body></html>
