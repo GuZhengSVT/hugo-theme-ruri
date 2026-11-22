@@ -41,8 +41,9 @@ moments-wall { display: block; }
   padding: 18px;
   text-align: start;
   overflow-wrap: anywhere;
+  cursor: pointer;
 }
-.moment-card:hover, .moment-card:focus-visible {
+.moment-card:hover, .moment-card:focus-within {
   border-color: var(--accent);
   background: var(--paper);
   box-shadow: 0 4px 16px color-mix(in srgb, var(--ink) 10%, transparent);
@@ -51,15 +52,29 @@ moments-wall { display: block; }
 .moment-byline strong { font-size: .92rem; }
 .moment-byline time, .moment-count { color: var(--muted); font-size: .8rem; }
 .moment-excerpt {
-  white-space: pre-line;
+  min-width: 0;
+  overflow: hidden;
+}
+.moment-card .moment-excerpt {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 9;
-  overflow: hidden;
 }
+.moment-excerpt :is(p, ol, ul, blockquote, pre, table, h1, h2, h3, h4, h5, h6) { margin: .45em 0; }
+.moment-excerpt > :first-child { margin-top: 0; }
+.moment-excerpt > :last-child { margin-bottom: 0; }
+.moment-excerpt :is(ol, ul) { padding-inline-start: 1.65em; }
+.moment-excerpt :is(h1, h2, h3, h4, h5, h6) { font-size: 1.1em; }
+.moment-excerpt blockquote { border-inline-start: 3px solid var(--accent); padding-inline-start: .75em; color: var(--muted); }
+.moment-excerpt a[href] { color: var(--accent); text-decoration: underline; }
+.moment-excerpt code, .moment-excerpt pre { background: var(--tint); border-radius: 3px; }
+.moment-excerpt pre { padding: .5em; white-space: pre-wrap; }
+.moment-excerpt table { max-width: 100%; border-collapse: collapse; }
+.moment-excerpt :is(th, td) { border: 1px solid var(--line); padding: .2em .4em; }
 .moment-excerpt:empty { display: none; }
 .moment-photo { display: block; width: 100%; height: auto; object-fit: contain; border-radius: 6px; background: var(--tint); }
-.moment-count { border-top: 1px solid var(--line); padding-top: 9px; }
+.moment-count { border: 0; border-top: 1px solid var(--line); padding: 9px 0 0; text-align: start; }
+.moment-count:hover { color: var(--accent); background: transparent; }
 .moments-footer { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 22px auto; color: var(--muted); }
 .moment-dialog {
   width: min(680px, calc(100% - 24px));
@@ -86,7 +101,7 @@ html:has(.moment-dialog[open]) { overflow: hidden; }
 }
 .moment-dialog h2 { margin: 0; font-size: 1.12rem; }
 .moment-close { width: 44px; height: 44px; border: 0; border-radius: 50%; padding: 0; font-size: 1.6rem; }
-.moment-preview { white-space: pre-line; overflow-wrap: anywhere; }
+.moment-preview { overflow-wrap: anywhere; }
 .moment-preview .moment-photo { width: auto; max-height: 50dvh; margin-top: 12px; }
 .moment-status { color: var(--muted); }
 .moment-status:empty { display: none; }

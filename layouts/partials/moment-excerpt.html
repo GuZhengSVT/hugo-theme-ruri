@@ -1,0 +1,21 @@
+{{- /* Rebuild Waline's formatting from known tags. Text and link destinations
+       go through Hugo's normal contextual escaping. Photos are rendered separately. */ -}}
+{{- $tags := .tags -}}
+{{- range findRE `(?s)</?[[:alpha:]][[:alnum:]:-]*(?:[^>"']|"[^"]*"|'[^']*')*>|[^<]+|<` .html -}}
+  {{- $tag := lower (strings.TrimLeft "</" (delimit (findRE `^</?[[:alnum:]:-]+` .) "")) -}}
+  {{- if not $tag -}}
+    {{- . | htmlUnescape -}}
+  {{- else if in $tags $tag -}}
+    {{- if hasPrefix . "</" -}}
+      {{- printf "</%s>" $tag | safeHTML -}}
+    {{- else if eq $tag "a" -}}
+      {{- with findRESubmatch `(?i)\shref="([^"]*)"` . -}}<a href="{{ index . 0 1 | htmlUnescape }}">{{- else -}}<a>{{- end -}}
+    {{- else if eq $tag "ol" -}}
+      {{- with findRESubmatch `(?i)\sstart="(-?[0-9]+)"` . -}}<ol start="{{ index . 0 1 }}">{{- else -}}<ol>{{- end -}}
+    {{- else -}}
+      {{- printf "<%s>" $tag | safeHTML -}}
+    {{- end -}}
+  {{- else if eq $tag "img" -}}
+    {{- if findRE `(?i)emoji` . -}}{{- with findRESubmatch `(?i)\salt="([^"]*)"` . -}}{{- index . 0 1 | htmlUnescape -}}{{- end -}}{{- end -}}
+  {{- end -}}
+{{- end -}}

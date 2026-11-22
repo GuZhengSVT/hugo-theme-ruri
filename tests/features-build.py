@@ -2,6 +2,8 @@
 from pathlib import Path
 import json, re
 import tempfile, subprocess, shutil
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from threading import Thread
 ROOT=Path(__file__).resolve().parents[1]
 with tempfile.TemporaryDirectory(prefix='ruri-features-') as d:
  s=Path(d);(s/'themes').mkdir();(s/'themes/ruri').symlink_to(ROOT)
@@ -70,3 +72,29 @@ license_type="by-nc-sa"
  assert 'class="friend-card"' in cards and 'https://resource.example.org/' in cards and '/blog/images/resource.png' in cards
  print('PASS deferred resource cards and subpath image URLs')
  print('PASS legacy friend shortcodes, directory disclosures, offline moments and bundled client')
+
+ class MomentsFeed(BaseHTTPRequestHandler):
+  def do_GET(self):
+   body = '<ol start="3"><li><strong>First</strong></li><li>Second</li></ol><p><a href="https://example.org/">Link</a> &lt;em&gt;</p><img src="https://example.org/photo.jpg">'
+   self.send_response(200)
+   self.send_header('Content-Type', 'application/json')
+   self.end_headers()
+   self.wfile.write(json.dumps({'errno': 0, 'data': {'data': [
+    {'objectId': 'snapshot', 'nick': 'Author', 'time': 1000, 'comment': body}
+   ]}}).encode())
+  def log_message(self, *args): pass
+
+ with HTTPServer(('127.0.0.1', 0), MomentsFeed) as feed:
+  Thread(target=feed.serve_forever, daemon=True).start()
+  try:
+   with (s/'hugo.toml').open('a') as config:
+    config.write(f'\n[params.waline]\nenable=true\nserverURL="http://127.0.0.1:{feed.server_port}"\n')
+    config.write(f'\n[security.http]\nurls=["^http://127[.]0[.]0[.]1:{feed.server_port}/"]\n')
+   subprocess.run(['hugo','--source',str(s)],check=True,stdout=subprocess.DEVNULL)
+  finally:
+   feed.shutdown()
+ snapshot=(s/'public/moments/index.html').read_text()
+ assert '<ol start="3"><li><strong>First</strong></li><li>Second</li></ol>' in snapshot
+ assert '<a href="https://example.org/">Link</a> &lt;em&gt;' in snapshot
+ assert snapshot.count('src="https://example.org/photo.jpg"') == 1
+ print('PASS moments snapshot preserves Markdown structure, links and a single thumbnail')

@@ -1,5 +1,4 @@
-// Waline owns the thread and editor inside the dialog. The wall contains only
-// preview buttons, so expanding a card never moves or clones a live reply form.
+// Waline owns the thread and editor inside the dialog.
 if (!customElements.get('moments-wall')) {
   customElements.define('moments-wall', class extends HTMLElement {
     connectedCallback() {
@@ -9,6 +8,7 @@ if (!customElements.get('moments-wall')) {
       this.more = this.querySelector('.moments-more');
       this.retry = this.querySelector('.moment-retry');
       this.labels = this.dataset;
+      this.formatTags = new Set(this.labels.formatTags.split(' '));
       this.cards = new Map([...this.grid.children].map(card => [card.dataset.id, card]));
       this.resize = new ResizeObserver(entries => {
         for (const {target} of entries) this.pack(target);
@@ -25,6 +25,7 @@ if (!customElements.get('moments-wall')) {
         if (img.complete && !img.naturalWidth) img.remove();
       }
       this.grid.onclick = event => {
+        if (event.target.closest('a[href]')) return;
         const card = event.target.closest('.moment-card');
         if (card) this.open(card);
       };
@@ -85,7 +86,7 @@ if (!customElements.get('moments-wall')) {
       const preview = this.dialog.querySelector('.moment-preview');
       preview.replaceChildren();
       if (card) {
-        preview.append(card.querySelector('.moment-excerpt').innerText);
+        preview.append(card.querySelector('.moment-excerpt').cloneNode(true));
         const photo = card.querySelector('.moment-photo');
         if (photo) preview.append(photo.cloneNode());
       }
@@ -124,12 +125,10 @@ if (!customElements.get('moments-wall')) {
       threads.forEach((thread, index) => {
         let card = this.cards.get(thread.id);
         if (!card) {
-          card = document.createElement('button');
-          card.type = 'button';
+          card = document.createElement('article');
           card.className = 'moment-card';
           card.dataset.id = thread.id;
-          card.setAttribute('aria-haspopup', 'dialog');
-          card.innerHTML = '<span class="moment-byline"><strong></strong><time></time></span><span class="moment-excerpt"></span><span class="moment-count"></span>';
+          card.innerHTML = '<span class="moment-byline"><strong></strong><time></time></span><div class="moment-excerpt"></div><button type="button" class="moment-count" aria-haspopup="dialog"></button>';
           this.cards.set(thread.id, card);
           this.resize.observe(card);
         }
@@ -141,9 +140,18 @@ if (!customElements.get('moments-wall')) {
           const images = [...copy.querySelectorAll('img')];
           const photo = images.find(img => !/emoji/i.test(img.className + img.src) && /^https?:\/\//i.test(img.src));
           for (const img of images) img.replaceWith(img === photo ? '' : img.alt);
-          for (const br of copy.querySelectorAll('br')) br.replaceWith('\n');
-          for (const block of copy.querySelectorAll('p, li')) block.append('\n');
-          card.querySelector('.moment-excerpt').textContent = copy.textContent.trim().replace(/\n[ \t]*\n+/g, '\n');
+          for (const node of copy.querySelectorAll('*')) {
+            if (!this.formatTags.has(node.localName)) {
+              node.replaceWith(...node.childNodes);
+              continue;
+            }
+            const clean = document.createElement(node.localName);
+            if (node.matches('ol[start]')) clean.start = node.start;
+            if (node.matches('a[href]') && ['http:', 'https:', 'mailto:'].includes(node.protocol)) clean.href = node.href;
+            clean.append(...node.childNodes);
+            node.replaceWith(clean);
+          }
+          card.querySelector('.moment-excerpt').replaceChildren(...copy.childNodes);
           let thumbnail = card.querySelector('.moment-photo');
           if (photo) {
             if (!thumbnail) {
