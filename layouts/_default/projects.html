@@ -31,7 +31,11 @@
       <dialog class="project-dialog" id="{{ $id }}" aria-labelledby="{{ $id }}-title">
         <header>
           <h2 id="{{ $id }}-title">{{ .Title }}</h2>
-          <form method="dialog"><button type="submit" aria-label="{{ i18n "ruri_close" }}" autofocus>×</button></form>
+          <form method="dialog">
+            <button class="project-close" type="submit" aria-label="{{ i18n "ruri_close" }}" autofocus>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            </button>
+          </form>
         </header>
         <div class="prose project-detail no-lightbox">{{ $detail }}</div>
       </dialog>
