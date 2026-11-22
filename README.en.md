@@ -208,7 +208,7 @@ The theme defaults to the solar-system and Voyager SVG icon, with a seven-size I
 </details>
 
 <details>
-<summary>Archives, arts and culture, about, friends and moments</summary>
+<summary>Archives, arts and culture, projects, about, friends and moments</summary>
 
 Create `content/archives/_index.md` with a title for the archive timeline and heatmap. Create `content/about/index.md` for a biography and `content/friend/index.md` for friend links. Independent pages support:
 
@@ -226,6 +226,42 @@ copyright: false
 ---
 Your biography.
 ~~~
+
+**Project gallery**: create `content/projects/_index.md` in your site and add `/projects/` to the site menu:
+
+~~~yaml
+---
+title: Projects
+description: A few things I have built
+layout: projects
+sidebar: false
+outputs: [HTML]
+cascade:
+  - build:
+      list: local
+      render: never
+    target:
+      kind: page
+---
+~~~
+
+Give each project its own directory, for example `content/projects/example/index.md`:
+
+~~~yaml
+---
+title: Example project
+weight: 10
+intro: "**Markdown introduction on the card.**"
+cover: cover.png
+links:
+  - label: GitHub
+    url: https://github.com/your-name/your-project
+---
+
+Write the full description here. Selecting the card opens it in a dialog.
+~~~
+
+`cover` accepts a bundled image, a site path or an image URL. Supported images are converted to responsive WebP at build time. If omitted, the card uses the first image in the body, or shows no cover. `intro` defaults to the page summary, and `links` appear at the bottom of the card. With Waline enabled, comments appear at the bottom of the gallery unless `comments: false` is set. Use language-suffixed Markdown files on multilingual sites.
 
 Arts and culture is optional and disabled by default (`culture.enable: false`). Disabled or excluded categories load no collection modules, data or covers; the menu entry is hidden. Copy `exampleSite/content/culture/` into your site, then configure site `params.yaml`:
 

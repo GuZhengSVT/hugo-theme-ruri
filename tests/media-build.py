@@ -106,8 +106,36 @@ cover: /local.png
 ---
 This body must not replace the manual description.
 ''')
+    projects = site / 'content/projects'
+    projects.mkdir()
+    (projects / '_index.md').write_text('''---
+title: Projects
+layout: projects
+sidebar: false
+outputs: [HTML]
+cascade:
+  - build:
+      list: local
+      render: never
+    target:
+      kind: page
+---
+''')
+    for name, weight, extra, body in (
+        ('explicit', 10, 'cover: cover.png\nintro: "**Card introduction**"\nlinks:\n  - label: Repository\n    url: https://example.org/repo\n', 'Full project description.\n\n![Other image](first.png)'),
+        ('fallback', 20, '', 'Another project.\n\n![First](first.png)\n\n![Second](cover.png)'),
+        ('text-only', 30, '', 'No images.'),
+    ):
+        directory = projects / name
+        directory.mkdir()
+        (directory / 'index.md').write_text(f'---\ntitle: {name}\nweight: {weight}\n{extra}---\n\n{body}\n')
+        (directory / 'cover.png').write_bytes(png(1000, 600))
+        (directory / 'first.png').write_bytes(png(960, 540))
+    with (site / 'hugo.toml').open('a') as config:
+        config.write('\n[params.waline]\nenable=true\nserverURL="https://example.org/waline"\n')
     try:
-        result = subprocess.run(['hugo', '--source', str(site)], check=True, capture_output=True, text=True)
+        result = subprocess.run(['hugo', '--source', str(site)], capture_output=True, text=True)
+        assert result.returncode == 0, result.stderr
     finally:
         server.shutdown()
         server.server_close()
@@ -155,3 +183,16 @@ This body must not replace the manual description.
             if url.startswith('/blog/'):
                 assert (out / unquote(urlsplit(url).path.removeprefix('/blog/'))).is_file(), url
     print('PASS automatic/manual excerpts, subpath images, remote/local WebP, srcset, dimensions, originals, dynamic/SVG/404 fallbacks')
+    gallery = (out / 'projects/index.html').read_text()
+    covers = [image for image in Page(gallery).images if image.get('class') == 'project-cover']
+    assert len(covers) == 2
+    for image, prefix in zip(covers, ('/blog/projects/explicit/cover', '/blog/projects/fallback/first'), strict=True):
+        assert image['src'].startswith(prefix) and image['src'].endswith('.webp'), image
+        assert (out / image['src'].removeprefix('/blog/')).is_file()
+    assert '<strong>Card introduction</strong>' in gallery
+    assert 'class="project-links"' in gallery and 'href="https://example.org/repo"' in gallery
+    assert 'aria-controls="project-explicit"' in gallery and 'id="project-explicit"' in gallery
+    assert 'Full project description.' in gallery
+    assert gallery.index('</project-gallery>') < gallery.index('<section id="comments"')
+    assert not list((out / 'projects').glob('*/index.html'))
+    print('PASS project gallery Markdown, dialogs, links, cover priority and footer comments')

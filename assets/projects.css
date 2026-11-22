@@ -1,0 +1,82 @@
+.projects-page { max-width: 980px; margin-inline: auto; }
+.projects-heading { margin-bottom: 28px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+.projects-heading h1 { margin: 0 0 5px; font-size: clamp(1.8rem, 4vw, 2.7rem); }
+.projects-heading p { margin: 0; color: var(--muted); }
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 18px;
+}
+.project-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  cursor: pointer;
+}
+.project-card:hover, .project-card:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.project-cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--line);
+}
+.project-card-body { display: flex; flex: 1; flex-direction: column; gap: 12px; padding: 18px; }
+.project-card h2 { margin: 0; font-size: 1.18rem; }
+.project-open {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.project-open:hover { color: var(--accent); background: transparent; }
+.project-open span { color: var(--accent); }
+.project-intro { font-size: .96rem; line-height: 1.7; }
+.project-intro > :last-child, .project-detail > :last-child { margin-bottom: 0; }
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: auto;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+  font-size: .8rem;
+  color: var(--accent);
+}
+.project-links a { text-decoration: underline; text-underline-offset: .2em; }
+.project-dialog {
+  width: min(720px, calc(100% - 24px));
+  max-height: min(86dvh, 900px);
+  padding: 0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.project-dialog[open] { display: flex; flex-direction: column; }
+.project-dialog::backdrop { background: rgb(15 26 31 / 62%); }
+html:has(.project-dialog[open]) { overflow: hidden; }
+.project-dialog > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px clamp(14px, 4vw, 24px);
+  border-bottom: 1px solid var(--line);
+}
+.project-dialog h2 { margin: 0; font-size: 1.15rem; overflow-wrap: anywhere; }
+.project-dialog button[type=submit] { width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; font-size: 1.65rem; }
+.project-detail { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 18px clamp(14px, 4vw, 24px) 24px; }
+.project-detail > :first-child { margin-top: 0; }

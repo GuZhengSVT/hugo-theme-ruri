@@ -1,0 +1,45 @@
+{{ define "main" }}
+{{ $style := resources.Get "projects.css" | resources.Copy "assets/css/projects.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}">
+<section class="projects-page" aria-labelledby="projects-title">
+  <header class="projects-heading">
+    <h1 id="projects-title" data-pagefind-meta="title">{{ .Title }}</h1>
+    {{ with .Description }}<p>{{ . }}</p>{{ end }}
+  </header>
+  <project-gallery class="projects-grid" data-pagefind-body>
+    {{ range .RegularPages.ByWeight }}
+      {{ $id := printf "project-%s" .File.ContentBaseName }}
+      {{ $detail := .Content }}
+      <article class="project-card" id="{{ .Title | anchorize }}">
+        {{ if .Params.cover }}
+          {{ partial "image.html" (dict "src" .Params.cover "page" . "class" "project-cover" "widths" (slice 480 800) "sizes" "(max-width: 560px) calc(100vw - 36px), 320px") }}
+        {{ else }}
+          {{ range findRESubmatch `(?i)<img\b[^>]*?\ssrc=(?:"([^"]+)"|'([^']+)')` $detail 1 }}
+            <img class="project-cover" src="{{ or (index . 1) (index . 2) | htmlUnescape }}" alt="" loading="lazy" decoding="async">
+          {{ end }}
+        {{ end }}
+        <div class="project-card-body">
+          <h2><button type="button" class="project-open" aria-haspopup="dialog" aria-controls="{{ $id }}">{{ .Title }} <span aria-hidden="true">→</span></button></h2>
+          <div class="prose project-intro">{{ if .Params.intro }}{{ .RenderString (dict "display" "block") .Params.intro }}{{ else }}{{ .Summary }}{{ end }}</div>
+          {{ with .Params.links }}
+            <footer class="project-links">
+              {{ range . }}<a href="{{ .url }}">{{ .label }}</a>{{ end }}
+            </footer>
+          {{ end }}
+        </div>
+      </article>
+      <dialog class="project-dialog" id="{{ $id }}" aria-labelledby="{{ $id }}-title">
+        <header>
+          <h2 id="{{ $id }}-title">{{ .Title }}</h2>
+          <form method="dialog"><button type="submit" aria-label="{{ i18n "ruri_close" }}" autofocus>×</button></form>
+        </header>
+        <div class="prose project-detail no-lightbox">{{ $detail }}</div>
+      </dialog>
+    {{ end }}
+  </project-gallery>
+  {{ if and .Site.Params.sponsor.enable (ne .Params.sponsor false) }}<details class="sponsor"><summary>{{ i18n "sponsor" }} / {{ index .Site.Params.sponsor.tip .Language.Lang }}</summary><div>{{ range .Site.Params.sponsor.qr }}<figure><img src="{{ .src | relURL }}" alt="{{ .name }}" loading="lazy" width="180"><figcaption>{{ .name }}</figcaption></figure>{{ end }}</div></details>{{ end }}
+  {{ if and .Site.Params.waline.enable (ne .Params.comments false) }}<section id="comments" class="comments"><h2>{{ index .Site.Params.comment.title .Language.Lang | default (i18n "comment") }}</h2><button id="comments-load" data-server="{{ .Site.Params.waline.serverURL }}" data-lang="{{ .Language.Lang }}" data-options="{{ .Site.Params.waline | jsonify }}">{{ i18n "comment" }}</button><div id="waline"></div></section>{{ end }}
+</section>
+{{ $script := resources.Get "projects.js" | resources.Copy "assets/js/projects.js" | minify | fingerprint }}
+<script src="{{ $script.RelPermalink }}" data-page-script defer></script>
+{{ end }}

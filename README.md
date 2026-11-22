@@ -212,7 +212,7 @@ ruri:
 </details>
 
 <details>
-<summary>归档、文艺、关于、友链与说说</summary>
+<summary>归档、文艺、项目、关于、友链与说说</summary>
 
 - 归档：创建 `content/archives/_index.md`，front matter 设置 `title: 归档`。自动显示时间树、热力图及分类标签。
 - 文艺：创建 `content/culture/index.md`，使用下面的 `culture` 布局，包含书籍、动画、电影、音乐、游戏五个板块。
@@ -236,6 +236,42 @@ copyright: false
 ---
 这里写页面正文。
 ~~~
+
+**项目卡片页**：在站点创建 `content/projects/_index.md`，并在站点菜单中添加 `/projects/`：
+
+~~~yaml
+---
+title: 项目
+description: 我做的一些项目
+layout: projects
+sidebar: false
+outputs: [HTML]
+cascade:
+  - build:
+      list: local
+      render: never
+    target:
+      kind: page
+---
+~~~
+
+每个项目建一个目录，例如 `content/projects/example/index.md`：
+
+~~~yaml
+---
+title: 示例项目
+weight: 10
+intro: "**显示在卡片上的 Markdown 简介。**"
+cover: cover.png
+links:
+  - label: GitHub
+    url: https://github.com/your-name/your-project
+---
+
+这里写详细介绍，点击卡片后在弹窗中显示。
+~~~
+
+`cover` 可用同目录的图片、站内路径或图片 URL；可处理的封面会在构建时转为响应式 WebP。省略时使用正文第一张图片，没有图片则不显示头图。`intro` 省略时显示文章摘要；`links` 会显示为卡片底部的链接。启用 Waline 后，评论区显示在项目页底部（可用 `comments: false` 关闭）。多语言站点使用带语言后缀的 Markdown 文件。
 
 文艺是可选功能，默认 `culture.enable: false`，关闭时隐藏导航入口并且不加载收藏模块、数据或封面。启用前，将 `exampleSite/content/culture/` 复制到站点 `content/`；目录页与书籍、动画、电影、音乐、游戏各自是独立页面。在站点 `config/_default/params.yaml` 中配置：
 
