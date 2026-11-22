@@ -30,7 +30,6 @@ if (!customElements.get('moments-wall')) {
         if (card) this.open(card);
       };
       this.closest('.moments').querySelector('.moments-write').onclick = () => this.open(null);
-      this.dialog.querySelector('.moment-close').onclick = () => this.dialog.close();
       this.dialog.onclick = event => {
         const parentLink = event.target.closest('.wl-reply-to a');
         if (parentLink) {

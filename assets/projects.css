@@ -77,21 +77,5 @@ html:has(.project-dialog[open]) { overflow: hidden; }
   border-bottom: 1px solid var(--line);
 }
 .project-dialog h2 { margin: 0; font-size: 1.15rem; overflow-wrap: anywhere; }
-.project-close {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--muted);
-}
-.project-close:is(:hover, :focus-visible) {
-  background: transparent;
-  color: var(--accent);
-}
-.project-close:focus-visible { outline: 2px solid var(--accent); outline-offset: -5px; }
 .project-detail { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 18px clamp(14px, 4vw, 24px) 24px; }
 .project-detail > :first-child { margin-top: 0; }

@@ -47,7 +47,10 @@
       </div>
       <div class="moments-footer"><span role="status"></span><button type="button" class="moments-more" hidden>{{ i18n "ruri_more" }}</button></div>
       <dialog class="moment-dialog" aria-labelledby="moment-title">
-        <header><h2 id="moment-title">{{ .Title }}</h2><button type="button" class="moment-close" aria-label="{{ i18n "ruri_close" }}" autofocus>×</button></header>
+        <header>
+          <h2 id="moment-title">{{ .Title }}</h2>
+          {{ partial "card-dialog-close.html" "moment-close" }}
+        </header>
         <div class="moment-preview"></div>
         <p class="moment-status" role="status"></p>
         <button type="button" class="moment-retry" hidden>{{ i18n "ruri_comments_error" }}</button>
